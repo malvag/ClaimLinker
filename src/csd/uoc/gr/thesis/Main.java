@@ -9,10 +9,12 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws Exception {
         String parsed_content = "empty";
+        System.out.print("[Main] Give me a URL to process: ");
         Scanner in = new Scanner(System.in);
         String input = in.nextLine();
-        Parser master = new Parser(input);
-        parsed_content = master.getBoilerPipedString();
-        System.out.println(parsed_content);
+
+        Parser master = new Parser(input,"parsed.txt");
+        parsed_content = master.getClean();
+
     }
 }
