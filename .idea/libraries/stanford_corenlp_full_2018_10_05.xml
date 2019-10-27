@@ -1,0 +1,33 @@
+<component name="libraryTable">
+  <library name="stanford-corenlp-full-2018-10-05">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/joda-time-2.9-sources.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/stanford-corenlp-3.9.2-models.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/jaxb-core-2.3.0.1-sources.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/jaxb-core-2.3.0.1.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/jollyday-0.4.9-sources.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/javax.json-api-1.0-sources.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/xom.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/javax.activation-api-1.2.0.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/jaxb-impl-2.4.0-b180830.0438.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/xom-1.2.10-src.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/ejml-0.23-src.zip!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/stanford-corenlp-3.9.2-sources.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/javax.activation-api-1.2.0-sources.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/protobuf.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/jaxb-api-2.4.0-b180830.0359.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/slf4j-api.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/stanford-corenlp-3.9.2-javadoc.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/slf4j-simple.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/ejml-0.23.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/javax.json.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/jaxb-api-2.4.0-b180830.0359-sources.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/jollyday.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/jaxb-impl-2.4.0-b180830.0438-sources.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/stanford-corenlp-3.9.2.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/joda-time.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

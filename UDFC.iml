@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="org.jsoup:jsoup:1.12.1" level="project" />
+    <orderEntry type="library" name="stanford-corenlp-full-2018-10-05" level="project" />
   </component>
 </module>

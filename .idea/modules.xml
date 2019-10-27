@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/UDFC.iml" filepath="$PROJECT_DIR$/UDFC.iml" />
+      <module fileurl="file://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05.iml" filepath="$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05/stanford-corenlp-full-2018-10-05.iml" />
     </modules>
   </component>
 </project>
