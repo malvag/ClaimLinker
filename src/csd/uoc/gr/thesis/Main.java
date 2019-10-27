@@ -17,6 +17,10 @@ public class Main {
     static boolean default_operation;
 
     public static void main(String[] args){
+        /** Usage tips:
+         * if u want to use just the nlp tools alone:
+         *        <executable> --nlp "<STRING>"
+         */
         default_operation = check_operation_mode(args);
 
         /**
@@ -32,9 +36,9 @@ public class Main {
             doc = new CoreDocument(parsed_content); // change doc's content
         }
 
-        NLPlib nlp = new NLPlib(doc);
+        NLPlib nlp = new NLPlib();
 
-        nlp.annotate();
+        nlp.annotate(doc);
 
     }
 
@@ -68,7 +72,7 @@ public class Main {
     static private boolean check_operation_mode(String[] args){
         boolean def_op = true;
         if (args.length > 1) {
-            if (args[0].equals("nlp") && !args[1].isEmpty()) {
+            if ((args[0].equals("--nlp") || args[0].equals("-N"))  && !args[1].isEmpty()) {
                 def_op = false;
             }
         } else {

@@ -8,14 +8,14 @@ public class NLPlib {
     private StanfordCoreNLP master_pipeline;
     private CoreDocument doc;
 
-    public NLPlib(CoreDocument doc) {
+    public NLPlib() {
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner"); // not enough memory
         master_pipeline = new StanfordCoreNLP(props);
-        this.doc = doc;
     }
 
-    public void annotate() {
+    public void annotate(CoreDocument doc) {
+        this.doc = doc;
         output_annotation(master_pipeline);
     }
 
