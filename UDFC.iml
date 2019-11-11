@@ -8,7 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="org.jsoup:jsoup:1.12.1" level="project" />
-    <orderEntry type="library" name="stanford-corenlp-full-2018-10-05" level="project" />
+    <orderEntry type="library" exported="" name="stanford-corenlp-full-2018-10-05" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -66,6 +66,17 @@
           <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/jaxb-api-2.4.0-b180830.0359-sources.jar!/" />
           <root url="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2018-10-05/jaxb-impl-2.4.0-b180830.0438-sources.jar!/" />
         </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="library" exported="" name="babelfy-online-1.0" level="project" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/src/csd/thesis/BabelfyAPI-1.0/Babelfy-online-API-1.0/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/src/csd/thesis/BabelfyAPI-1.0/Babelfy-online-API-1.0/lib" recursive="false" />
       </library>
     </orderEntry>
   </component>
