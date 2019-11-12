@@ -25,11 +25,11 @@ public class NLPlib {
         this.doc = doc;
         master_pipeline.annotate(doc);
         List<SemanticAnnotation> bfyAnnotations = bfy.babelfy(doc.text(), Language.EN);
-        output_annotation(master_pipeline,bfyAnnotations);
+        output_annotation(master_pipeline, bfyAnnotations);
 
     }
 
-    private void output_annotation(StanfordCoreNLP pipeline,List<SemanticAnnotation> bfyAnnotations) {
+    private void output_annotation(StanfordCoreNLP pipeline, List<SemanticAnnotation> bfyAnnotations) {
         System.out.println("= = =");
         System.out.println("[NLPlib] Entities found");
         System.out.println("= = =");
@@ -46,8 +46,7 @@ public class NLPlib {
         System.out.println(tokensAndNERTags);
 
 
-        for (SemanticAnnotation annotation : bfyAnnotations)
-        {
+        for (SemanticAnnotation annotation : bfyAnnotations) {
             //splitting the input text using the CharOffsetFragment start and end anchors
             String frag = doc.text().substring(annotation.getCharOffsetFragment().getStart(),
                     annotation.getCharOffsetFragment().getEnd() + 1);

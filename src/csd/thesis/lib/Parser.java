@@ -27,10 +27,10 @@ public class Parser {
     /**
      * Default Constructor for initialization
      *
-     * @param s_url {@code URL} given from the user in {@code String} form
+     * @param s_url    {@code URL} given from the user in {@code String} form
      * @param filename the name of the generated output file
      */
-    public Parser(String s_url,String filename) {
+    public Parser(String s_url, String filename) {
 
         //URL format check
         if (!this.isMatch(s_url)) {
@@ -40,7 +40,7 @@ public class Parser {
 
         //Call a method that uses Boilerpipe API URL
         try {
-            getContent(s_url,filename);
+            getContent(s_url, filename);
         } catch (IOException e) {
             System.err.println("[Parser] Unexpected Error !!\nExiting...");
             System.exit(1);
@@ -77,7 +77,7 @@ public class Parser {
      * Sends an API call to boilerpipe with our page's source(via {@code URL}) and then
      * the data we get as a response are the clean data(articles/text) we want.
      *
-     * @param s_url url given from the user in String form
+     * @param s_url    url given from the user in String form
      * @param filename the name of the generated output file
      * @throws IOException on wrong url
      */
@@ -92,7 +92,7 @@ public class Parser {
         writer.close();
 
         System.out.println("[Parser] The API url call was successful ! ");
-        System.out.println("[Parser] A file named " + filename +" was created for output! ");
+        System.out.println("[Parser] A file named " + filename + " was created for output! ");
         boilerpiped = out;
     }
 }
