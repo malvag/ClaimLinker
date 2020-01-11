@@ -34,16 +34,17 @@ public class Parser {
 
         //URL format check
         if (!this.isMatch(s_url)) {
-            System.err.println("[Parser] The URL doesn't have the right format!\nExiting...");
-            System.exit(1);
-        }
+            System.err.println("[Parser] The URL doesn't have the right format!\nAborting...");
+            boilerpiped = "empty";
+        }else {
 
-        //Call a method that uses Boilerpipe API URL
-        try {
-            getContent(s_url, filename);
-        } catch (IOException e) {
-            System.err.println("[Parser] Unexpected Error !!\nExiting...");
-            System.exit(1);
+            //Call a method that uses Boilerpipe API URL
+            try {
+                getContent(s_url, filename);
+            } catch (IOException e) {
+                System.err.println("[Parser] Unexpected Error !!\nExiting...");
+                System.exit(1);
+            }
         }
 
     }
