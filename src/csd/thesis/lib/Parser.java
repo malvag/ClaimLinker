@@ -74,6 +74,15 @@ public class Parser {
     }
 
     /**
+     * Gets a file and retrieves all articles
+     * @param file_path String
+     */
+    public void getContentByComposition(String file_path){
+
+    }
+
+
+    /**
      * Sends an API call to boilerpipe with our page's source(via {@code URL}) and then
      * the data we get as a response are the clean data(articles/text) we want.
      *

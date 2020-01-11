@@ -79,5 +79,6 @@
         <jarDirectory url="file://$MODULE_DIR$/src/csd/thesis/BabelfyAPI-1.0/Babelfy-online-API-1.0/lib" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="plantuml.1.2019.11" level="project" />
   </component>
 </module>

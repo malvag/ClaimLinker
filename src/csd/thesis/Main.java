@@ -32,10 +32,9 @@ public class Main {
             doc = new CoreDocument(parsed_content); // change doc's content
 
             nlp.annotate(doc);
-        }else{
-            console_op(nlp,doc);
+        } else {
+            console_op(nlp, doc);
         }
-
 
 
     }
@@ -96,7 +95,7 @@ public class Main {
     static private boolean check_operation_mode(String[] args) {
         boolean def_op = true;
         if (args.length > 0) {
-            if ((args[0].equals("--console") || args[0].equals("-C")) ) {
+            if ((args[0].equals("--console") || args[0].equals("-C"))) {
                 def_op = false;
             }
         } else {
