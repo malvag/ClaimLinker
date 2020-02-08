@@ -1,4 +1,4 @@
-package csd.thesis.lib;
+package csd.thesis.tools;
 
 import edu.stanford.nlp.pipeline.*;
 import it.uniroma1.lcl.babelfy.commons.annotation.SemanticAnnotation;
@@ -30,17 +30,26 @@ public class NLPlib {
         }
     }
 
-    public void annotate(CoreDocument doc) {
+    public CoreDocument getDoc() {
+        return doc;
+    }
+
+    public void annotate(CoreDocument doc, boolean doPrint) {
         this.doc = doc;
         master_pipeline.annotate(doc);
         if (this.current_mode == mode.NLP_BFY) {
             List<SemanticAnnotation> bfyAnnotations = bfy.babelfy(doc.text(), Language.EN);
-            output_annotation(master_pipeline, bfyAnnotations);
-        } else
-            output_annotation(master_pipeline, null);
+            if (doPrint) {
+                output_annotation(bfyAnnotations);
+            }
+        } else {
+            if (doPrint) {
+                output_annotation(null);
+            }
+        }
     }
 
-    private void output_annotation(StanfordCoreNLP pipeline, List<SemanticAnnotation> bfyAnnotations) {
+    private void output_annotation(List<SemanticAnnotation> bfyAnnotations) {
         System.out.println("= = =");
         System.out.println("[NLPlib] Entities found");
         System.out.println("= = =");
