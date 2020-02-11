@@ -91,6 +91,7 @@ public class Parser {
      * @param file_path String
      */
     public List getContentByComposition(String file_path) {
+        System.out.println("[Parser][API] Getting content by composition (file) ...");
         List data = null;
         Scanner reader = null;
         data = new ArrayList<WebArticle>();
@@ -98,8 +99,8 @@ public class Parser {
         try {
             reader = new Scanner(myObj);
         } catch (IOException e) {
-            System.out.println("[Parser][Content] An error occurred opening file.");
-            return null;
+            System.err.println("[Parser][Content] An error occurred opening file.");
+            System.exit(1);
         }
         int counter = 0;
         while (reader.hasNextLine()) {
@@ -119,7 +120,7 @@ public class Parser {
                 continue;
             };
             data.add(new WebArticle(this.boilerpiped, parsed_url));
-            System.out.println("Article #" + counter++);
+            System.out.println("Downloaded Article #" + counter++ + " ...");
             boilerpiped = "";
         }
         reader.close();
@@ -142,7 +143,7 @@ public class Parser {
 
 //        if (s_url.charAt(0) == '#') return;
 
-        System.out.println("[Parser][API] Begin");
+        if(debug)System.out.println("[Parser][API] Begin");
         String out = ArticleExtractor.INSTANCE.getText(new URL(s_url));
 //        String out = Jsoup.connect(API + s_url)
 //                .userAgent("Mozilla/5.0")
@@ -156,7 +157,7 @@ public class Parser {
             writer.close();
             System.out.println("[Parser] A file named " + filename + " was created for output! ");
         }
-        System.out.println("[Parser][API] Done! ");
+        if(debug)System.out.println("[Parser][API] Done! ");
         this.boilerpiped = out;
     }
 }

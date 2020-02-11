@@ -56,9 +56,9 @@ public class NLPlib {
     }
 
     public static void output_annotation(CoreDocument doc, List<SemanticAnnotation> bfyAnnotations) {
-        if(debug)System.out.println("= = =");
-        if(debug)System.out.println("[NLPlib] Entities found");
-        if(debug)System.out.println("= = =");
+        if (debug) System.out.println("= = =");
+        if (debug) System.out.println("[NLPlib] Entities found");
+        if (debug) System.out.println("= = =");
         boolean inEntity = false;
         int counter = 0;
         String currentEntity = "";
@@ -68,11 +68,11 @@ public class NLPlib {
         List sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
         for (Object sentence : sentences) {
             sentenceNEs.clear();
-            if(debug)System.out.println("[NLPlib] Sentence #"+counter++);
+            if (debug) System.out.println("[NLPlib] Sentence #" + counter++);
             for (CoreLabel token : ((CoreMap) sentence).get(CoreAnnotations.TokensAnnotation.class)) {
 
                 String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
-                if(debug)System.out.println("[OT: "+token.originalText()+" ]");
+                if (debug) System.out.println("[OT: " + token.originalText() + " ]");
                 if (!inEntity) {
                     if (!"O".equals(ne)) {
                         inEntity = true;
@@ -84,23 +84,8 @@ public class NLPlib {
                     if ("O".equals(ne)) {
                         inEntity = false;
                         sentenceNEs.add(currentEntity);
-                        switch (currentEntityType) {
-                            case "PERSON":
-                                if(debug)System.out.println("Extracted Person - " + currentEntity.trim());
-                                break;
-                            case "ORGANIZATION":
-                                if(debug)System.out.println("Extracted Organization - " + currentEntity.trim());
-                                break;
-                            case "LOCATION":
-                                if(debug)System.out.println("Extracted Location - " + currentEntity.trim());
-                                break;
-                            case "DATE":
-                                if(debug)System.out.println("Extracted Date " + currentEntity.trim());
-                                break;
-                            default:
-                                if(debug)System.out.println("Extracted " + currentEntityType + " " + currentEntity.trim());
-                                break;
-                        }
+                        if (debug) System.out.println("Extracted " + currentEntityType + " " + currentEntity.trim());
+
                     } else {
                         currentEntity += " " + token.originalText();
                     }
@@ -109,33 +94,6 @@ public class NLPlib {
             }
             UDFC.masterVP.addTokensfromSentence(sentenceNEs);
         }
-
-//        // BUG!
-//        for (CoreEntityMention em : doc.entityMentions()) {
-//            System.out.println("\tdetected entity: \t" + em.text() + "\t" + em.entityType());
-//        }
-//        System.out.println("= = =");
-//        System.out.println("[NLPlib] Tokens and ner tags");
-//        System.out.println("= = =");
-//
-//        String tokensAndNERTags = doc.tokens().stream().map(token -> "<" + token.word() + "," + token.ner() + ">").collect(
-//                Collectors.joining(" "));
-//        System.out.println(tokensAndNERTags);
-//
-//        if (bfyAnnotations != null) {
-//            for (SemanticAnnotation annotation : bfyAnnotations) {
-//                //splitting the input text using the CharOffsetFragment start and end anchors
-//                String frag = doc.text().substring(annotation.getCharOffsetFragment().getStart(),
-//                        annotation.getCharOffsetFragment().getEnd() + 1);
-//                System.out.println(frag + "\t" + annotation.getBabelSynsetID());
-//                System.out.println("\t" + annotation.getBabelNetURL());
-//                System.out.println("\t" + annotation.getDBpediaURL());
-//                System.out.println("\t" + annotation.getSource());
-//            }
-//            System.out.println("= = =");
-//            System.out.println("[NLPlib] Named entity recognition and disambiguation was successful");
-//            System.out.println("= = =");
-//        }
 
 
     }

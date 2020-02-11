@@ -4,53 +4,28 @@ import csd.thesis.model.ViewPoint;
 import csd.thesis.model.WebArticle;
 import csd.thesis.tools.NLPlib;
 import csd.thesis.tools.Parser;
+import edu.stanford.nlp.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class UDFC {
     static boolean default_operation;
     static private String command;
     static private int iter;
-
+    static private final int TOP_ENTRIES_VIEW_MAX = 15;
     static public ViewPoint masterVP;
+    static NLPlib nlp_instance;
 
     public static void main(String[] args) {
         masterVP = new ViewPoint();
-        NLPlib nlp = new NLPlib(NLPlib.mode.NLP);
-        console_op(nlp);
+        nlp_instance = new NLPlib(NLPlib.mode.NLP);
+        console_op();
     }
 
-    static private void console_op(NLPlib nlp) {
-        ArrayList<WebArticle> parsed_content = null;
-//        while (true) {
-//
-//            parsed_content = "";
-//            iter = 0;
-//            System.out.print("[Main] UDFC_thesis$ ");
-        {
-            int counter = 0;
-            Parser master = null;
-            try {
-                master = new Parser(null, null, true);
-            } catch (Exception e) {
-                System.err.println("[Parser] Error on URL parsing");
-                e.printStackTrace();
-            } finally {
-                parsed_content = ((master != null) ? (ArrayList<WebArticle>) master.getContentByComposition("data/data_links_pro.txt") : null);
-            }
-            System.out.println("======= Finished Parsing Content =========");
-
-            for (WebArticle a : parsed_content) {
-                a.annotate(nlp);
-
-                System.out.println(a.getUrl());
-                NLPlib.output_annotation(a.getDoc(), a.getBfyAnnotations());
-                System.out.println("======== Finished Article #" + (counter++) + " Annotation ========");
-            }
-            UDFC.masterVP.getPairsSortedByValue().forEach((elem, occ) -> {
-                System.out.println(elem.first + " " + elem.second + " : " + occ);
-            });
-        }
+    static private void console_op() {
+        UDFC.getViewPoint("data/data_links_pro.txt");
+        UDFC.getViewPoint("data/data_links_against.txt");
 
 //            Scanner in = new Scanner(System.in);
 //            String input = in.nextLine();
@@ -84,6 +59,36 @@ public class UDFC {
 
     }
 
+    static public void getViewPoint(String file_path){
+        UDFC.masterVP.clear();
+        ArrayList<WebArticle> parsed_content = null;
+        int counter = 0;
+        Parser master = null;
+        try {
+            master = new Parser(null, null, true);
+        } catch (Exception e) {
+            System.err.println("[Parser] Error on URL parsing");
+            e.printStackTrace();
+        } finally {
+            parsed_content = ((master != null) ? (ArrayList<WebArticle>) master.getContentByComposition(file_path) : null);
+        }
+        System.out.println("======== Finished Parsing Content ========");
+        for (WebArticle a : parsed_content) {
+            a.annotate(UDFC.nlp_instance);
+
+            System.out.println(a.getUrl());
+            NLPlib.output_annotation(a.getDoc(), a.getBfyAnnotations());
+            System.out.println("======== Finished Article #" + (counter++) + " Annotation ========");
+        }
+        counter = 0;
+        for (Map.Entry<Pair<String, String>, Integer> entry : UDFC.masterVP.getPairsSortedByValue().entrySet()) {
+            Pair<String, String> elem = entry.getKey();
+            Integer occ = entry.getValue();
+            System.out.println(elem.first + " " + elem.second + " : " + occ);
+            if(counter++ > TOP_ENTRIES_VIEW_MAX)
+                break;
+        }
+    }
 
     /**
      * Parse a page through URL and write it to file Boilerpiped
