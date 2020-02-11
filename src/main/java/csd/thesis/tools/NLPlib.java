@@ -5,9 +5,9 @@ import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.*;
 import edu.stanford.nlp.util.CoreMap;
-import it.uniroma1.lcl.babelfy.commons.annotation.SemanticAnnotation;
-import it.uniroma1.lcl.babelfy.core.Babelfy;
-import it.uniroma1.lcl.jlt.util.Language;
+//import it.uniroma1.lcl.babelfy.commons.annotation.SemanticAnnotation;
+//import it.uniroma1.lcl.babelfy.core.Babelfy;
+//import it.uniroma1.lcl.jlt.util.Language;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class NLPlib {
     private StanfordCoreNLP master_pipeline;
     private CoreDocument doc;
-    private Babelfy bfy;
+//    private Babelfy bfy;
     private mode current_mode;
     private final static boolean debug = false;
 
@@ -31,31 +31,31 @@ public class NLPlib {
         this.current_mode = init_mode;
         master_pipeline = new StanfordCoreNLP(props);
 
-        if (init_mode == mode.NLP_BFY) {
-            bfy = new Babelfy();
-        }
+//        if (init_mode == mode.NLP_BFY) {
+//            bfy = new Babelfy();
+//        }
     }
 
     public CoreDocument getDoc() {
         return doc;
     }
 
-    public void NLPlib_annotate(CoreDocument doc, boolean doPrint, List<SemanticAnnotation> bfysa) {
+    public void NLPlib_annotate(CoreDocument doc, boolean doPrint) {
         this.doc = doc;
         master_pipeline.annotate(doc);
         if (this.current_mode == mode.NLP_BFY) {
-            bfysa = bfy.babelfy(doc.text(), Language.EN);
-            if (doPrint) {
-                output_annotation(doc, bfysa);
-            }
+//            bfysa = bfy.babelfy(doc.text(), Language.EN);
+//            if (doPrint) {
+//                output_annotation(doc, bfysa);
+//            }
         } else {
             if (doPrint) {
-                output_annotation(doc, null);
+                output_annotation(doc);
             }
         }
     }
 
-    public static void output_annotation(CoreDocument doc, List<SemanticAnnotation> bfyAnnotations) {
+    public static void output_annotation(CoreDocument doc) {
         if (debug) System.out.println("= = =");
         if (debug) System.out.println("[NLPlib] Entities found");
         if (debug) System.out.println("= = =");

@@ -77,7 +77,7 @@ public class UDFC {
             a.annotate(UDFC.nlp_instance);
 
             System.out.println(a.getUrl());
-            NLPlib.output_annotation(a.getDoc(), a.getBfyAnnotations());
+            NLPlib.output_annotation(a.getDoc());
             System.out.println("======== Finished Article #" + (counter++) + " Annotation ========");
         }
         counter = 0;

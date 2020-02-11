@@ -1,3 +1,5 @@
 out/
 
 parsed.txt
+data/claimskg_v1.0.csv
+target/
