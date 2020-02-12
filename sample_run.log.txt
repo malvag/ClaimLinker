@@ -1,0 +1,114 @@
+[main] INFO edu.stanford.nlp.pipeline.StanfordCoreNLP - Adding annotator tokenize
+[main] INFO edu.stanford.nlp.pipeline.StanfordCoreNLP - Adding annotator ssplit
+[main] INFO edu.stanford.nlp.pipeline.StanfordCoreNLP - Adding annotator pos
+[main] INFO edu.stanford.nlp.tagger.maxent.MaxentTagger - Loading POS tagger from edu/stanford/nlp/models/pos-tagger/english-left3words/english-left3words-distsim.tagger ... done [0.8 sec].
+[main] INFO edu.stanford.nlp.pipeline.StanfordCoreNLP - Adding annotator lemma
+[main] INFO edu.stanford.nlp.pipeline.StanfordCoreNLP - Adding annotator ner
+[main] INFO edu.stanford.nlp.ie.AbstractSequenceClassifier - Loading classifier from edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz ... done [1.1 sec].
+[main] INFO edu.stanford.nlp.ie.AbstractSequenceClassifier - Loading classifier from edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz ... done [1.1 sec].
+[main] INFO edu.stanford.nlp.ie.AbstractSequenceClassifier - Loading classifier from edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz ... done [0.8 sec].
+[main] INFO edu.stanford.nlp.time.JollyDayHolidays - Initializing JollyDayHoliday for SUTime from classpath edu/stanford/nlp/models/sutime/jollyday/Holidays_sutime.xml as sutime.binder.1.
+[main] INFO edu.stanford.nlp.time.TimeExpressionExtractorImpl - Using following SUTime rules: edu/stanford/nlp/models/sutime/defs.sutime.txt,edu/stanford/nlp/models/sutime/english.sutime.txt,edu/stanford/nlp/models/sutime/english.holidays.sutime.txt
+[main] INFO edu.stanford.nlp.pipeline.TokensRegexNERAnnotator - ner.fine.regexner: Read 580704 unique entries out of 581863 from edu/stanford/nlp/models/kbp/english/gazetteers/regexner_caseless.tab, 0 TokensRegex patterns.
+[main] INFO edu.stanford.nlp.pipeline.TokensRegexNERAnnotator - ner.fine.regexner: Read 4869 unique entries out of 4869 from edu/stanford/nlp/models/kbp/english/gazetteers/regexner_cased.tab, 0 TokensRegex patterns.
+[main] INFO edu.stanford.nlp.pipeline.TokensRegexNERAnnotator - ner.fine.regexner: Read 585573 unique entries from 2 files
+[Parser][API] Getting content by composition (file) ...
+Downloaded Article #0 ...
+Downloaded Article #1 ...
+Downloaded Article #2 ...
+Downloaded Article #3 ...
+Downloaded Article #4 ...
+Downloaded Article #5 ...
+Downloaded Article #6 ...
+Downloaded Article #7 ...
+Downloaded Article #8 ...
+Downloaded Article #9 ...
+======== Finished Parsing Content ========
+https://www.zerohedge.com/news/2016-10-25/podesta-shocker-cheryl-mills-tells-podesta-we-need-clean-obama-has-emails-her
+======== Finished Article #0 Annotation ========
+https://www.americanthinker.com/blog/2016/10/michelle_obamas_promotion_of_misogyny_and_date_rape.html
+======== Finished Article #1 Annotation ========
+https://www.breitbart.com/politics/2016/11/07/jeff-sessions-obama-must-make-crystal-clear-only-citizens-can-vote-in-u-s-elections/
+======== Finished Article #2 Annotation ========
+https://www.thegatewaypundit.com/2016/10/postal-worker-brags-online-destroying-trump-ballots/
+======== Finished Article #3 Annotation ========
+https://www.cnbc.com/2016/10/28/donald-trump-will-win-the-election-and-is-more-popular-than-obama-in-2008-ai-system-finds.html
+======== Finished Article #4 Annotation ========
+https://dailycaller.com/2016/11/07/leaked-bill-clinton-speech-obama-years-left-no-hope-for-white-working-class/
+======== Finished Article #5 Annotation ========
+https://www.breitbart.com/politics/2016/10/20/nothing-obama-dodges-blame-skyrocketing-premiums/
+======== Finished Article #6 Annotation ========
+https://wikileaks.org/podesta-emails/?q=&mfrom=&mto=&title=&notitle=&date_from=&date_to=&nofrom=&noto=&count=50&sort=6#searchresult
+======== Finished Article #7 Annotation ========
+http://www.dailymail.co.uk/news/article-3914340/Senior-adviser-Valerie-Jarrett-convinced-President-Obama-FIRE-FBI-director-James-Comey-election.html
+======== Finished Article #8 Annotation ========
+https://www.foxnews.com/politics/we-need-to-clean-this-up-clinton-aide-cried-foul-on-obamas-email-denial
+======== Finished Article #9 Annotation ========
+ Obama  Clinton : 9
+ president  Clinton : 8
+ Obama  president : 6
+ Donald Trump  lewd : 6
+ president  first lady : 4
+ Reines  Palmieri : 4
+ Obama  FBI : 4
+ Jay Z  Beyoncé : 4
+ Podesta  Mills : 4
+ Jeff Sessions  U.S. : 4
+ Obama  U.S. : 4
+ White House  Trump : 4
+ FBI  president : 3
+ Obama  Obamacare : 3
+ Podesta  Obama : 3
+ Podesta  Clinton : 3
+ Clinton  Hillary Clinton : 3
+[Parser][API] Getting content by composition (file) ...
+Downloaded Article #0 ...
+Downloaded Article #1 ...
+Downloaded Article #2 ...
+Downloaded Article #3 ...
+Downloaded Article #4 ...
+Downloaded Article #5 ...
+Downloaded Article #6 ...
+Downloaded Article #7 ...
+Downloaded Article #8 ...
+Downloaded Article #9 ...
+======== Finished Parsing Content ========
+https://newrepublic.com/article/138114/obama-right-republican-extremism-along
+======== Finished Article #0 Annotation ========
+https://www.politico.com/story/2016/10/obama-holder-redistricting-gerrymandering-229868
+======== Finished Article #1 Annotation ========
+https://www.theguardian.com/us-news/2016/oct/12/donald-trump-jeffrey-epstein-alleged-rape-lawsuit?CMP=share_btn_tw
+======== Finished Article #2 Annotation ========
+https://thehill.com/blogs/ballot-box/presidential-races/304588-obama-mocks-trump-after-report-that-aides-blocked-him
+======== Finished Article #3 Annotation ========
+https://www.nytimes.com/2016/11/03/us/politics/obama-james-comey-fbi-hillary-clinton.html
+======== Finished Article #4 Annotation ========
+https://www.politicususa.com/2016/10/16/bad-news-republicans-obama-economy-slashed-poverty-rate.html
+======== Finished Article #5 Annotation ========
+http://www.slate.com/articles/news_and_politics/cover_story/2016/10/was_a_server_registered_to_the_trump_organization_communicating_with_russia.html
+======== Finished Article #6 Annotation ========
+http://edition.cnn.com/2016/11/07/opinions/navarro-republican-voting-for-clinton/index.html
+======== Finished Article #7 Annotation ========
+https://www.nbcnews.com/news/us-news/trump-son-dad-started-conversation-about-obama-birthplace-n673466
+======== Finished Article #8 Annotation ========
+https://www.politicususa.com/2016/11/01/comey.html
+======== Finished Article #9 Annotation ========
+ Obama  Clinton : 17
+ Obama  Trump : 13
+ president  Clinton : 10
+ Comey  Clinton : 10
+ Obama  Comey : 9
+ Obama  president : 9
+ Obama  U.S. : 6
+ White House  Obama : 6
+ Americans  Republicans : 6
+ Donald Trump  lewd : 6
+ Comey  F.B.I. : 6
+ Hillary Clinton  President Obama : 5
+ Obama  Florida : 5
+ Obama  FBI : 5
+ Democrats  Republicans : 5
+ Obama  Republican : 5
+ Republican  Donald Trump : 5
+
+Process finished with exit code 0
