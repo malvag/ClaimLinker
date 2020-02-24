@@ -90,9 +90,9 @@ public class Parser {
      *
      * @param file_path String
      */
-    public List getContentByComposition(String file_path) {
+    public List<WebArticle> getContentByComposition(String file_path) {
         System.out.println("[Parser][API] Getting content by composition (file) ...");
-        List data = null;
+        List<WebArticle> data = null;
         Scanner reader = null;
         data = new ArrayList<WebArticle>();
         File myObj = new File(file_path);

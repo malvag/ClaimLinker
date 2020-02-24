@@ -59,7 +59,15 @@ public class WebArticle {
 
     public void annotate(NLPlib nlp_instance){
         this.doc = new CoreDocument(this.cleaned);
-        nlp_instance.NLPlib_annotate(this.doc,false);
+        nlp_instance.NLPlib_annotate(this.doc);
     }
+
+    private void removeStopWords(){
+
+    }
+    private void stem(){
+
+    }
+
 
 }

@@ -8,14 +8,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ViewPoint extends ArrayList<Pair> {
     private Map<Pair<String, String>, Integer> pairs = new HashMap<>();
 
-    // There are several entry points to this class
-    // this is just to show one of them.
     public boolean add(String neA, String neB) {
         if (neA.equals(neB))
             return false;
 
-        Pair elem = new Pair(neA, neB);
-        Pair opp_elem = this.getOppositePair(elem);
+        Pair<String,String> elem = new Pair<String,String>(neA, neB);
+        Pair<String,String> opp_elem = (Pair<String,String>) this.getOppositePair(elem);
         if (!pairs.containsKey(elem)) {
             if (!this.containsPair(elem, true))
                 pairs.put(elem, 1);
@@ -25,7 +23,7 @@ public class ViewPoint extends ArrayList<Pair> {
         return super.add(elem);
     }
 
-    public void addTokensfromSentence(ArrayList sentence) {
+    public void addTokensfromSentence(ArrayList<String> sentence) {
         sentence.forEach(tokenA -> {
             sentence.forEach(tokenB -> {
                 add((String) tokenA, (String) tokenB);
@@ -41,11 +39,11 @@ public class ViewPoint extends ArrayList<Pair> {
     }
 
     public Pair<String, String> getOppositePair(Pair<String, String> o) {
-        return new Pair((String) o.second, (String) o.first);
+        return new Pair<String,String>((String) o.second, (String) o.first);
     }
 
     public int getCount(String neA, String neB) {
-        Pair elem = new Pair(neA, neB);
+        Pair<String,String> elem = new Pair<String,String>(neA, neB);
 
         if (!pairs.containsKey(elem)) {
             return 0;
@@ -68,7 +66,7 @@ public class ViewPoint extends ArrayList<Pair> {
         return this.sortByValue();
     }
 
-    public Map<Pair<String, String>, Integer> sortByValue() {
+    private Map<Pair<String, String>, Integer> sortByValue() {
 
         List<Map.Entry<Pair<String, String>, Integer>> list = new ArrayList<>(pairs.entrySet());
         Comparator<Map.Entry<Pair<String, String>, Integer>> cmp = Map.Entry.comparingByValue();

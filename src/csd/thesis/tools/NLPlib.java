@@ -1,24 +1,27 @@
 package csd.thesis.tools;
 
-import csd.thesis.UDFC;
+import csd.thesis.model.ViewPoint;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.*;
 import edu.stanford.nlp.util.CoreMap;
+import it.uniroma1.lcl.babelfy.core.Babelfy;
+import it.uniroma1.lcl.jlt.Configuration;
 //import it.uniroma1.lcl.babelfy.commons.annotation.SemanticAnnotation;
 //import it.uniroma1.lcl.babelfy.core.Babelfy;
 //import it.uniroma1.lcl.jlt.util.Language;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.stream.Collectors;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
 public class NLPlib {
     private StanfordCoreNLP master_pipeline;
     private CoreDocument doc;
-//    private Babelfy bfy;
+    private Babelfy bfy;
     private mode current_mode;
+    List<String> stopwords;
     private final static boolean debug = false;
 
     public enum mode {
@@ -29,33 +32,25 @@ public class NLPlib {
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner"); // not enough memory
         this.current_mode = init_mode;
+        this.initStopword("data/stopwords.txt");
         master_pipeline = new StanfordCoreNLP(props);
 
-//        if (init_mode == mode.NLP_BFY) {
-//            bfy = new Babelfy();
-//        }
+        if (init_mode == mode.NLP_BFY) {
+            Configuration cc = Configuration.getInstance();
+            bfy = new Babelfy();
+        }
     }
 
     public CoreDocument getDoc() {
         return doc;
     }
 
-    public void NLPlib_annotate(CoreDocument doc, boolean doPrint) {
+    public void NLPlib_annotate(CoreDocument doc) {
         this.doc = doc;
         master_pipeline.annotate(doc);
-        if (this.current_mode == mode.NLP_BFY) {
-//            bfysa = bfy.babelfy(doc.text(), Language.EN);
-//            if (doPrint) {
-//                output_annotation(doc, bfysa);
-//            }
-        } else {
-            if (doPrint) {
-                output_annotation(doc);
-            }
-        }
     }
 
-    public static void output_annotation(CoreDocument doc) {
+    public static List getAnnotationSentences(CoreDocument doc, ViewPoint vp) {
         if (debug) System.out.println("= = =");
         if (debug) System.out.println("[NLPlib] Entities found");
         if (debug) System.out.println("= = =");
@@ -91,11 +86,48 @@ public class NLPlib {
                     }
 
                 }
+
             }
-            UDFC.masterVP.addTokensfromSentence(sentenceNEs);
+            vp.addTokensfromSentence(sentenceNEs);
         }
 
+        return sentences;
+    }
 
+
+    public List<CoreLabel> removeStopWords(){
+        int counter = 0;
+        ArrayList<String> sentenceNEs = new ArrayList<>();
+        Annotation document = new Annotation(doc.annotation());
+        List sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+        List<CoreLabel> without_stopwords = new ArrayList<>();
+        for (Object sentence : sentences) {
+            sentenceNEs.clear();
+            if (debug) System.out.println("[NLPlib] Sentence #" + counter++);
+            for (CoreLabel token : ((CoreMap) sentence).get(CoreAnnotations.TokensAnnotation.class)) {
+                System.out.printf("[NLPlib] Token : %15s", token);
+                if(this.stopwords.contains(token.originalText()))
+                    System.out.print(" **");
+                else
+                    without_stopwords.add(token);
+                System.out.print("\n");
+            }
+        }
+        if (debug) System.out.println("[NLPlib] --------  ");
+        return without_stopwords;
+    }
+
+    private void initStopword(String file_path){
+        this.stopwords = new ArrayList<String>();
+        try (BufferedReader in = new BufferedReader(new FileReader(file_path))) {
+            String input;
+            while((input= in.readLine()) != null){
+                this.stopwords.add(input);
+            }
+        }catch (IOException e){
+            System.err.println("Stopwords file error!");
+            System.exit(1);
+        }
     }
 
 }

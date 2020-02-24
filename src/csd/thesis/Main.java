@@ -4,12 +4,18 @@ import csd.thesis.model.ViewPoint;
 import csd.thesis.model.WebArticle;
 import csd.thesis.tools.NLPlib;
 import csd.thesis.tools.Parser;
+import edu.stanford.nlp.pipeline.CoreDocument;
+import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.util.Pair;
+import org.apache.commons.text.similarity.JaccardSimilarity;
+import org.tartarus.snowball.ext.PorterStemmer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
-public class UDFC {
+public class Main {
     static boolean default_operation;
     static private String command;
     static private int iter;
@@ -17,50 +23,38 @@ public class UDFC {
     static public ViewPoint masterVP;
     static NLPlib nlp_instance;
 
-    public static void main(String[] args) {
-        masterVP = new ViewPoint();
+    public static void main(String[] args) throws IOException {
         nlp_instance = new NLPlib(NLPlib.mode.NLP);
-        console_op();
+
+        String a = "Kostas found Vaggelis in the woods while playing with his volley balls .";
+        String b = "Kostas found George in the woods while playing precisely with his basketball";
+        AtomicReference<String> cleaned = new AtomicReference<>("");
+        JaccardSimilarity JS = new JaccardSimilarity();
+        System.out.println("---------------jaccard similarity");
+        System.out.println(JS.apply(a,b));
+        System.out.println("---------------stopwords");
+        PorterStemmer ps = new PorterStemmer();
+        nlp_instance.NLPlib_annotate(new CoreDocument(a));
+        nlp_instance.removeStopWords().forEach(elem ->{
+            System.out.println(elem);
+            cleaned.updateAndGet(v -> v + elem.lemma() + " ");
+        });
+
+        System.out.println("---------------stemmed");
+        ps.setCurrent(cleaned.get());
+        ps.stem();
+        System.out.println( ps.getCurrent());
+
     }
 
-    static private void console_op() {
-        UDFC.getViewPoint("data/data_links_pro.txt");
-        UDFC.getViewPoint("data/data_links_against.txt");
-
-//            Scanner in = new Scanner(System.in);
-//            String input = in.nextLine();
-//            Pattern pattern = Pattern.compile("(^\\w+)[\\s]?(.*)?");
-//            Matcher matcher = pattern.matcher(input);
-//
-//            if (!matcher.find()) continue;
-//
-//            command = matcher.group(1);
-//            if (command.equals("quit") || command.equals("q")) {
-//                System.err.println("[Main] exiting...");
-//                System.exit(0);
-//
-//            } else if (command.equals("parse") || command.equals("p")) {
-//                System.err.println("\n[Main] parsing command...");
-//                if (matcher.group(2).isBlank()) {
-//                    System.err.println("[Error] No input for parsing whatsoever!");
-//                    continue;
-//                }
-//                System.out.println(matcher.group(2));
-//                parsed_content = defaultMode(matcher.group(2));
-//                if(parsed_content.equals("empty"))
-//                    continue;
-//
-//                CoreDocument doc = new CoreDocument(parsed_content); // change doc's content
-//
-//                nlp.annotate(doc);
-//            }
-//
-//        }
-
+    static private void phaceC() {
+        masterVP = new ViewPoint();
+        Main.getViewPoint("data/data_links_pro.txt");
+        Main.getViewPoint("data/data_links_against.txt");
     }
 
     static public void getViewPoint(String file_path){
-        UDFC.masterVP.clear();
+        Main.masterVP.clear();
         ArrayList<WebArticle> parsed_content = null;
         int counter = 0;
         Parser master = null;
@@ -74,14 +68,14 @@ public class UDFC {
         }
         System.out.println("======== Finished Parsing Content ========");
         for (WebArticle a : parsed_content) {
-            a.annotate(UDFC.nlp_instance);
+            a.annotate(Main.nlp_instance);
 
             System.out.println(a.getUrl());
-            NLPlib.output_annotation(a.getDoc());
+            NLPlib.getAnnotationSentences(a.getDoc(), Main.masterVP);
             System.out.println("======== Finished Article #" + (counter++) + " Annotation ========");
         }
         counter = 0;
-        for (Map.Entry<Pair<String, String>, Integer> entry : UDFC.masterVP.getPairsSortedByValue().entrySet()) {
+        for (Map.Entry<Pair<String, String>, Integer> entry : Main.masterVP.getPairsSortedByValue().entrySet()) {
             Pair<String, String> elem = entry.getKey();
             Integer occ = entry.getValue();
             System.out.println(elem.first + " " + elem.second + " : " + occ);
