@@ -2,18 +2,25 @@ package csd.thesis;
 
 import csd.thesis.model.ViewPoint;
 import csd.thesis.model.WebArticle;
+import csd.thesis.tools.CSV_Parser;
 import csd.thesis.tools.NLPlib;
-import csd.thesis.tools.Parser;
-import edu.stanford.nlp.pipeline.CoreDocument;
-import edu.stanford.nlp.simple.Sentence;
+import csd.thesis.tools.URL_Parser;
 import edu.stanford.nlp.util.Pair;
-import org.apache.commons.text.similarity.JaccardSimilarity;
-import org.tartarus.snowball.ext.PorterStemmer;
+import org.apache.http.HttpHost;
+import org.elasticsearch.action.DocWriteResponse;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestHighLevelClient;
+//import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.xcontent.XContentType;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Main {
     static boolean default_operation;
@@ -24,27 +31,38 @@ public class Main {
     static NLPlib nlp_instance;
 
     public static void main(String[] args) throws IOException {
-        nlp_instance = new NLPlib(NLPlib.mode.NLP);
+//        nlp_instance = new NLPlib(NLPlib.mode.NLP);
+//
+        RestHighLevelClient client = new RestHighLevelClient(
+                RestClient.builder(
+                        new HttpHost("localhost", 9200, "http"),
+                        new HttpHost("localhost", 9201, "http")));
 
-        String a = "Kostas found Vaggelis in the woods while playing with his volley balls .";
-        String b = "Kostas found George in the woods while playing precisely with his basketball";
-        AtomicReference<String> cleaned = new AtomicReference<>("");
-        JaccardSimilarity JS = new JaccardSimilarity();
-        System.out.println("---------------jaccard similarity");
-        System.out.println(JS.apply(a,b));
-        System.out.println("---------------stopwords");
-        PorterStemmer ps = new PorterStemmer();
-        nlp_instance.NLPlib_annotate(new CoreDocument(a));
-        nlp_instance.removeStopWords().forEach(elem ->{
-            System.out.println(elem);
-            cleaned.updateAndGet(v -> v + elem.lemma() + " ");
-        });
 
-        System.out.println("---------------stemmed");
-        ps.setCurrent(cleaned.get());
-        ps.stem();
-        System.out.println( ps.getCurrent());
+        CSV_Parser CSV = new CSV_Parser(true,true,",");
+        CSV.parseCSV("data/claim_extraction_18_10_2019_annotated.csv");
 
+//        try (InputStream in = new FileInputStream(csvFile);) {
+//            CSV csv = new CSV(true, ',', in );
+//            List< String > fieldNames = null;
+//            if (csv.hasNext()) fieldNames = new ArrayList < > (csv.next());
+//            List < Map < String, String >> list = new ArrayList < > ();
+//            while (csv.hasNext()) {
+//                List < String > x = csv.next();
+//                Map < String, String > obj = new LinkedHashMap < > ();
+//                for (int i = 0; i < fieldNames.size(); i++) {
+//                    obj.put(fieldNames.get(i), x.get(i));
+//                }
+//                list.add(obj);
+//            }
+//            ObjectMapper mapper = new ObjectMapper();
+//            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+//            mapper.writeValue(System.out, list);
+//        }
+
+
+
+        client.close();
     }
 
     static private void phaceC() {
@@ -57,11 +75,11 @@ public class Main {
         Main.masterVP.clear();
         ArrayList<WebArticle> parsed_content = null;
         int counter = 0;
-        Parser master = null;
+        URL_Parser master = null;
         try {
-            master = new Parser(null, null, true);
+            master = new URL_Parser(null, null, true);
         } catch (Exception e) {
-            System.err.println("[Parser] Error on URL parsing");
+            System.err.println("[URL_Parser] Error on URL parsing");
             e.printStackTrace();
         } finally {
             parsed_content = ((master != null) ? (ArrayList<WebArticle>) master.getContentByComposition(file_path) : null);
@@ -91,11 +109,11 @@ public class Main {
      */
     static private String defaultMode(String url) {
         final String filename = "parsed.txt";
-        Parser master = null;
+        URL_Parser master = null;
         try {
-            master = new Parser(url, filename, false);
+            master = new URL_Parser(url, filename, false);
         } catch (Exception e) {
-            System.err.println("[Parser] Error on URL parsing");
+            System.err.println("[URL_Parser] Error on URL parsing");
             e.printStackTrace();
         } finally {
             return (master != null) ? master.getClean() : "empty";

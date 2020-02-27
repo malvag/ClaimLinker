@@ -3,3 +3,4 @@ out/
 parsed.txt
 data/claimskg_v1.0.csv
 target/
+data/claim_extraction_18_10_2019_annotated.csv

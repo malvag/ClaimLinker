@@ -11,9 +11,6 @@
       <root url="jar://$PROJECT_DIR$/src/csd/thesis/BabelfyAPI-1.0/Babelfy-online-API-1.0/lib/commons-lang-2.3.jar!/" />
       <root url="jar://$PROJECT_DIR$/src/csd/thesis/BabelfyAPI-1.0/Babelfy-online-API-1.0/lib/commons-logging-1.1.3.jar!/" />
       <root url="jar://$PROJECT_DIR$/src/csd/thesis/BabelfyAPI-1.0/Babelfy-online-API-1.0/lib/gson-2.3.1.jar!/" />
-      <root url="jar://$PROJECT_DIR$/src/csd/thesis/BabelfyAPI-1.0/Babelfy-online-API-1.0/lib/httpclient-4.3.6.jar!/" />
-      <root url="jar://$PROJECT_DIR$/src/csd/thesis/BabelfyAPI-1.0/Babelfy-online-API-1.0/lib/httpcore-4.3.3.jar!/" />
-      <root url="jar://$PROJECT_DIR$/src/csd/thesis/BabelfyAPI-1.0/Babelfy-online-API-1.0/lib/httpmime-4.3.6.jar!/" />
       <root url="jar://$PROJECT_DIR$/src/csd/thesis/BabelfyAPI-1.0/Babelfy-online-API-1.0/lib/jltutils-2.0.4.jar!/" />
     </CLASSES>
     <JAVADOC>

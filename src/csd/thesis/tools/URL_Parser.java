@@ -20,9 +20,9 @@ import java.util.regex.Pattern;
  * @version 1.0
  */
 
-public class Parser {
+public class URL_Parser {
     /**
-     * Parser's output
+     * URL_Parser's output
      */
     private String boilerpiped;
 
@@ -39,12 +39,12 @@ public class Parser {
      * @param filename the name of the generated output file
      * @param file
      */
-    public Parser(String s_url, String filename, boolean file) {
+    public URL_Parser(String s_url, String filename, boolean file) {
 
         //URL format check
         if (!file) {
             if (!this.isMatch(s_url)) {
-                System.err.println("[Parser] The URL doesn't have the right format!\nAborting...");
+                System.err.println("[URL_Parser] The URL doesn't have the right format!\nAborting...");
                 boilerpiped = "empty";
             } else {
 
@@ -52,7 +52,7 @@ public class Parser {
                 try {
                     getContent(s_url, filename, true);
                 } catch (BoilerpipeProcessingException | IOException e) {
-                    System.err.println("[Parser] Unexpected Error !!\nExiting...");
+                    System.err.println("[URL_Parser] Unexpected Error !!\nExiting...");
                     System.exit(1);
                 }
             }
@@ -61,7 +61,7 @@ public class Parser {
     }
 
     /**
-     * Gets the output of the whole Parser
+     * Gets the output of the whole URL_Parser
      *
      * @return Returns the clean data from boilerpipe API
      */
@@ -91,7 +91,7 @@ public class Parser {
      * @param file_path String
      */
     public List<WebArticle> getContentByComposition(String file_path) {
-        System.out.println("[Parser][API] Getting content by composition (file) ...");
+        System.out.println("[URL_Parser][API] Getting content by composition (file) ...");
         List<WebArticle> data = null;
         Scanner reader = null;
         data = new ArrayList<WebArticle>();
@@ -99,7 +99,7 @@ public class Parser {
         try {
             reader = new Scanner(myObj);
         } catch (IOException e) {
-            System.err.println("[Parser][Content] An error occurred opening file.");
+            System.err.println("[URL_Parser][Content] An error occurred opening file.");
             System.exit(1);
         }
         int counter = 0;
@@ -112,11 +112,11 @@ public class Parser {
                 }
                 getContent(parsed_url, null, false);
             } catch (BoilerpipeProcessingException | IOException e) {
-                System.err.println("[Parser][Content] Failed to get boilerpiped article. \n");
+                System.err.println("[URL_Parser][Content] Failed to get boilerpiped article. \n");
                 e.printStackTrace();
             }
             if (this.boilerpiped == null) {
-                System.err.println("[Parser][Content] No input from bfy !");
+                System.err.println("[URL_Parser][Content] No input from bfy !");
                 continue;
             };
             data.add(new WebArticle(this.boilerpiped, parsed_url));
@@ -143,7 +143,7 @@ public class Parser {
 
 //        if (s_url.charAt(0) == '#') return;
 
-        if(debug)System.out.println("[Parser][API] Begin");
+        if(debug)System.out.println("[URL_Parser][API] Begin");
         String out = ArticleExtractor.INSTANCE.getText(new URL(s_url));
 //        String out = Jsoup.connect(API + s_url)
 //                .userAgent("Mozilla/5.0")
@@ -155,9 +155,9 @@ public class Parser {
             BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
             writer.write(out);
             writer.close();
-            System.out.println("[Parser] A file named " + filename + " was created for output! ");
+            System.out.println("[URL_Parser] A file named " + filename + " was created for output! ");
         }
-        if(debug)System.out.println("[Parser][API] Done! ");
+        if(debug)System.out.println("[URL_Parser][API] Done! ");
         this.boilerpiped = out;
     }
 }
