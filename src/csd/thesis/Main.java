@@ -31,16 +31,20 @@ public class Main {
     static NLPlib nlp_instance;
 
     public static void main(String[] args) throws IOException {
+        System.out.println("Initiating ...");
+
 //        nlp_instance = new NLPlib(NLPlib.mode.NLP);
 //
-        RestHighLevelClient client = new RestHighLevelClient(
-                RestClient.builder(
-                        new HttpHost("localhost", 9200, "http"),
-                        new HttpHost("localhost", 9201, "http")));
+//        RestHighLevelClient client = new RestHighLevelClient(
+//                RestClient.builder(
+//                        new HttpHost("localhost", 9200, "http"),
+//                        new HttpHost("localhost", 9201, "http")));
 
 
         CSV_Parser CSV = new CSV_Parser(true,true,",");
-        CSV.parseCSV("data/claim_extraction_18_10_2019_annotated.csv");
+//        CSV.parseCSV("data/claim_extraction_18_10_2019_annotated.csv");
+        CSV.parse2("data/claim_front.csv");
+
 
 //        try (InputStream in = new FileInputStream(csvFile);) {
 //            CSV csv = new CSV(true, ',', in );
@@ -62,7 +66,8 @@ public class Main {
 
 
 
-        client.close();
+//        client.close();
+        System.out.println("Exiting ...");
     }
 
     static private void phaceC() {
