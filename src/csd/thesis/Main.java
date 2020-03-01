@@ -1,10 +1,15 @@
 package csd.thesis;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import csd.thesis.model.ViewPoint;
 import csd.thesis.model.WebArticle;
-import csd.thesis.tools.CSV_Parser;
+import csd.thesis.tools.CSVUtils;
 import csd.thesis.tools.NLPlib;
 import csd.thesis.tools.URL_Parser;
+import csd.thesis.tools.elastic.ElasticWrapper;
 import edu.stanford.nlp.util.Pair;
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.DocWriteResponse;
@@ -14,6 +19,7 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 //import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentType;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,39 +36,32 @@ public class Main {
     static public ViewPoint masterVP;
     static NLPlib nlp_instance;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         System.out.println("Initiating ...");
-
+        ArrayList<Map<String, Object>> master;
 //        nlp_instance = new NLPlib(NLPlib.mode.NLP);
-//
-//        RestHighLevelClient client = new RestHighLevelClient(
-//                RestClient.builder(
-//                        new HttpHost("localhost", 9200, "http"),
-//                        new HttpHost("localhost", 9201, "http")));
+
+        ElasticWrapper elasticWrapper = new ElasticWrapper();
 
 
-        CSV_Parser CSV = new CSV_Parser(true,true,",");
-//        CSV.parseCSV("data/claim_extraction_18_10_2019_annotated.csv");
-        CSV.parse2("data/claim_front.csv");
+        CSVUtils csvUtils = new CSVUtils();
+        master = csvUtils.parse("data/claim_extraction_18_10_2019_annotated.csv");
 
 
-//        try (InputStream in = new FileInputStream(csvFile);) {
-//            CSV csv = new CSV(true, ',', in );
-//            List< String > fieldNames = null;
-//            if (csv.hasNext()) fieldNames = new ArrayList < > (csv.next());
-//            List < Map < String, String >> list = new ArrayList < > ();
-//            while (csv.hasNext()) {
-//                List < String > x = csv.next();
-//                Map < String, String > obj = new LinkedHashMap < > ();
-//                for (int i = 0; i < fieldNames.size(); i++) {
-//                    obj.put(fieldNames.get(i), x.get(i));
-//                }
-//                list.add(obj);
-//            }
-//            ObjectMapper mapper = new ObjectMapper();
-//            mapper.enable(SerializationFeature.INDENT_OUTPUT);
-//            mapper.writeValue(System.out, list);
-//        }
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        master.forEach(elem->{
+            try {
+                System.out.println(mapper.writeValueAsString(elem));
+                System.out.println("+++++++++++++++");
+                mapper.writeValue(System.out,(List<Map<String, Object>>)elem.get("extra_entities_body"));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
 
 
@@ -76,7 +75,7 @@ public class Main {
         Main.getViewPoint("data/data_links_against.txt");
     }
 
-    static public void getViewPoint(String file_path){
+    static public void getViewPoint(String file_path) {
         Main.masterVP.clear();
         ArrayList<WebArticle> parsed_content = null;
         int counter = 0;
@@ -102,7 +101,7 @@ public class Main {
             Pair<String, String> elem = entry.getKey();
             Integer occ = entry.getValue();
             System.out.println(elem.first + " " + elem.second + " : " + occ);
-            if(counter++ > TOP_ENTRIES_VIEW_MAX)
+            if (counter++ > TOP_ENTRIES_VIEW_MAX)
                 break;
         }
     }
