@@ -20,11 +20,14 @@ import org.elasticsearch.client.RestHighLevelClient;
 //import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentType;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.json.simple.JSONObject;
 
+import javax.json.Json;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -51,17 +54,24 @@ public class Main {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        master.forEach(elem->{
-            try {
-                System.out.println(mapper.writeValueAsString(elem));
-                System.out.println("+++++++++++++++");
-                mapper.writeValue(System.out,(List<Map<String, Object>>)elem.get("extra_entities_body"));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        for (Map<String, Object> elem : master) {
+            //                System.out.println(mapper.writeValueAsString(elem.get("extra_entities_body")));
+            String in = (String) elem.get("extra_entities_body");
+//            System.out.println(elem);
+
+//            mapper.writeValue(System.out,elem);
+            in =  in.replace("\"", "");
+//            in = in.replaceAll( "(?<=\\{|, ?)([a-zA-Z]+?): ?(?![ {\\[])(.+?)(?=,|})", "\"$1\": \"$2\"");
+//            in.replaceAll("({|,)?\\s*'?([A-Za-z_$\\.][A-Za-z0-9_ \\-\\.$]*)'?\\s*:\\s*","\"$1\": \"$2\"");
+            elem.put("extra_entities_body",in);
+//            List list = Arrays.asList(mapper.readValue(in, Map[].class));
+            System.out.println(in);
+
+//                ll.put("extra_entities_body",elem.get("extra_entities_body"));
+//                System.out.println(ll.get("extra_entities_body"));
+//            mapper.writeValue(System.out, list);
+        };
+
 
 
 
