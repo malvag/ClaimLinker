@@ -1,6 +1,7 @@
 package csd.thesis;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -20,16 +21,12 @@ import org.elasticsearch.client.RestHighLevelClient;
 //import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentType;
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.json.simple.JSONObject;
 
 import javax.json.Json;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Main {
     static boolean default_operation;
@@ -41,12 +38,10 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         System.out.println("Initiating ...");
-        ArrayList<Map<String, Object>> master;
 //        nlp_instance = new NLPlib(NLPlib.mode.NLP);
-
         ElasticWrapper elasticWrapper = new ElasticWrapper();
 
-
+        ArrayList<Map<String, Object>> master;
         CSVUtils csvUtils = new CSVUtils();
         master = csvUtils.parse("data/claim_extraction_18_10_2019_annotated.csv");
 
@@ -60,19 +55,35 @@ public class Main {
 //            System.out.println(elem);
 
 //            mapper.writeValue(System.out,elem);
-            in =  in.replace("\"", "");
+
+            {
+                in = in.replaceAll("(?<![{: \\[\\\\,]) *(?!\" ?[,\\]}:] *)\"", "");
+                in = in.replaceAll("(-?\\d+(?:[.,]\\d+)?)\"", "$1");
+                in = in.replaceAll(":(\\s+)(\\d+)\"", "$2");
+            }
+
+
+//            in =  in.replace("\"", "");
+
 //            in = in.replaceAll( "(?<=\\{|, ?)([a-zA-Z]+?): ?(?![ {\\[])(.+?)(?=,|})", "\"$1\": \"$2\"");
 //            in.replaceAll("({|,)?\\s*'?([A-Za-z_$\\.][A-Za-z0-9_ \\-\\.$]*)'?\\s*:\\s*","\"$1\": \"$2\"");
-            elem.put("extra_entities_body",in);
-//            List list = Arrays.asList(mapper.readValue(in, Map[].class));
+            elem.put("extra_entities_body", in);
+            mapper.configure(JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER,true);
+            mapper.configure(JsonParser.Feature.ALLOW_MISSING_VALUES,true);
+            mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES,true);
+            mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES,true);
+            mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS,true);
+
+//            List list = Arrays.asList(mapper.readValue(in, LinkedHashMap.class));
             System.out.println(in);
+//            mapper.writeValue(System.out,);
 
 //                ll.put("extra_entities_body",elem.get("extra_entities_body"));
 //                System.out.println(ll.get("extra_entities_body"));
-//            mapper.writeValue(System.out, list);
-        };
-
-
+            System.out.println(elem);
+            mapper.writeValue(System.out, elem);
+        }
+        ;
 
 
 //        client.close();
