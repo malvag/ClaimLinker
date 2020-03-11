@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ViewPoint extends ArrayList<Pair> {
     private Map<Pair<String, String>, Integer> pairs = new HashMap<>();
+    private Map<String, Integer> vp  = new HashMap<>();
 
     public boolean add(String neA, String neB) {
         if (neA.equals(neB))
@@ -24,6 +25,13 @@ public class ViewPoint extends ArrayList<Pair> {
     }
 
     public void addTokensfromSentence(ArrayList<String> sentence) {
+        sentence.forEach(tokenA -> {
+            sentence.forEach(tokenB -> {
+                add((String) tokenA, (String) tokenB);
+            });
+        });
+    }
+    public void addTokenPairsfromSentence(ArrayList<String> sentence) {
         sentence.forEach(tokenA -> {
             sentence.forEach(tokenB -> {
                 add((String) tokenA, (String) tokenB);

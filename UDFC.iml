@@ -93,6 +93,9 @@
         <jarDirectory url="file://$MODULE_DIR$/src/main/java/csd/thesis/BabelfyAPI-1.0/Babelfy-online-API-1.0/lib" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Maven: de.sciss:ws4j:0.1.0" level="project" />
+    <orderEntry type="library" name="Maven: de.sciss:jawjaw:0.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.xerial:sqlite-jdbc:3.8.11.2" level="project" />
     <orderEntry type="library" name="Maven: net.sourceforge.nekohtml:nekohtml:1.9.22" level="project" />
     <orderEntry type="library" name="Maven: xerces:xercesImpl:2.11.0" level="project" />
     <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.4.01" level="project" />
