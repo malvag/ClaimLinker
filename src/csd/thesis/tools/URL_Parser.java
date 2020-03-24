@@ -50,7 +50,7 @@ public class URL_Parser {
 
                 //Call a method that uses Boilerpipe API URL
                 try {
-                    getContent(s_url, filename, true);
+                    getContent(s_url, filename, file);
                 } catch (BoilerpipeProcessingException | IOException e) {
                     System.err.println("[URL_Parser] Unexpected Error !!\nExiting...");
                     System.exit(1);

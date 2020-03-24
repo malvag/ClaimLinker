@@ -6,8 +6,13 @@ import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.*;
 import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.util.Pair;
 import it.uniroma1.lcl.babelfy.core.Babelfy;
 import it.uniroma1.lcl.jlt.Configuration;
+import net.didion.jwnl.JWNLException;
+import net.didion.jwnl.data.IndexWord;
+import net.didion.jwnl.data.POS;
+import net.didion.jwnl.data.Synset;
 import org.apache.logging.log4j.core.Core;
 import org.tartarus.snowball.ext.PorterStemmer;
 //import it.uniroma1.lcl.babelfy.commons.annotation.SemanticAnnotation;
@@ -50,15 +55,18 @@ public class NLPlib {
         return bfy;
     }
 
-    public List<String> getLemmas() {
+    public List<String> getLemmas(CoreDocument document) {
+        if (document != null)
+            this.setDoc(document);
         return this.doc.tokens().stream()
-                .map(cl -> cl.lemma())
-                .collect(Collectors.toList());
+                    .map(CoreLabel::lemma)
+                    .collect(Collectors.toList());
     }
+
     public String getLemmas_toString(CoreDocument doc) {
         AtomicReference<String> cleaned = new AtomicReference<>("");
         if (doc != null) this.setDoc(doc);
-        this.getLemmas().forEach(elem -> {
+        this.getLemmas(doc).forEach(elem -> {
 //            System.out.println(elem);
             cleaned.updateAndGet(v -> v + elem + " ");
         });
@@ -82,9 +90,10 @@ public class NLPlib {
         System.out.println(ConsoleColor.ANSI_CYAN + "[NLPlib] INFO stemmed" + ConsoleColor.ANSI_RESET);
         return stemmed_str;
     }
-    public String getWithoutStopwords(CoreDocument doc) {
+
+    public String getWithoutStopwords(CoreDocument a) {
         AtomicReference<String> cleaned = new AtomicReference<>("");
-        if (doc != null) this.setDoc(doc);
+        if (a != null) this.setDoc(a);
         this.removeStopWords().forEach(elem -> {
 //            System.out.println(elem);
             cleaned.updateAndGet(v -> v + elem.originalText() + " ");
@@ -93,6 +102,34 @@ public class NLPlib {
         return cleaned.get();
     }
 
+    public void getWordnetExpansion(CoreDocument a) throws JWNLException {
+        final net.didion.jwnl.dictionary.Dictionary dictionary = net.didion.jwnl.dictionary.Dictionary.getInstance();
+        for (CoreLabel elem : a.tokens()) {
+            try {
+                String ne = elem.get(CoreAnnotations.PartOfSpeechAnnotation.class);
+//                    System.out.println(ne + " " + elem.originalText());
+                IndexWord indexWord = null;
+                if (ne.startsWith("NN")) {
+                    indexWord = dictionary.getIndexWord(POS.NOUN, a.text());
+                } else if (ne.startsWith("RB")) {
+                    indexWord = dictionary.getIndexWord(POS.ADVERB, a.text());
+                } else if (ne.startsWith("VB")) {
+                    indexWord = dictionary.getIndexWord(POS.VERB, a.text());
+                }
+                if (indexWord == null)
+                    continue;
+                Synset[] senses = indexWord.getSenses();
+                for (Synset set : senses) {
+                    System.out.println(indexWord + ": " + set.getGloss());
+                }
+            } catch (JWNLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println(ConsoleColor.ANSI_CYAN + "[NLPlib] INFO WordNet Expansion applied" + ConsoleColor.ANSI_RESET);
+
+    }
 
     public CoreDocument getDoc() {
         return doc;
@@ -137,7 +174,7 @@ public class NLPlib {
                     if ("O".equals(ne)) {
                         inEntity = false;
                         tokens.add(currentEntity);
-                        if (true) System.out.println("Extracted " + currentEntityType + " " + currentEntity.trim());
+                        if (debug) System.out.println("Extracted " + currentEntityType + " " + currentEntity.trim());
 
                     } else {
                         currentEntity += " " + token.originalText();
@@ -166,9 +203,8 @@ public class NLPlib {
                 }
                 if (!this.stopwords.contains(token.originalText()))
                     without_stopwords.add(token);
-                else
-                    if (debug)
-                        System.out.printf(" <-");
+                else if (debug)
+                    System.out.printf(" <-");
                 if (debug) System.out.print("\n");
             }
         }

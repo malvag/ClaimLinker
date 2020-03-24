@@ -1,26 +1,16 @@
 package csd.thesis;
 
-import csd.thesis.misc.ConsoleColor;
 import csd.thesis.model.Claim;
 import csd.thesis.model.WebArticle;
 import csd.thesis.tools.AnalyzerDispatcher;
 import csd.thesis.tools.NLPlib;
 import csd.thesis.tools.URL_Parser;
-import edu.cmu.lti.ws4j.WS4J;
-import edu.cmu.lti.ws4j.demo.SimilarityCalculationDemo;
-import edu.cmu.lti.ws4j.util.WS4JConfiguration;
-import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
-import edu.stanford.nlp.util.logging.Color;
-import edu.stanford.nlp.util.logging.OutputHandler;
-import it.uniroma1.lcl.jlt.util.Language;
-import org.apache.commons.text.similarity.JaccardSimilarity;
-import org.apache.logging.log4j.core.Core;
-import org.tartarus.snowball.ext.PorterStemmer;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ClaimLinker {
     private WebArticle article;
@@ -97,44 +87,46 @@ public class ClaimLinker {
     public void pipeline() {
 //        String a = "Kostas found Donald Trump in the woods while playing with Hilary Clinton .";
 //        String b = "Kostas found Hilary Clinton in the woods while playing precisely with his basket ball";
-        String a = "Eventually, a huge cyclone hit the entrance of my house.";
-        String b = "Finally, a massive hurricane attacked my home.";
+        String a = "He later tweeted that he himself opened a major Apple Manufacturing plant in Texas that will bring high paying jobs back to America.";
+//        String b = "Finally, a massive hurricane attacked my home.";
+        String url = "https://www.washingtonpost.com/business/2019/11/21/trump-took-credit-opening-mac-factory-its-been-open-since/";
+
+        WebArticle b = new WebArticle(new URL_Parser(url,null,false).getClean(),url);
         CoreDocument CD_a = NLP_annotate(a);
-        CoreDocument CD_b = NLP_annotate(b);
+        CoreDocument CD_b = NLP_annotate(b.getCleaned());
+//        try {
+//            this.nlp_instance.getWordnetExpansion(CD_a);
+//        } catch (JWNLException e) {
+//            e.printStackTrace();
+//        }
+
+        System.out.println(a);
+        System.out.println(b.getCleaned());
         AnalyzerDispatcher analyzerDispatcher = new AnalyzerDispatcher(this.nlp_instance);
-        AnalyzerDispatcher.Analyzer[] analyzers = {
-                AnalyzerDispatcher.Analyzer.jcrd_comm_words,
-                AnalyzerDispatcher.Analyzer.jcrd_comm_ne,
-                AnalyzerDispatcher.Analyzer.jcrd_comm_lemm_words,
-                AnalyzerDispatcher.Analyzer.jcrd_comm_dissambig_ents,
-                AnalyzerDispatcher.Analyzer.jcrd_comm_pos_words
+        AnalyzerDispatcher.SimilarityMeasure[] similarityMeasures = {
+                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_words,
+                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_lemm_words,
+                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_ne,
+//                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_dissambig_ents,
+                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_pos_words,
+                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_ngram,
+                AnalyzerDispatcher.SimilarityMeasure.vec_cosine_sim
         };
-        analyzerDispatcher.addAnalyzer(analyzers);
+        analyzerDispatcher.addSimMeasure(similarityMeasures);
         analyzerDispatcher.analyze(CD_a,CD_b);
 
-        //This measure calculates relatedness
-        // by considering the depths of the two synsets in the WordNet taxonomies,
-        // along with the depth of the LCS
-//        WS4JConfiguration ws4JConfiguration = WS4JConfiguration.getInstance();
-//        ws4JConfiguration.
-//        WS4J ws4J = new WS4J();
-//        System.out.println("WS4J.WUP\n- result: " + WS4J.runLESK(CD_a.text(), CD_b.text()));
 
-//        WS4J.runJCN()
         System.out.println("_______________________________________________");
 
 
     }
 
-//    Common (jaccard) words of specific POS, e.g., common verbs
-//    ()
-//    Here you can think which POS tags make sense
-//    Num of common n-grams (e.g., 2-grams, 3-grams, 4-grams, 5-grams)
-//    Think which n-grams make sense
+
 //    Num of common n-chargrams (e.g., 2-chargrams, 3-chargrams, 4-chargrams, … …)
 //    Think which n-grams make sense
 
-
+    //Kulczynski2
+    //
 
 
 

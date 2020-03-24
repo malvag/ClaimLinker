@@ -14,6 +14,10 @@ import csd.thesis.tools.OpenCSVWrapper;
 import csd.thesis.tools.URL_Parser;
 import csd.thesis.tools.elastic.ElasticWrapper;
 import edu.stanford.nlp.util.Pair;
+import net.didion.jwnl.JWNL;
+import net.didion.jwnl.data.IndexWord;
+import net.didion.jwnl.data.POS;
+import net.didion.jwnl.data.Synset;
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.index.IndexResponse;
@@ -40,15 +44,15 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         System.out.println("Initiating ...");
+        JWNL.initialize(new FileInputStream("Properties.xml"));
         System.out.println("_______________________________________________");
 
 //        ElasticWrapper elasticWrapper = new ElasticWrapper();
         {
             ArrayList<Map<String, Object>> csv_to_map = new OpenCSVWrapper("data/claim_extraction_18_10_2019_annotated.csv").parse();
             ClaimLinker claimLinker = new ClaimLinker();
-            claimLinker.addClaimsFromCSV(csv_to_map);
+//            claimLinker.addClaimsFromCSV(csv_to_map);
             claimLinker.pipeline();
-
         }
         System.out.println("_______________________________________________");
         System.out.println("Exiting ...");

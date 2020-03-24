@@ -25,18 +25,24 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <repositories>
+        <repository>
+            <id>BibSonomy</id>
+            <name>BibSonomy</name>
+            <url>https://dev.bibsonomy.org/maven2/</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
-            <groupId>de.sciss</groupId>
-            <artifactId>ws4j</artifactId>
-            <version>0.1.0</version>
+            <groupId>net.didion</groupId>
+            <artifactId>jwnl</artifactId>
+            <version>1.4.1</version>
         </dependency>
         <dependency>
-            <groupId>de.sciss</groupId>
-            <artifactId>jawjaw</artifactId>
-            <version>0.1.0</version>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.3</version>
         </dependency>
-
         <dependency>
             <groupId>net.sourceforge.nekohtml</groupId>
             <artifactId>nekohtml</artifactId>
