@@ -79,40 +79,40 @@ public class ClaimLinker {
         return document;
     }
 
-
-
-
-
     //temporary
     public void pipeline() {
 //        String a = "Kostas found Donald Trump in the woods while playing with Hilary Clinton .";
 //        String b = "Kostas found Hilary Clinton in the woods while playing precisely with his basket ball";
-        String a = "He later tweeted that he himself opened a major Apple Manufacturing plant in Texas that will bring high paying jobs back to America.";
+//        String a = "He later tweeted that he himself opened a major Apple Manufacturing plant in Texas that will bring high paying jobs back to America.";
 //        String b = "Finally, a massive hurricane attacked my home.";
-        String url = "https://www.washingtonpost.com/business/2019/11/21/trump-took-credit-opening-mac-factory-its-been-open-since/";
+//        String url = "https://www.washingtonpost.com/business/2019/11/21/trump-took-credit-opening-mac-factory-its-been-open-since/";
 
-        WebArticle b = new WebArticle(new URL_Parser(url,null,false).getClean(),url);
-        CoreDocument CD_a = NLP_annotate(a);
-        CoreDocument CD_b = NLP_annotate(b.getCleaned());
+
+        String t1 = "He later tweeted that he himself opened a major Apple Manufacturing plant in Texas that will bring high paying jobs back to America.";
+        String t2 = "Today I opened a major Apple Manufacturing plant in Texas that will bring high paying jobs back to America.";
+
+//        WebArticle b = new WebArticle(url);
+        CoreDocument CD_a = NLP_annotate(t1);
+        CoreDocument CD_b = NLP_annotate(t2);
 //        try {
 //            this.nlp_instance.getWordnetExpansion(CD_a);
 //        } catch (JWNLException e) {
 //            e.printStackTrace();
 //        }
 
-        System.out.println(a);
-        System.out.println(b.getCleaned());
+//        System.out.println(a);
+//        System.out.println(b.getCleaned());
         AnalyzerDispatcher analyzerDispatcher = new AnalyzerDispatcher(this.nlp_instance);
-        AnalyzerDispatcher.SimilarityMeasure[] similarityMeasures = {
-                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_words,
-                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_lemm_words,
-                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_ne,
-//                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_dissambig_ents,
-                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_pos_words,
-                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_ngram,
-                AnalyzerDispatcher.SimilarityMeasure.vec_cosine_sim
-        };
-        analyzerDispatcher.addSimMeasure(similarityMeasures);
+        analyzerDispatcher.addSimMeasure(new AnalyzerDispatcher.SimilarityMeasure[]{
+                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_words,           //Common (jaccard) words
+                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_lemm_words,      //Common (jaccard) lemmatized words
+                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_ne,              //Common (jaccard) named entities
+                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_dissambig_ents,  //Common (jaccard) disambiguated entities BFY
+                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_pos_words,       //Common (jaccard) words of specific POS
+                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_ngram,           //Common (jaccard) ngrams
+                AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_nchargram,       //Common (jaccard) nchargrams
+                AnalyzerDispatcher.SimilarityMeasure.vec_cosine_sim             //Cosine similarity
+        });
         analyzerDispatcher.analyze(CD_a,CD_b);
 
 
@@ -121,19 +121,7 @@ public class ClaimLinker {
 
     }
 
-
-//    Num of common n-chargrams (e.g., 2-chargrams, 3-chargrams, 4-chargrams, … …)
-//    Think which n-grams make sense
-
-    //Kulczynski2
-    //
-
-
-
-
-
-
-
+    //Kulczynski2 ?TBD
 }
 
 

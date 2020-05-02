@@ -4,6 +4,7 @@ import csd.thesis.misc.ConsoleColor;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
+import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.util.Pair;
 import it.uniroma1.lcl.jlt.util.Language;
 import org.apache.commons.text.similarity.CosineSimilarity;
@@ -29,32 +30,39 @@ public class AnalyzerDispatcher {
     }
 
     public void analyze(CoreDocument claim, CoreDocument text) {
-
+        ArrayList<Double> arr = new ArrayList<>();
         ExecutorService es = Executors.newCachedThreadPool();
+
         text.sentences().forEach(sentence -> {
-            AtomicReference<Double> sum = new AtomicReference<>((double) 0);
+            AtomicReference<Double> sum = new AtomicReference<>(0d);
             this.similarityMeasures.forEach(elem -> {
-//            es.execute(() -> elem.analyze(claim, text));
                 es.execute(() -> {
                     double result = elem.analyze(claim, sentence.document());
-                    sum.updateAndGet(v -> (double) (v + result < 0 ? 0 : result));
-                    // adding the result to sum
+//                    System.out.println(result);
+                    sum.getAndUpdate(v -> v + result < 0 ? 0 : result);
                 });
             });
-            System.out.println("Sentence "+(double)sum.getAcquire()/this.similarityMeasures.size());
+            arr.add(sum.getAcquire());
         });
-
-
         es.shutdown();
+
+
         while (true) {
             try {
                 if (es.awaitTermination(1, TimeUnit.MINUTES))
                     break;
             } catch (InterruptedException e) {
                 System.err.println("Concurrent measures crashed");
+                break;
             }
 
         }
+
+        Collections.sort(arr);
+        arr.forEach(elem -> {
+            System.out.println("Sentence " + elem / this.similarityMeasures.size());
+        });
+
     }
 
     private ArrayList<SimilarityMeasure> similarityMeasures;
@@ -254,10 +262,10 @@ public class AnalyzerDispatcher {
                 double result = 0;
                 synchronized (this) {
                     String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) ngrams similarity applied" + ConsoleColor.ANSI_RESET;
-//                    System.out.printf("2_grams:    %11fd %20s\n", Ngram2, " importance factor 20%");
-//                    System.out.printf("3_grams:    %11fd %20s\n", Ngram3, " importance factor 35%");
-//                    System.out.printf("4_grams:    %11fd %20s\n", Ngram4, " importance factor 45%");
-                    result = Ngram2 * ((double) 20 / 100) + Ngram3 * ((double) 35 / 100) + Ngram4 * ((double) 45 / 100);
+                    System.out.printf("2_grams:    %11fd %20s\n", Ngram2, " importance factor 20%");
+                    System.out.printf("3_grams:    %11fd %20s\n", Ngram3, " importance factor 45%");
+                    System.out.printf("4_grams:    %11fd %20s\n", Ngram4, " importance factor 35%");
+                    result = Ngram2 * ((double) 20 / 100) + Ngram3 * ((double) 45 / 100) + Ngram4 * ((double) 35 / 100);
                     if (debug) System.out.printf("[ClaimLinker] %100s [%20s]\n", out, result);
 
                 }
@@ -269,10 +277,46 @@ public class AnalyzerDispatcher {
                         .map(CoreLabel::originalText)
                         .collect(Collectors.toList());
                 ArrayList<String> ngrams = new ArrayList<>();
-                for (int i = 0; i < list.size(); i += n - 1) {
+                for (int i = 0; i < list.size(); i ++) {
                     StringBuilder entry = new StringBuilder();
                     for (int j = i; j < i + n && i + n - 1 < list.size(); j++) {
                         entry.append(list.get(j)).append(" ");
+                    }
+                    ngrams.add(entry.toString());
+//                    System.out.println(entry.toString());
+                }
+                return ngrams;
+            }
+        },
+        jcrd_comm_nchargram {
+            //    Num of common n-grams (e.g., 2-grams, 3-grams, 4-grams, 5-grams)
+            @Override
+            double analyze(CoreDocument claim, CoreDocument text) {
+                double Ngram2 = this.similarity(getNchargrams(2, claim), getNchargrams(2, text));
+                double Ngram3 = this.similarity(getNchargrams(3, claim), getNchargrams(3, text));
+                double Ngram4 = this.similarity(getNchargrams(4, claim), getNchargrams(4, text));
+                double result = 0;
+                synchronized (this) {
+                    String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) nchargrams similarity applied" + ConsoleColor.ANSI_RESET;
+                    System.out.printf("2_chargrams:    %11fd %20s\n", Ngram2, " importance factor 20%");
+                    System.out.printf("3_chargrams:    %11fd %20s\n", Ngram3, " importance factor 35%");
+                    System.out.printf("4_chargrams:    %11fd %20s\n", Ngram4, " importance factor 45%");
+                    result = Ngram2 * ((double) 20 / 100) + Ngram3 * ((double) 35 / 100) + Ngram4 * ((double) 45 / 100);
+                    if (debug) System.out.printf("[ClaimLinker] %100s [%20s]\n", out, result);
+
+                }
+                return result;
+            }
+
+            ArrayList<String> getNchargrams(int n, CoreDocument a) {
+                ArrayList<String> list = (ArrayList<String>) a.tokens().stream()
+                        .map(CoreLabel::originalText)
+                        .collect(Collectors.toList());
+                ArrayList<String> ngrams = new ArrayList<>();
+                for (int i = 0; i < a.text().length(); i ++) {
+                    StringBuilder entry = new StringBuilder();
+                    for (int j = i; j < i + n && i + n - 1 < a.text().length(); j++) {
+                        entry.append(a.text().charAt(j));
                     }
                     ngrams.add(entry.toString());
 //                    System.out.println(entry.toString());
@@ -302,8 +346,8 @@ public class AnalyzerDispatcher {
             }
         };
 
-        private NLPlib nlp_instance;
-        private final static boolean debug = false;
+        private final NLPlib nlp_instance;
+        private final static boolean debug = true;
 
         SimilarityMeasure() {
             this.nlp_instance = AnalyzerDispatcher.nlp_instance;
@@ -330,18 +374,6 @@ public class AnalyzerDispatcher {
             int unionNum = unionList.size();
 
             return (double) intersectionNum / unionNum;
-        }
-
-        public <T> double jaccardSimilarity(List<T> a, List<T> b) {
-
-            Set<T> s1 = new HashSet<T>(a);
-            Set<T> s2 = new HashSet<T>(b);
-
-            final int sa = s1.size();
-            final int sb = s2.size();
-            s1.retainAll(s2);
-            final int intersection = s1.size();
-            return 1d / (sa + sb - intersection) * intersection;
         }
 
     }

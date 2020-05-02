@@ -65,7 +65,7 @@ public class URL_Parser {
      *
      * @return Returns the clean data from boilerpipe API
      */
-    public String getClean() {
+    public String getCleaned() {
         return boilerpiped;
     }
 
@@ -84,51 +84,6 @@ public class URL_Parser {
             return false;
         }
     }
-
-    /**
-     * Gets a file and retrieves all articles
-     *
-     * @param file_path String
-     */
-    public List<WebArticle> getContentByComposition(String file_path) {
-        System.out.println("[URL_Parser][API] Getting content by composition (file) ...");
-        List<WebArticle> data = null;
-        Scanner reader = null;
-        data = new ArrayList<WebArticle>();
-        File myObj = new File(file_path);
-        try {
-            reader = new Scanner(myObj);
-        } catch (IOException e) {
-            System.err.println("[URL_Parser][Content] An error occurred opening file.");
-            System.exit(1);
-        }
-        int counter = 0;
-        while (reader.hasNextLine()) {
-            String parsed_url = reader.nextLine();
-            try {
-                if (parsed_url.charAt(0) == '#'){
-                    if(debug)System.out.println(parsed_url);
-                    continue;
-                }
-                getContent(parsed_url, null, false);
-            } catch (BoilerpipeProcessingException | IOException e) {
-                System.err.println("[URL_Parser][Content] Failed to get boilerpiped article. \n");
-                e.printStackTrace();
-            }
-            if (this.boilerpiped == null) {
-                System.err.println("[URL_Parser][Content] No input from bfy !");
-                continue;
-            };
-            data.add(new WebArticle(this.boilerpiped, parsed_url));
-            System.out.println("Downloaded Article #" + counter++ + " ...");
-            boilerpiped = "";
-        }
-        reader.close();
-
-
-        return data;
-    }
-
 
     /**
      * Sends an API call to boilerpipe with our page's source(via {@code URL}) and then

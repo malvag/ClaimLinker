@@ -1,6 +1,7 @@
 package csd.thesis.model;
 
 import csd.thesis.tools.NLPlib;
+import csd.thesis.tools.URL_Parser;
 import edu.stanford.nlp.ling.Document;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreEntityMention;
@@ -47,15 +48,12 @@ public class WebArticle {
         return cleaned;
     }
 
-    public WebArticle(String cleaned){
-        this.cleaned = cleaned;
-        this.doc = new CoreDocument(this.cleaned);
+    public WebArticle(String URL){
+        URL_Parser url_parser = new URL_Parser(URL,null,false);
+        this.doc = new CoreDocument(url_parser.getCleaned());
+        this.cleaned = url_parser.getCleaned();
+        this.url = URL;
     }
-    public WebArticle(String cleaned,String url){
-        this(cleaned);
-        this.url = url;
-    }
-
 
     public void annotate(NLPlib nlp_instance){
         this.doc = new CoreDocument(this.cleaned);

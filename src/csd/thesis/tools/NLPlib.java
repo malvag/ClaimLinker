@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class NLPlib {
-    private StanfordCoreNLP master_pipeline;
+    private final StanfordCoreNLP master_pipeline;
     private CoreDocument doc;
     private Babelfy bfy;
     private mode current_mode;
@@ -55,18 +55,17 @@ public class NLPlib {
         return bfy;
     }
 
-    public List<String> getLemmas(CoreDocument document) {
-        if (document != null)
-            this.setDoc(document);
+    public List<String> getLemmas(CoreDocument a) {
+        if (a != null) this.setDoc(a);
         return this.doc.tokens().stream()
                     .map(CoreLabel::lemma)
                     .collect(Collectors.toList());
     }
 
-    public String getLemmas_toString(CoreDocument doc) {
+    public String getLemmas_toString(CoreDocument a) {
         AtomicReference<String> cleaned = new AtomicReference<>("");
-        if (doc != null) this.setDoc(doc);
-        this.getLemmas(doc).forEach(elem -> {
+        if (a != null) this.setDoc(a);
+        this.getLemmas(a).forEach(elem -> {
 //            System.out.println(elem);
             cleaned.updateAndGet(v -> v + elem + " ");
         });
@@ -76,6 +75,7 @@ public class NLPlib {
 
     public String getStemmed(CoreDocument a) {
         PorterStemmer ps = new PorterStemmer();
+        if (a != null) this.setDoc(a);
         String stemmed_str = "";
         ArrayList<String> stemmed = new ArrayList<String>();
         a.tokens().forEach(token -> {

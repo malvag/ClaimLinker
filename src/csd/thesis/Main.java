@@ -74,7 +74,7 @@ public class Main {
             System.err.println("[URL_Parser] Error on URL parsing");
             e.printStackTrace();
         } finally {
-            return (master != null) ? master.getClean() : "empty";
+            return (master != null) ? master.getCleaned() : "empty";
         }
     }
 

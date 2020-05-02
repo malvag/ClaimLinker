@@ -30,8 +30,7 @@ public class Claim {
     public String toJson() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        String json = mapper.writeValueAsString(this.objectMap);
-        return json;
+        return mapper.writeValueAsString(this.objectMap);
     }
 
     @Override
