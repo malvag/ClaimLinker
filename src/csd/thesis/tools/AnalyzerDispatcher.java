@@ -233,23 +233,29 @@ public class AnalyzerDispatcher {
                     System.out.println("Wh_pronoun: " + this.similarity(A_Wh_pronoun, B_Wh_pronoun));
                 }
                 double result = 0d, tmp = 0d;
-                if ((tmp = this.similarity(A_Verbs, B_Verbs)) >= 0)
+                int elems = 0;
+                if ((tmp = this.similarity(A_Verbs, B_Verbs)) >= 0) {
                     result += tmp;
-
-                if ((tmp = this.similarity(A_Nouns, B_Nouns)) >= 0)
+                    elems++;
+                }
+                if ((tmp = this.similarity(A_Nouns, B_Nouns)) >= 0){
                     result += tmp;
-
-                if ((tmp = this.similarity(A_Adverbs, B_Adverbs)) >= 0)
+                    elems++;
+                }
+                if ((tmp = this.similarity(A_Adverbs, B_Adverbs)) >= 0){
                     result += tmp;
-
-                if ((tmp = this.similarity(A_Wh_pronoun, B_Wh_pronoun)) >= 0)
+                    elems++;
+                }
+                if ((tmp = this.similarity(A_Wh_pronoun, B_Wh_pronoun)) >= 0){
                     result += tmp;
+                    elems++;
+                }
 
                 synchronized (this) {
                     String out = (ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) words of specific POS similarity applied" + ConsoleColor.ANSI_RESET);
-                    if (debug) System.out.printf("[ClaimLinker] %100s [%20s]\n", out, (double) result / 4);
+                    if (debug) System.out.printf("[ClaimLinker] %100s [%20s]\n", out, (double) result / elems);
                 }
-                return (double) result / 4;
+                return (double) result / elems;
             }
         },
         jcrd_comm_ngram {
