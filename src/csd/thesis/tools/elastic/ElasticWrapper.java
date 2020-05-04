@@ -16,10 +16,10 @@ public class ElasticWrapper {
     RestHighLevelClient client;
 
     public ElasticWrapper() {
-//        this.client = new RestHighLevelClient(
-//                RestClient.builder(
-//                        new HttpHost("localhost", 9200, "http"),
-//                        new HttpHost("localhost", 9201, "http")));
+        this.client = new RestHighLevelClient(
+                RestClient.builder(
+                        new HttpHost("localhost", 9200, "http"),
+                        new HttpHost("localhost", 9201, "http")));
 
     }
 
@@ -30,19 +30,19 @@ public class ElasticWrapper {
         );
 
         XContentBuilder builder = XContentFactory.jsonBuilder();
-        builder.startObject();
-        {
-            builder.startObject("properties");
-            {
-                builder.startObject("message");
-                {
-                    builder.field("type", "text");
-                }
-                builder.endObject();
-            }
-            builder.endObject();
-        }
-        builder.endObject();
+//        builder.startObject();
+//        {
+//            builder.startObject("properties");
+//            {
+//                builder.startObject("message");
+//                {
+//                    builder.field("type", "text");
+//                }
+//                builder.endObject();
+//            }
+//            builder.endObject();
+//        }
+//        builder.endObject();
         request.mapping(builder);
     }
 }

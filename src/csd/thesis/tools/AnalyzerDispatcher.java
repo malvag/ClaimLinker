@@ -38,7 +38,6 @@ public class AnalyzerDispatcher {
             this.similarityMeasures.forEach(elem -> {
                 es.execute(() -> {
                     double result = elem.analyze(claim, sentence.document());
-//                    System.out.println(result);
                     sum.getAndUpdate(v -> v + result < 0 ? 0 : result);
                 });
             });
@@ -58,10 +57,10 @@ public class AnalyzerDispatcher {
 
         }
 
-        Collections.sort(arr);
-        arr.forEach(elem -> {
-            System.out.println("Sentence " + elem / this.similarityMeasures.size());
-        });
+//        Collections.sort(arr);
+//        arr.forEach(elem -> {
+//            System.out.println("Sentence " + elem / this.similarityMeasures.size());
+//        });
 
     }
 
@@ -79,7 +78,7 @@ public class AnalyzerDispatcher {
                         .collect(Collectors.toList()));
                 synchronized (this) {
                     String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) words similarity applied" + ConsoleColor.ANSI_RESET;
-                    if (debug) System.out.printf("[ClaimLinker] %100s [%20s]\n", out, result);
+                    if (debug) System.out.printf("[ClaimLinker] %-100s [%20s]\n", out, result);
                 }
                 return result;
             }
@@ -92,7 +91,7 @@ public class AnalyzerDispatcher {
 
                 synchronized (this) {
                     String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) lemmatized words similarity applied" + ConsoleColor.ANSI_RESET;
-                    if (debug) System.out.printf("[ClaimLinker] %100s [%20s]\n", out, result);
+                    if (debug) System.out.printf("[ClaimLinker] %-100s [%20s]\n", out, result);
                 }
                 return result;
             }
@@ -111,7 +110,7 @@ public class AnalyzerDispatcher {
                 double result = similarity(listA, listB);
                 synchronized (this) {
                     String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) named entities StanfordNLP similarity applied" + ConsoleColor.ANSI_RESET;
-                    if (debug) System.out.printf("[ClaimLinker] %100s [%20s]\n", out, result);
+                    if (debug) System.out.printf("[ClaimLinker] %-100s [%20s]\n", out, result);
                 }
                 return result;
             }
@@ -125,13 +124,13 @@ public class AnalyzerDispatcher {
                 ArrayList<String> bfyA = new ArrayList<>();
                 ArrayList<String> bfyB = new ArrayList<>();
                 JaccardSimilarity JS = new JaccardSimilarity();
-                if (debug) {
+                if (verbose) {
                     System.out.println("- Document A:\"" + claim.text() + "\"");
                     System.out.println("- Document B:\"" + text.text() + "\"");
                 }
                 babelfy(listA, bfyA);
                 babelfy(listB, bfyB);
-                if (debug) {
+                if (verbose) {
                     bfyA.forEach(System.out::println);
                     bfyB.forEach(System.out::println);
                 }
@@ -144,7 +143,7 @@ public class AnalyzerDispatcher {
                 double result = similarity(bfyA, bfyB);
                 synchronized (this) {
                     String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) disambiguated entities BFY similarity applied" + ConsoleColor.ANSI_RESET;
-                    if (debug) System.out.printf("[ClaimLinker] %100s [%20s]\n", out, result);
+                    if (debug) System.out.printf("[ClaimLinker] %-100s [%20s]\n", out, result);
                 }
                 return result;
             }
@@ -154,7 +153,7 @@ public class AnalyzerDispatcher {
                     super.nlp_instance.getBfy().babelfy(String.join(" ", list), Language.EN).forEach(elem -> {
                         String token = String.join(" ", list).substring(elem.getCharOffsetFragment().getStart(),
                                 elem.getCharOffsetFragment().getEnd() + 1);
-                        if (debug) {
+                        if (verbose) {
                             System.out.println("Coherence " + elem.getCoherenceScore());
                             System.out.println("Global " + elem.getGlobalScore());
                             System.out.println("Score " + elem.getScore());
@@ -167,7 +166,6 @@ public class AnalyzerDispatcher {
                     });
                 } catch (Exception e) {
                     System.err.println("Bfy exceeded usage limit");
-                    return;
                 }
             }
         },
@@ -211,7 +209,7 @@ public class AnalyzerDispatcher {
                         B_Wh_pronoun.add(new Pair<String, String>(ne, elem.originalText()));
                     }
                 });
-                if (debug) {
+                if (verbose) {
                     A_Nouns.forEach(System.out::println);
                     System.out.println("-");
                     B_Nouns.forEach(System.out::println);
@@ -253,7 +251,7 @@ public class AnalyzerDispatcher {
 
                 synchronized (this) {
                     String out = (ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) words of specific POS similarity applied" + ConsoleColor.ANSI_RESET);
-                    if (debug) System.out.printf("[ClaimLinker] %100s [%20s]\n", out, (double) result / elems);
+                    if (debug) System.out.printf("[ClaimLinker] %-100s [%20s]\n", out, (double) result / elems);
                 }
                 return (double) result / elems;
             }
@@ -268,11 +266,13 @@ public class AnalyzerDispatcher {
                 double result = 0;
                 synchronized (this) {
                     String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) ngrams similarity applied" + ConsoleColor.ANSI_RESET;
-                    System.out.printf("2_grams:    %11fd %20s\n", Ngram2, " importance factor 20%");
-                    System.out.printf("3_grams:    %11fd %20s\n", Ngram3, " importance factor 45%");
-                    System.out.printf("4_grams:    %11fd %20s\n", Ngram4, " importance factor 35%");
+                    if(verbose) {
+                        System.out.printf("2_grams:    %11fd %20s\n", Ngram2, " importance factor 20%");
+                        System.out.printf("3_grams:    %11fd %20s\n", Ngram3, " importance factor 45%");
+                        System.out.printf("4_grams:    %11fd %20s\n", Ngram4, " importance factor 35%");
+                    }
                     result = Ngram2 * ((double) 20 / 100) + Ngram3 * ((double) 45 / 100) + Ngram4 * ((double) 35 / 100);
-                    if (debug) System.out.printf("[ClaimLinker] %100s [%20s]\n", out, result);
+                    if (debug) System.out.printf("[ClaimLinker] %-100s [%20s]\n", out, result);
 
                 }
                 return result;
@@ -304,11 +304,13 @@ public class AnalyzerDispatcher {
                 double result = 0;
                 synchronized (this) {
                     String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) nchargrams similarity applied" + ConsoleColor.ANSI_RESET;
-                    System.out.printf("2_chargrams:    %11fd %20s\n", Ngram2, " importance factor 20%");
-                    System.out.printf("3_chargrams:    %11fd %20s\n", Ngram3, " importance factor 35%");
-                    System.out.printf("4_chargrams:    %11fd %20s\n", Ngram4, " importance factor 45%");
+                    if(verbose) {
+                        System.out.printf("2_chargrams:    %11fd %20s\n", Ngram2, " importance factor 20%");
+                        System.out.printf("3_chargrams:    %11fd %20s\n", Ngram3, " importance factor 35%");
+                        System.out.printf("4_chargrams:    %11fd %20s\n", Ngram4, " importance factor 45%");
+                    }
                     result = Ngram2 * ((double) 20 / 100) + Ngram3 * ((double) 35 / 100) + Ngram4 * ((double) 45 / 100);
-                    if (debug) System.out.printf("[ClaimLinker] %100s [%20s]\n", out, result);
+                    if (debug) System.out.printf("[ClaimLinker] %-100s [%20s]\n", out, result);
 
                 }
                 return result;
@@ -346,7 +348,7 @@ public class AnalyzerDispatcher {
                 double result = sim.cosineSimilarity(hash, hash2);
                 synchronized (this) {
                     String out = ConsoleColor.ANSI_GREEN + "INFO Cosine similarity applied" + ConsoleColor.ANSI_RESET;
-                    if (debug) System.out.printf("[ClaimLinker] %100s [%20s]\n", out, result);
+                    if (debug) System.out.printf("[ClaimLinker] %-100s [%20s]\n", out, result);
                 }
                 return result;
             }
@@ -354,6 +356,7 @@ public class AnalyzerDispatcher {
 
         private final NLPlib nlp_instance;
         private final static boolean debug = true;
+        private final static boolean verbose = false;
 
         SimilarityMeasure() {
             this.nlp_instance = AnalyzerDispatcher.nlp_instance;
