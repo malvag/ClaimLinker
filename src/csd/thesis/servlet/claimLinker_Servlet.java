@@ -1,6 +1,8 @@
 package csd.thesis.servlet;
 
 import csd.thesis.ClaimLinker;
+import csd.thesis.model.WebArticle;
+import csd.thesis.tools.URL_Parser;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
 import javax.json.*;
@@ -32,13 +34,22 @@ public class claimLinker_Servlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/json");
-        JsonObjectBuilder factory = Json.createObjectBuilder();
-        JsonObject respose_json = factory.add("message", "API ClaimLinker")
-                .add("written by", "Evangelos Maliaroudakis").build();
-
 
         PrintWriter out = response.getWriter();
+        String param_url = request.getParameter("url");
+
+
+        JsonObjectBuilder factory = Json.createObjectBuilder();
+        factory.add("message", "API ClaimLinker")
+                .add("written by", "Evangelos Maliaroudakis");
+
+        if(param_url!=null){
+            WebArticle webArticle = new WebArticle(param_url);
+            factory.add("url",param_url).add("cleaned_text_from_url",webArticle.getCleaned());
+        }
+
+        JsonObject respose_json = factory.build();
+        response.setContentType("text/json");
         out.println(respose_json.toString());
         response.setStatus(200);
     }

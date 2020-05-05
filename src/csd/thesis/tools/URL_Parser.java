@@ -35,30 +35,26 @@ public class URL_Parser {
     /**
      * Default Constructor for initialization
      *
-     * @param s_url    {@code URL} given from the user in {@code String} form
-     * @param filename the name of the generated output file
-     * @param file
+     * @param s_url {@code URL} given from the user in {@code String} form
      */
-    public URL_Parser(String s_url, String filename, boolean file) {
+    public URL_Parser(String s_url) {
 
         //URL format check
-        if (!file) {
-            if (!this.isMatch(s_url)) {
-                System.err.println("[URL_Parser] The URL doesn't have the right format!\nAborting...");
-                boilerpiped = "empty";
-            } else {
+        if (!this.isMatch(s_url)) {
+            System.err.println("[URL_Parser] The URL doesn't have the right format!\nAborting...");
+            boilerpiped = "empty";
+        } else {
 
-                //Call a method that uses Boilerpipe API URL
-                try {
-                    getContent(s_url, filename, file);
-                } catch (BoilerpipeProcessingException | IOException e) {
-                    System.err.println("[URL_Parser] Unexpected Error !!\nExiting...");
-                    System.exit(1);
-                }
+            //Call a method that uses Boilerpipe API URL
+            try {
+                getContent(s_url);
+            } catch (BoilerpipeProcessingException | IOException e) {
+                System.err.println("[URL_Parser] Unexpected Error !!\nExiting...");
+                System.exit(1);
             }
         }
-
     }
+
 
     /**
      * Gets the output of the whole URL_Parser
@@ -89,16 +85,15 @@ public class URL_Parser {
      * Sends an API call to boilerpipe with our page's source(via {@code URL}) and then
      * the data we get as a response are the clean data(articles/text) we want.
      *
-     * @param s_url    url given from the user in String form
-     * @param filename the name of the generated output file
+     * @param s_url url given from the user in String form
      * @throws IOException on wrong url
      */
-    private void getContent(String s_url, String filename, boolean write_to_file) throws IOException, BoilerpipeProcessingException {
+    private void getContent(String s_url) throws IOException, BoilerpipeProcessingException {
         String API = "http://boilerpipe-web.appspot.com/extract?url=";
 
 //        if (s_url.charAt(0) == '#') return;
 
-        if(debug)System.out.println("[URL_Parser][API] Begin");
+        if (debug) System.out.println("[URL_Parser][API] Begin");
         String out = ArticleExtractor.INSTANCE.getText(new URL(s_url));
 //        String out = Jsoup.connect(API + s_url)
 //                .userAgent("Mozilla/5.0")
@@ -106,13 +101,7 @@ public class URL_Parser {
 //                .get()
 //                .select(".x-boilerpipe-mark1").html();
 
-        if (write_to_file) {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
-            writer.write(out);
-            writer.close();
-            System.out.println("[URL_Parser] A file named " + filename + " was created for output! ");
-        }
-        if(debug)System.out.println("[URL_Parser][API] Done! ");
+        if (debug) System.out.println("[URL_Parser][API] Done! ");
         this.boilerpiped = out;
     }
 }

@@ -58,23 +58,4 @@ public class Main {
 
     }
 
-
-    /**
-     * Parse a page through URL and write it to file Boilerpiped
-     *
-     * @return parsed_output cleaned(boilerpiped)
-     */
-    static private String defaultMode(String url) {
-        final String filename = "parsed.txt";
-        URL_Parser master = null;
-        try {
-            master = new URL_Parser(url, filename, false);
-        } catch (Exception e) {
-            System.err.println("[URL_Parser] Error on URL parsing");
-            e.printStackTrace();
-        } finally {
-            return (master != null) ? master.getCleaned() : "empty";
-        }
-    }
-
 }

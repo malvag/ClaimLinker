@@ -49,7 +49,7 @@ public class WebArticle {
     }
 
     public WebArticle(String URL){
-        URL_Parser url_parser = new URL_Parser(URL,null,false);
+        URL_Parser url_parser = new URL_Parser(URL);
         this.doc = new CoreDocument(url_parser.getCleaned());
         this.cleaned = url_parser.getCleaned();
         this.url = URL;
