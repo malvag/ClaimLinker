@@ -9,6 +9,7 @@ import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.Pair;
 import it.uniroma1.lcl.babelfy.core.Babelfy;
 import it.uniroma1.lcl.jlt.Configuration;
+import net.didion.jwnl.JWNL;
 import net.didion.jwnl.JWNLException;
 import net.didion.jwnl.data.IndexWord;
 import net.didion.jwnl.data.POS;
@@ -19,9 +20,8 @@ import org.tartarus.snowball.ext.PorterStemmer;
 //import it.uniroma1.lcl.babelfy.core.Babelfy;
 //import it.uniroma1.lcl.jlt.util.Language;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import javax.servlet.ServletContext;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -38,16 +38,33 @@ public class NLPlib {
         NLP, NLP_BFY
     }
 
-    public NLPlib(mode init_mode) {
-        Properties props = new Properties();
-        props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner"); // not enough memory
-        this.current_mode = init_mode;
-        this.initStopword("data/stopwords.txt");
-        master_pipeline = new StanfordCoreNLP(props);
+    public NLPlib(mode init_mode,String JWNLProperties_path, String stopwords_path) {
+        synchronized (this) {
+            System.out.println("========================================");
+            System.out.println("NLPlib initializing ...");
+            System.out.println("========================================");
 
-        if (init_mode == mode.NLP_BFY) {
-            Configuration cc = Configuration.getInstance();
-            bfy = new Babelfy();
+            try {
+
+                JWNL.initialize(new FileInputStream(JWNLProperties_path));
+            } catch (JWNLException | FileNotFoundException e) {
+//            e.printStackTrace();
+                System.out.println("JWNL OFFLINE");
+                System.out.println("========================================");
+            }
+            Properties props = new Properties();
+            props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner"); // not enough memory
+            this.current_mode = init_mode;
+            this.initStopword(stopwords_path);
+            master_pipeline = new StanfordCoreNLP(props);
+
+            if (init_mode == mode.NLP_BFY) {
+                Configuration cc = Configuration.getInstance();
+                bfy = new Babelfy();
+            }
+            System.out.println("========================================");
+            System.out.println("NLPlib initialization done ...");
+            System.out.println("========================================");
         }
     }
 
@@ -101,35 +118,35 @@ public class NLPlib {
         System.out.println(ConsoleColor.ANSI_CYAN + "[NLPlib] INFO stopwords removed" + ConsoleColor.ANSI_RESET);
         return cleaned.get();
     }
-
-    public void getWordnetExpansion(CoreDocument a) throws JWNLException {
-        final net.didion.jwnl.dictionary.Dictionary dictionary = net.didion.jwnl.dictionary.Dictionary.getInstance();
-        for (CoreLabel elem : a.tokens()) {
-            try {
-                String ne = elem.get(CoreAnnotations.PartOfSpeechAnnotation.class);
-//                    System.out.println(ne + " " + elem.originalText());
-                IndexWord indexWord = null;
-                if (ne.startsWith("NN")) {
-                    indexWord = dictionary.getIndexWord(POS.NOUN, a.text());
-                } else if (ne.startsWith("RB")) {
-                    indexWord = dictionary.getIndexWord(POS.ADVERB, a.text());
-                } else if (ne.startsWith("VB")) {
-                    indexWord = dictionary.getIndexWord(POS.VERB, a.text());
-                }
-                if (indexWord == null)
-                    continue;
-                Synset[] senses = indexWord.getSenses();
-                for (Synset set : senses) {
-                    System.out.println(indexWord + ": " + set.getGloss());
-                }
-            } catch (JWNLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        System.out.println(ConsoleColor.ANSI_CYAN + "[NLPlib] INFO WordNet Expansion applied" + ConsoleColor.ANSI_RESET);
-
-    }
+//
+//    public void getWordnetExpansion(CoreDocument a) throws JWNLException {
+//        final net.didion.jwnl.dictionary.Dictionary dictionary = net.didion.jwnl.dictionary.Dictionary.getInstance();
+//        for (CoreLabel elem : a.tokens()) {
+//            try {
+//                String ne = elem.get(CoreAnnotations.PartOfSpeechAnnotation.class);
+////                    System.out.println(ne + " " + elem.originalText());
+//                IndexWord indexWord = null;
+//                if (ne.startsWith("NN")) {
+//                    indexWord = dictionary.getIndexWord(POS.NOUN, a.text());
+//                } else if (ne.startsWith("RB")) {
+//                    indexWord = dictionary.getIndexWord(POS.ADVERB, a.text());
+//                } else if (ne.startsWith("VB")) {
+//                    indexWord = dictionary.getIndexWord(POS.VERB, a.text());
+//                }
+//                if (indexWord == null)
+//                    continue;
+//                Synset[] senses = indexWord.getSenses();
+//                for (Synset set : senses) {
+//                    System.out.println(indexWord + ": " + set.getGloss());
+//                }
+//            } catch (JWNLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        System.out.println(ConsoleColor.ANSI_CYAN + "[NLPlib] INFO WordNet Expansion applied" + ConsoleColor.ANSI_RESET);
+//
+//    }
 
     public CoreDocument getDoc() {
         return doc;

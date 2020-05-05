@@ -6,7 +6,11 @@ import csd.thesis.tools.AnalyzerDispatcher;
 import csd.thesis.tools.NLPlib;
 import csd.thesis.tools.URL_Parser;
 import edu.stanford.nlp.pipeline.CoreDocument;
+import net.didion.jwnl.JWNL;
+import net.didion.jwnl.JWNLException;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -19,21 +23,15 @@ public class ClaimLinker {
 
     private final static boolean debug = false;
 
+    public ClaimLinker(String JWNLProperties_path, String stopwords_path) {
+        System.out.println("========================================");
+        System.out.println("ClaimLinker initializing ... ");
 
-
-    public ClaimLinker(WebArticle wa) {
-        super();
-        if (wa == null)
-            throw new IllegalStateException("WebArticle cannot be null");
-        if (!wa.getUrl().isEmpty()) {
-            URL_Parser p = new URL_Parser(wa.getUrl(), null, true);
-        }
-        this.article = wa;
-    }
-
-    public ClaimLinker() {
-        nlp_instance = new NLPlib(NLPlib.mode.NLP_BFY);
+        nlp_instance = new NLPlib(NLPlib.mode.NLP_BFY,JWNLProperties_path,stopwords_path);
         this.claims = new ArrayList<>();
+        System.out.println("========================================");
+        System.out.println("ClaimLinker's initialization finished...");
+        System.out.println("========================================");
     }
 
     public void addClaimsFromCSV(ArrayList<Map<String, Object>> master) {
