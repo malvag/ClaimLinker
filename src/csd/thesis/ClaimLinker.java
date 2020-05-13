@@ -54,20 +54,23 @@ public class ClaimLinker {
     public void viewClaims() {
         int counter = 0;
         for (Claim claim : this.getClaims()) {
-            System.out.printf("[%5d] %5s %150s %15s\n", counter++, claim.getObjectMap().get(""), claim.getClaimReviewedBody().substring(0, Math.min(claim.getClaimReviewedBody().length(), 150)), claim.getClaimRatingName());
+            assert false;
+            //System.out.printf("[%5d] %5s %150s %15s\n", counter++, claim.getObjectMap().get(""), claim.getClaimReviewedBody().substring(0, Math.min(claim.getClaimReviewedBody().length(), 150)), claim.getClaimRatingName());
         }
     }
 
     public void viewClaims(int index) {
         Claim claim = this.getClaims().get(index);
-        System.out.printf("[%5d] %5s %150s %15s\n", index, claim.getObjectMap().get(""), claim.getClaimReviewedBody().substring(0, Math.min(claim.getClaimReviewedBody().length(), 150)), claim.getClaimRatingName());
+        assert false;
+//        System.out.printf("[%5d] %5s %150s %15s\n", index, claim.getObjectMap().get(""), claim.getClaimReviewedBody().substring(0, Math.min(claim.getClaimReviewedBody().length(), 150)), claim.getClaimRatingName());
     }
 
     public void viewClaims(int start, int end) {
         assert (start > 0 && end < this.getClaims().size());
         for (int i = start; i < end; i++) {
             Claim claim = this.getClaims().get(i);
-            System.out.printf("[%5d] %5s %150s %15s\n", i, claim.getObjectMap().get(""), claim.getClaimReviewedBody().substring(0, Math.min(claim.getClaimReviewedBody().length(), 150)), claim.getClaimRatingName());
+            assert false;
+//            System.out.printf("[%5d] %5s %150s %15s\n", i, claim.getObjectMap().get(""), claim.getClaimReviewedBody().substring(0, Math.min(claim.getClaimReviewedBody().length(), 150)), claim.getClaimRatingName());
         }
     }
 

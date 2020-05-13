@@ -1,4 +1,4 @@
-package csd.thesis.tools;
+package csd.thesis.elastic_wrap;
 
 import com.opencsv.CSVReader;
 
@@ -10,7 +10,7 @@ import java.util.*;
 
 public class OpenCSVWrapper {
 
-    private static final boolean debug = true;
+    private static final boolean debug = false;
     private static final int MAX = 7;
     private String path;
     public OpenCSVWrapper(String path){

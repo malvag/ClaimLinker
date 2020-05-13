@@ -8,6 +8,7 @@
           <element id="module-output" name="UDFC" />
         </element>
         <element id="directory" name="lib">
+          <element id="dir-copy" path="$PROJECT_DIR$/lib" />
           <element id="library" level="project" name="babelfy-online-1.0" />
           <element id="library" level="project" name="Maven: com.apple:AppleJavaExtensions:1.4" />
           <element id="library" level="project" name="Maven: com.carrotsearch:hppc:0.8.1" />
@@ -20,7 +21,6 @@
           <element id="library" level="project" name="Maven: com.github.spullara.mustache.java:compiler:0.9.6" />
           <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:3.2.0" />
           <element id="library" level="project" name="Maven: com.googlecode.efficient-java-matrix-library:ejml:0.23" />
-          <element id="library" level="project" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" />
           <element id="library" level="project" name="Maven: com.io7m.xom:xom:1.2.10" />
           <element id="library" level="project" name="Maven: com.opencsv:opencsv:4.1" />
           <element id="library" level="project" name="Maven: com.sun.xml.bind:jaxb-core:2.3.0.1" />
@@ -38,7 +38,6 @@
           <element id="library" level="project" name="Maven: javax.servlet:javax.servlet-api:3.0.1" />
           <element id="library" level="project" name="Maven: javax.xml.bind:jaxb-api:2.4.0-b180830.0359" />
           <element id="library" level="project" name="Maven: joda-time:joda-time:2.9.4" />
-          <element id="library" level="project" name="Maven: junit:junit:4.10" />
           <element id="library" level="project" name="Maven: net.didion:jwnl:1.4.1" />
           <element id="library" level="project" name="Maven: net.sf.jopt-simple:jopt-simple:5.0.2" />
           <element id="library" level="project" name="Maven: net.sourceforge.nekohtml:nekohtml:1.9.22" />
@@ -47,7 +46,7 @@
           <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpasyncclient:4.1.4" />
           <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpclient:4.5.10" />
           <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpcore-nio:4.4.12" />
-          <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpcore:4.4.13" />
+          <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpcore:4.4.12" />
           <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.13.0" />
           <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.13.0" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-analyzers-common:4.10.3" />
@@ -60,27 +59,26 @@
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-misc:8.4.0" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-queries:4.10.3" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-queryparser:4.10.3" />
-          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-sandbox:4.10.3" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-sandbox:8.4.0" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-spatial-extras:8.4.0" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-spatial3d:8.4.0" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-spatial:8.4.0" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-suggest:8.4.0" />
-          <element id="library" level="project" name="Maven: org.elasticsearch.client:elasticsearch-rest-client:7.6.0" />
-          <element id="library" level="project" name="Maven: org.elasticsearch.client:elasticsearch-rest-high-level-client:7.6.0" />
-          <element id="library" level="project" name="Maven: org.elasticsearch.plugin:aggs-matrix-stats-client:7.6.0" />
-          <element id="library" level="project" name="Maven: org.elasticsearch.plugin:lang-mustache-client:7.6.0" />
-          <element id="library" level="project" name="Maven: org.elasticsearch.plugin:mapper-extras-client:7.6.0" />
-          <element id="library" level="project" name="Maven: org.elasticsearch.plugin:parent-join-client:7.6.0" />
-          <element id="library" level="project" name="Maven: org.elasticsearch.plugin:rank-eval-client:7.6.0" />
-          <element id="library" level="project" name="Maven: org.elasticsearch:elasticsearch-cli:7.6.0" />
-          <element id="library" level="project" name="Maven: org.elasticsearch:elasticsearch-core:7.6.0" />
-          <element id="library" level="project" name="Maven: org.elasticsearch:elasticsearch-geo:7.6.0" />
-          <element id="library" level="project" name="Maven: org.elasticsearch:elasticsearch-secure-sm:7.6.0" />
-          <element id="library" level="project" name="Maven: org.elasticsearch:elasticsearch-x-content:7.6.0" />
-          <element id="library" level="project" name="Maven: org.elasticsearch:elasticsearch:7.6.0" />
+          <element id="library" level="project" name="Maven: org.elasticsearch.client:elasticsearch-rest-client:7.6.2" />
+          <element id="library" level="project" name="Maven: org.elasticsearch.client:elasticsearch-rest-high-level-client:7.6.2" />
+          <element id="library" level="project" name="Maven: org.elasticsearch.plugin:aggs-matrix-stats-client:7.6.2" />
+          <element id="library" level="project" name="Maven: org.elasticsearch.plugin:lang-mustache-client:7.6.2" />
+          <element id="library" level="project" name="Maven: org.elasticsearch.plugin:mapper-extras-client:7.6.2" />
+          <element id="library" level="project" name="Maven: org.elasticsearch.plugin:parent-join-client:7.6.2" />
+          <element id="library" level="project" name="Maven: org.elasticsearch.plugin:rank-eval-client:7.6.2" />
+          <element id="library" level="project" name="Maven: org.elasticsearch:elasticsearch-cli:7.6.2" />
+          <element id="library" level="project" name="Maven: org.elasticsearch:elasticsearch-core:7.6.2" />
+          <element id="library" level="project" name="Maven: org.elasticsearch:elasticsearch-geo:7.6.2" />
+          <element id="library" level="project" name="Maven: org.elasticsearch:elasticsearch-secure-sm:7.6.2" />
+          <element id="library" level="project" name="Maven: org.elasticsearch:elasticsearch-x-content:7.6.2" />
+          <element id="library" level="project" name="Maven: org.elasticsearch:elasticsearch:7.6.2" />
           <element id="library" level="project" name="Maven: org.elasticsearch:jna:4.5.1" />
           <element id="library" level="project" name="Maven: org.glassfish:javax.json:1.0.4" />
-          <element id="library" level="project" name="Maven: org.hamcrest:hamcrest-core:1.1" />
           <element id="library" level="project" name="Maven: org.hdrhistogram:HdrHistogram:2.1.9" />
           <element id="library" level="project" name="Maven: org.jsoup:jsoup:1.12.1" />
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.8.0-beta4" />
@@ -89,7 +87,6 @@
           <element id="library" level="project" name="Maven: xalan:xalan:2.7.0" />
           <element id="library" level="project" name="Maven: xerces:xercesImpl:2.11.0" />
           <element id="library" level="project" name="Maven: xml-apis:xml-apis:1.4.01" />
-          <element id="dir-copy" path="$PROJECT_DIR$/lib" />
         </element>
         <element id="file-copy" path="$PROJECT_DIR$/Properties.xml" />
         <element id="directory" name="data">
@@ -101,6 +98,9 @@
       </element>
       <element id="directory" name="config">
         <element id="dir-copy" path="$PROJECT_DIR$/config" />
+      </element>
+      <element id="directory" name="data">
+        <element id="dir-copy" path="$PROJECT_DIR$/data" />
       </element>
     </root>
   </artifact>

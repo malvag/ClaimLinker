@@ -7,15 +7,18 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="UDFC" />
+        <module name="elastic_wrap" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="UDFC" target="11" />
+      <module name="elastic_wrap" target="13" />
+      <module name="UDFC" target="13" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="UDFC" options="-Xlint:unchecked" />
+      <module name="elastic_wrap" options="-Xlint:unchecked" />
     </option>
   </component>
 </project>

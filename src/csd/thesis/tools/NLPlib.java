@@ -14,7 +14,6 @@ import net.didion.jwnl.JWNLException;
 import net.didion.jwnl.data.IndexWord;
 import net.didion.jwnl.data.POS;
 import net.didion.jwnl.data.Synset;
-import org.apache.logging.log4j.core.Core;
 import org.tartarus.snowball.ext.PorterStemmer;
 //import it.uniroma1.lcl.babelfy.commons.annotation.SemanticAnnotation;
 //import it.uniroma1.lcl.babelfy.core.Babelfy;
@@ -42,15 +41,14 @@ public class NLPlib {
         synchronized (this) {
             System.out.println("========================================");
             System.out.println("NLPlib initializing ...");
-            System.out.println("========================================");
 
             try {
 
                 JWNL.initialize(new FileInputStream(JWNLProperties_path));
+                System.out.println("JWNL initialization finished ...");
             } catch (JWNLException | FileNotFoundException e) {
 //            e.printStackTrace();
                 System.out.println("JWNL OFFLINE");
-                System.out.println("========================================");
             }
             Properties props = new Properties();
             props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner"); // not enough memory
@@ -62,8 +60,7 @@ public class NLPlib {
                 Configuration cc = Configuration.getInstance();
                 bfy = new Babelfy();
             }
-            System.out.println("========================================");
-            System.out.println("NLPlib initialization done ...");
+            System.out.println("NLPlib initialization finished ...");
             System.out.println("========================================");
         }
     }
@@ -236,6 +233,7 @@ public class NLPlib {
             while ((input = in.readLine()) != null) {
                 this.stopwords.add(input);
             }
+            System.out.println("Stopwords initialization finished!");
         } catch (IOException e) {
             System.err.println("Stopwords file error!");
             System.exit(1);

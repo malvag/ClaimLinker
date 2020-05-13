@@ -12,6 +12,11 @@
       <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="elastic-lucene-snapshots" />
+      <option name="name" value="Elastic Lucene Snapshots" />
+      <option name="url" value="https://s3.amazonaws.com/download.elasticsearch.org/lucenesnapshots/83f9835" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="BibSonomy" />
       <option name="name" value="BibSonomy" />
       <option name="url" value="https://dev.bibsonomy.org/maven2/" />
