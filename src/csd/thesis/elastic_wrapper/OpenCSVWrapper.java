@@ -1,4 +1,4 @@
-package csd.thesis.elastic_wrap;
+package csd.thesis.elastic_wrapper;
 
 import com.opencsv.CSVReader;
 
