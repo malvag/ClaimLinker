@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../Downloads/elastic_wrap/ElasticInitTools.iml" filepath="$PROJECT_DIR$/../Downloads/elastic_wrap/ElasticInitTools.iml" />
       <module fileurl="file://$PROJECT_DIR$/UDFC.iml" filepath="$PROJECT_DIR$/UDFC.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../Downloads/elastic_wrap/elastic_wrap.iml" filepath="$PROJECT_DIR$/../Downloads/elastic_wrap/elastic_wrap.iml" />
     </modules>
   </component>
 </project>

@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="NLP Tester" type="Application" factoryName="Application" singleton="false">
+    <option name="MAIN_CLASS_NAME" value="csd.thesis.Main" />
+    <module name="UDFC" />
+    <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

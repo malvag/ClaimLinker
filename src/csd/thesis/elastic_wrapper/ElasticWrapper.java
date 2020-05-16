@@ -3,6 +3,9 @@ package csd.thesis.elastic_wrapper;
 import com.google.gson.*;
 import csd.thesis.model.Claim;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -25,9 +28,8 @@ public class ElasticWrapper {
     private static int counter;
 
 
-
     public static ArrayList<Claim> findCatalogItemWithoutApi(String field, String value, int num_of_hits) {
-        String url = "http://localhost:9200/_search?q=" + field + ":" + value+"&size="+num_of_hits;
+        String url = SCHEME + "://" + HOST + ":" + PORT_ONE + "/_search?q=" + field + ":" + value + "&size=" + num_of_hits;
         URL obj = null;
         ArrayList<Claim> claimArrayList = new ArrayList<>();
         try {
@@ -44,9 +46,9 @@ public class ElasticWrapper {
             JsonElement je = new JsonParser().parse(jsonstr);
             JsonObject jo = je.getAsJsonObject();
             AtomicInteger counter = new AtomicInteger();
-            jo.getAsJsonObject("hits").getAsJsonArray("hits").forEach(claim->{
+            jo.getAsJsonObject("hits").getAsJsonArray("hits").forEach(claim -> {
                 JsonObject claim_obj = claim.getAsJsonObject();
-                System.out.println((counter.getAndIncrement()) + " " + claim_obj.get("_score") + " "+ claim_obj.getAsJsonObject("_source").get("claimReview_claimReviewed"));
+                System.out.println((counter.getAndIncrement()) + " " + claim_obj.get("_score") + " " + claim_obj.getAsJsonObject("_source").get("claimReview_claimReviewed"));
                 claimArrayList.add(new Claim(claim_obj));
             });
 
@@ -58,14 +60,18 @@ public class ElasticWrapper {
     }
 
     public static void main(String[] args) {
-//        makeConnection("data/claim_extraction_18_10_2019_annotated.csv");
-//
-//        deleteClaims();
-//        insertClaims(true);
-
-        findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 100);
-
-//        closeConnection();
+//        findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 100);
+//        System.out.println(ElasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed","President",10).get(0).getClaimReviewedBody());
+        JsonObjectBuilder factory = Json.createObjectBuilder();
+//        factory.add("url", param_url).add("cleaned_text_from_url", webArticle.getCleaned());
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        ElasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 10).forEach(claim -> {
+            arrayBuilder.add(Json.createObjectBuilder().add("claimReview_claimReviewed", claim.getReviewedBody()));
+        });
+        factory.add("results",arrayBuilder);
+        factory.add("search", Json.createArrayBuilder());
+//        factory.build();
+        System.out.println(factory.build());
     }
 
     static Map<String, Object> createMapFromJsonObject(JsonObject jo) {

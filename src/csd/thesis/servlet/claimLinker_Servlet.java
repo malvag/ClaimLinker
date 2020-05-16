@@ -23,7 +23,7 @@ public class claimLinker_Servlet extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         try {
-            ClaimLinker claimLinker_tool = new ClaimLinker(getServletContext().getResource("/WEB-INF/Properties.xml").getPath(),getServletContext().getResource("/WEB-INF/data/stopwords.txt").getPath());
+            ClaimLinker claimLinker_tool = new ClaimLinker(getServletContext().getResource("/WEB-INF/Properties.xml").getPath(), getServletContext().getResource("/WEB-INF/data/stopwords.txt").getPath());
 //            this.getServletContext();
 
 
@@ -44,21 +44,20 @@ public class claimLinker_Servlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
         String param_url = request.getParameter("url");
-
-
         JsonObjectBuilder factory = Json.createObjectBuilder();
-        factory.add("message", "API ClaimLinker")
-                .add("written by", "Evangelos Maliaroudakis");
-        if(param_url!=null){
+        factory.add("message", "API ClaimLinker");
+        if (param_url != null) {
             WebArticle webArticle = new WebArticle(param_url);
-            factory.add("url",param_url).add("cleaned_text_from_url",webArticle.getCleaned())
-                    .add("search", Json.createArrayBuilder()
-                            .add(Json.createObjectBuilder()
-                                    .add("claimReview_claimReviewed",
-                                            ElasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed","President",10).get(0).getClaimReviewedBody().toString())
-                            )
-                    )
-                            .build();
+            factory.add("url", param_url).add("cleaned_text_from_url", webArticle.getCleaned());
+            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+            ElasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 10).forEach(claim -> {
+                arrayBuilder.add(Json.createObjectBuilder()
+                        .add("claimReview_claimReviewed", claim.getReviewedBody())
+                        .add("rating_alternateName", claim.getRatingName())
+                        .add("extra_title", claim.getExtraTitle())
+                );
+            });
+            factory.add("results", arrayBuilder);
         }
 
         JsonObject respose_json = factory.build();
