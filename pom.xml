@@ -3,10 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>csd.thesis</groupId>
-    <artifactId>UDFC</artifactId>
+    <artifactId>ClaimLinker</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <build>
         <plugins>
             <plugin>
@@ -17,6 +17,40 @@
                     <source>13</source>
                     <target>13</target>
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.7</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <attachClasses>true</attachClasses>
+                    <webXml>web/WEB-INF/web.xml</webXml>
+                    <webResources>
+                        <resource>
+                            <directory>test/</directory>
+                            <filtering>true</filtering>
+
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
         </plugins>
@@ -39,6 +73,9 @@
             <snapshots><enabled>false</enabled></snapshots>
         </repository>
     </repositories>
+    <modules>
+        <module>ElasticTools</module>
+    </modules>
     <dependencies>
         <dependency>
             <groupId>net.sourceforge.nekohtml</groupId>
@@ -80,17 +117,17 @@
             <artifactId>jsoup</artifactId>
             <version>1.12.1</version>
         </dependency>
-        <dependency>
-            <groupId>edu.stanford.nlp</groupId>
-            <artifactId>stanford-corenlp</artifactId>
-            <version>3.9.2</version>
-        </dependency>
-        <dependency>
-            <groupId>edu.stanford.nlp</groupId>
-            <artifactId>stanford-corenlp</artifactId>
-            <version>3.9.2</version>
-            <classifier>models</classifier>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>edu.stanford.nlp</groupId>-->
+<!--            <artifactId>stanford-corenlp</artifactId>-->
+<!--            <version>4.0.0</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>edu.stanford.nlp</groupId>-->
+<!--            <artifactId>stanford-corenlp</artifactId>-->
+<!--            <version>4.0.0</version>-->
+<!--            <classifier>models</classifier>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
@@ -105,6 +142,12 @@
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>csd.thesis</groupId>
+            <artifactId>ElasticTools</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

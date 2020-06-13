@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * TBD_Parser
+ * URL_Parser
  *
  * @author Evangelos Maliaroudakis
  * @version 1.0

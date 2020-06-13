@@ -1,5 +1,6 @@
 package csd.thesis.tools;
 
+import com.yahoo.semsearch.fastlinking.hash.QuasiSuccinctEntityHash;
 import csd.thesis.misc.ConsoleColor;
 import csd.thesis.model.ViewPoint;
 import edu.stanford.nlp.ling.CoreAnnotations;
@@ -7,17 +8,13 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.*;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.Pair;
-import it.uniroma1.lcl.babelfy.core.Babelfy;
-import it.uniroma1.lcl.jlt.Configuration;
+import it.unimi.dsi.fastutil.io.BinIO;
 import net.didion.jwnl.JWNL;
 import net.didion.jwnl.JWNLException;
 import net.didion.jwnl.data.IndexWord;
 import net.didion.jwnl.data.POS;
 import net.didion.jwnl.data.Synset;
 import org.tartarus.snowball.ext.PorterStemmer;
-//import it.uniroma1.lcl.babelfy.commons.annotation.SemanticAnnotation;
-//import it.uniroma1.lcl.babelfy.core.Babelfy;
-//import it.uniroma1.lcl.jlt.util.Language;
 
 import javax.servlet.ServletContext;
 import java.io.*;
@@ -28,20 +25,15 @@ import java.util.stream.Collectors;
 public class NLPlib {
     private final StanfordCoreNLP master_pipeline;
     private CoreDocument doc;
-    private Babelfy bfy;
-    private mode current_mode;
     List<String> stopwords;
     private final static boolean debug = false;
+    protected QuasiSuccinctEntityHash quasiSuccinctEntityHash;
 
-    public enum mode {
-        NLP, NLP_BFY
-    }
-
-    public NLPlib(mode init_mode,String JWNLProperties_path, String stopwords_path) {
+    public NLPlib(String JWNLProperties_path, String stopwords_path, String Hash_Path) throws IOException, ClassNotFoundException {
         synchronized (this) {
             System.out.println("========================================");
             System.out.println("NLPlib initializing ...");
-
+            this.quasiSuccinctEntityHash = (QuasiSuccinctEntityHash) BinIO.loadObject(Hash_Path);
             try {
 
                 JWNL.initialize(new FileInputStream(JWNLProperties_path));
@@ -52,33 +44,24 @@ public class NLPlib {
             }
             Properties props = new Properties();
             props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner"); // not enough memory
-            this.current_mode = init_mode;
             this.initStopword(stopwords_path);
             master_pipeline = new StanfordCoreNLP(props);
 
-            if (init_mode == mode.NLP_BFY) {
-                Configuration cc = Configuration.getInstance();
-                bfy = new Babelfy();
-            }
             System.out.println("NLPlib initialization finished ...");
             System.out.println("========================================");
         }
     }
 
-    public Babelfy getBfy() {
-        return bfy;
-    }
-
     public List<String> getLemmas(CoreDocument a) {
-        if (a != null) this.setDoc(a);
+        if (a == null) return null;
         return this.doc.tokens().stream()
-                    .map(CoreLabel::lemma)
-                    .collect(Collectors.toList());
+                .map(CoreLabel::lemma)
+                .collect(Collectors.toList());
     }
 
     public String getLemmas_toString(CoreDocument a) {
         AtomicReference<String> cleaned = new AtomicReference<>("");
-        if (a != null) this.setDoc(a);
+        if (a == null) return "null";
         this.getLemmas(a).forEach(elem -> {
 //            System.out.println(elem);
             cleaned.updateAndGet(v -> v + elem + " ");
@@ -89,7 +72,7 @@ public class NLPlib {
 
     public String getStemmed(CoreDocument a) {
         PorterStemmer ps = new PorterStemmer();
-        if (a != null) this.setDoc(a);
+        if (a == null) return "null";
         String stemmed_str = "";
         ArrayList<String> stemmed = new ArrayList<String>();
         a.tokens().forEach(token -> {
@@ -107,7 +90,7 @@ public class NLPlib {
 
     public String getWithoutStopwords(CoreDocument a) {
         AtomicReference<String> cleaned = new AtomicReference<>("");
-        if (a != null) this.setDoc(a);
+        if (a == null) this.setDoc(a);
         this.removeStopWords().forEach(elem -> {
 //            System.out.println(elem);
             cleaned.updateAndGet(v -> v + elem.originalText() + " ");
@@ -166,12 +149,10 @@ public class NLPlib {
         int counter = 0;
         String currentEntity = "";
         String currentEntityType = "";
-        ArrayList<String> sentenceNEs = new ArrayList<>();
         ArrayList<String> tokens = new ArrayList<>();
         Annotation document = new Annotation(doc.annotation());
-        List sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
         for (Object sentence : sentences) {
-            sentenceNEs.clear();
             if (debug) System.out.println("[NLPlib] Sentence #" + counter++);
             for (CoreLabel token : ((CoreMap) sentence).get(CoreAnnotations.TokensAnnotation.class)) {
 
@@ -197,7 +178,6 @@ public class NLPlib {
                 }
 
             }
-//            vp.addTokensfromSentence(sentenceNEs);
         }
 
         return tokens;
@@ -207,7 +187,7 @@ public class NLPlib {
     public List<CoreLabel> removeStopWords() {
         int counter = 0;
         Annotation document = new Annotation(doc.annotation());
-        List sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
         List<CoreLabel> without_stopwords = new ArrayList<>();
         for (Object sentence : sentences) {
             if (debug) System.out.println("[NLPlib] Sentence #" + counter++);
@@ -218,7 +198,7 @@ public class NLPlib {
                 if (!this.stopwords.contains(token.originalText()))
                     without_stopwords.add(token);
                 else if (debug)
-                    System.out.printf(" <-");
+                    System.out.println(" <-");
                 if (debug) System.out.print("\n");
             }
         }

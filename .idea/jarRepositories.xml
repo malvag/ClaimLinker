@@ -26,5 +26,10 @@
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="malvag" />
+      <option name="name" value="Evangelos_Maliaroudakis" />
+      <option name="url" value="https://dev.malvag.org/maven2/" />
+    </remote-repository>
   </component>
 </project>

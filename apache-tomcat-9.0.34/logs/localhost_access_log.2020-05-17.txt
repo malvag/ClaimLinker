@@ -1,0 +1,5 @@
+0:0:0:0:0:0:0:1 - - [17/May/2020:23:47:38 +0300] "GET /CLaimLinker_Intellij/claimlinker HTTP/1.1" 404 745
+0:0:0:0:0:0:0:1 - - [17/May/2020:23:47:54 +0300] "GET /ClaimLinker_Intellij/claimlinker HTTP/1.1" 404 745
+0:0:0:0:0:0:0:1 - - [17/May/2020:23:48:02 +0300] "GET /Claimlinker/claimlinker HTTP/1.1" 404 736
+0:0:0:0:0:0:0:1 - - [17/May/2020:23:48:03 +0300] "GET /Claimlinker/claimlinker HTTP/1.1" 404 736
+0:0:0:0:0:0:0:1 - - [17/May/2020:23:48:05 +0300] "GET /Claimlinker/ HTTP/1.1" 404 725
