@@ -1,20 +1,20 @@
 package csd.thesis.tools;
 
+import com.yahoo.semsearch.fastlinking.FastEntityLinker;
+import com.yahoo.semsearch.fastlinking.hash.QuasiSuccinctEntityHash;
+import com.yahoo.semsearch.fastlinking.view.EmptyContext;
+import csd.thesis.ClaimLinker;
 import csd.thesis.misc.ConsoleColor;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.util.Pair;
-import it.uniroma1.lcl.jlt.util.Language;
 import org.apache.commons.text.similarity.CosineSimilarity;
 import org.apache.commons.text.similarity.JaccardSimilarity;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class AnalyzerDispatcher {
@@ -29,42 +29,53 @@ public class AnalyzerDispatcher {
         this.similarityMeasures.addAll(Arrays.asList(similarityMeasure_array));
     }
 
-    public void analyze(CoreDocument claim, CoreDocument text) {
-        ArrayList<Double> arr = new ArrayList<>();
-        ExecutorService es = Executors.newCachedThreadPool();
+    public double analyze(CoreDocument claim, CoreDocument text) {
+        double score=0;
+        ArrayList<Pair<Double,CoreDocument>> arr = new ArrayList<>();
+        for (CoreSentence sentence : text.sentences()) {
+            double sum = 0d;
+            CoreDocument doced_sentence = new CoreDocument(sentence.text());
+            AnalyzerDispatcher.nlp_instance.NLPlib_annotate(doced_sentence);
 
-        text.sentences().forEach(sentence -> {
-            AtomicReference<Double> sum = new AtomicReference<>(0d);
-            this.similarityMeasures.forEach(elem -> {
-                es.execute(() -> {
-                    double result = elem.analyze(claim, sentence.document());
-                    sum.getAndUpdate(v -> v + result < 0 ? 0 : result);
-                });
-            });
-            arr.add(sum.getAcquire());
-        });
-        es.shutdown();
-
-
-        while (true) {
-            try {
-                if (es.awaitTermination(1, TimeUnit.MINUTES))
-                    break;
-            } catch (InterruptedException e) {
-                System.err.println("Concurrent measures crashed");
-                break;
+//            System.out.println(sentence.text());
+            for (SimilarityMeasure similarityMeasure : this.similarityMeasures) {
+                double result = similarityMeasure.analyze(claim, doced_sentence);
+                sum += (result >= 0) ? result : 0;
             }
-
+            sum /= similarityMeasures.size();
+            arr.add(new Pair<Double,CoreDocument>(sum,doced_sentence));
+//            break;
         }
-
-//        Collections.sort(arr);
-//        arr.forEach(elem -> {
-//            System.out.println("Sentence " + elem / this.similarityMeasures.size());
-//        });
+        Collections.sort(arr);
+        this.similarityMeasures.trimToSize();
+        //            System.out.println("Sentence " + (double) (elem.first / this.similarityMeasures.size()));
+        //            System.out.println(elem.second.toString());
+        //            System.out.println("====");
+        for (Pair<Double, CoreDocument> elem : arr) {
+            score += (elem.first);
+        }
+        score = (double) (score/arr.size());
+        return score;
 
     }
 
     private ArrayList<SimilarityMeasure> similarityMeasures;
+
+    public static class CompareJob implements Callable<Double> {
+        private CompareJob(SimilarityMeasure measure, CoreDocument a, CoreDocument b) {
+            this.similarityMeasure = measure;
+            this.a = a;
+            this.b = b;
+        }
+
+        CoreDocument a, b;
+        SimilarityMeasure similarityMeasure;
+
+        @Override
+        public Double call() throws Exception {
+            return this.similarityMeasure.analyze(a, b);
+        }
+    }
 
     public enum SimilarityMeasure {
         jcrd_comm_words {
@@ -104,7 +115,7 @@ public class AnalyzerDispatcher {
                 ArrayList<String> listB = super.nlp_instance.getAnnotationSentences(text);
 
                 if (listA.size() == 0 || listB.size() == 0) {
-                    System.out.println(-1);
+//                    System.out.println(-1);
                     return -1;
                 }
                 double result = similarity(listA, listB);
@@ -123,24 +134,46 @@ public class AnalyzerDispatcher {
                 ArrayList<String> listB = super.nlp_instance.getAnnotationSentences(text);
                 ArrayList<String> bfyA = new ArrayList<>();
                 ArrayList<String> bfyB = new ArrayList<>();
-                JaccardSimilarity JS = new JaccardSimilarity();
                 if (verbose) {
                     System.out.println("- Document A:\"" + claim.text() + "\"");
                     System.out.println("- Document B:\"" + text.text() + "\"");
                 }
-                babelfy(listA, bfyA);
-                babelfy(listB, bfyB);
-                if (verbose) {
-                    bfyA.forEach(System.out::println);
-                    bfyB.forEach(System.out::println);
+                List<FastEntityLinker.EntityResult> results_text = null;
+                List<FastEntityLinker.EntityResult> results_claim = null;
+
+                try {
+                    FastEntityLinker fel = new FastEntityLinker(super.quasiSuccinctEntityHash, new EmptyContext());
+                    int threshold = -4;
+
+                    long time = -System.nanoTime();
+                    //claim
+                    results_claim = fel.getResults(claim.text(), threshold);
+                    for (FastEntityLinker.EntityResult er : results_claim) {
+                        if (debug)System.out.println(er.s.getSpan() + " (" + er.s.getStartOffset() + ", " + er.s.getEndOffset() + ")" + "\t\t" + er.text + "\t\t" + er.score);
+                    }
+                    if (debug)System.out.println("====");
+                    results_text = fel.getResults(text.text(), threshold);
+                    for (FastEntityLinker.EntityResult er : results_text) {
+                        if (debug)System.out.println(er.s.getSpan() + " (" + er.s.getStartOffset() + ", " + er.s.getEndOffset() + ")" + "\t\t" + er.text + "\t\t" + er.score);
+                    }
+                } catch (Exception e) {
+                    System.err.println("FEL error");
                 }
-                bfyA.trimToSize();
-                bfyB.trimToSize();
-                if (bfyA.size() == 0 || bfyB.size() == 0) {
-                    System.out.println(-1);
+                if (results_claim == null || results_text == null)
+                    return -1;
+                if (verbose) {
+                    for (FastEntityLinker.EntityResult er : results_claim) {
+                        if (debug)System.out.println(er.s.getSpan() + " (" + er.s.getStartOffset() + ", " + er.s.getEndOffset() + ")" + "\t\t" + er.text + "\t\t" + er.score);
+                    }
+                    for (FastEntityLinker.EntityResult er : results_text) {
+                        if (debug)System.out.println(er.s.getSpan() + " (" + er.s.getStartOffset() + ", " + er.s.getEndOffset() + ")" + "\t\t" + er.text + "\t\t" + er.score);
+                    }
+                }
+                if (results_claim.size() == 0 || results_text.size() == 0) {
+                    if (debug)System.out.println(-1);
                     return -1;
                 }
-                double result = similarity(bfyA, bfyB);
+                double result = similarity(results_claim, results_claim);
                 synchronized (this) {
                     String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) disambiguated entities BFY similarity applied" + ConsoleColor.ANSI_RESET;
                     if (debug) System.out.printf("[ClaimLinker] %-100s [%20s]\n", out, result);
@@ -148,26 +181,6 @@ public class AnalyzerDispatcher {
                 return result;
             }
 
-            private void babelfy(ArrayList<String> list, ArrayList<String> bfy) {
-                try {
-                    super.nlp_instance.getBfy().babelfy(String.join(" ", list), Language.EN).forEach(elem -> {
-                        String token = String.join(" ", list).substring(elem.getCharOffsetFragment().getStart(),
-                                elem.getCharOffsetFragment().getEnd() + 1);
-                        if (verbose) {
-                            System.out.println("Coherence " + elem.getCoherenceScore());
-                            System.out.println("Global " + elem.getGlobalScore());
-                            System.out.println("Score " + elem.getScore());
-                            System.out.println(token);
-                            System.out.println("------");
-                        }
-                        if (elem.getCoherenceScore() >= 0.2)
-                            if (elem.getGlobalScore() != 0)
-                                bfy.add(token);
-                    });
-                } catch (Exception e) {
-                    System.err.println("Bfy exceeded usage limit");
-                }
-            }
         },
         jcrd_comm_pos_words {
             //Common (jaccard) words of specific POS
@@ -236,15 +249,15 @@ public class AnalyzerDispatcher {
                     result += tmp;
                     elems++;
                 }
-                if ((tmp = this.similarity(A_Nouns, B_Nouns)) >= 0){
+                if ((tmp = this.similarity(A_Nouns, B_Nouns)) >= 0) {
                     result += tmp;
                     elems++;
                 }
-                if ((tmp = this.similarity(A_Adverbs, B_Adverbs)) >= 0){
+                if ((tmp = this.similarity(A_Adverbs, B_Adverbs)) >= 0) {
                     result += tmp;
                     elems++;
                 }
-                if ((tmp = this.similarity(A_Wh_pronoun, B_Wh_pronoun)) >= 0){
+                if ((tmp = this.similarity(A_Wh_pronoun, B_Wh_pronoun)) >= 0) {
                     result += tmp;
                     elems++;
                 }
@@ -266,7 +279,7 @@ public class AnalyzerDispatcher {
                 double result = 0;
                 synchronized (this) {
                     String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) ngrams similarity applied" + ConsoleColor.ANSI_RESET;
-                    if(verbose) {
+                    if (verbose) {
                         System.out.printf("2_grams:    %11fd %20s\n", Ngram2, " importance factor 20%");
                         System.out.printf("3_grams:    %11fd %20s\n", Ngram3, " importance factor 45%");
                         System.out.printf("4_grams:    %11fd %20s\n", Ngram4, " importance factor 35%");
@@ -283,7 +296,7 @@ public class AnalyzerDispatcher {
                         .map(CoreLabel::originalText)
                         .collect(Collectors.toList());
                 ArrayList<String> ngrams = new ArrayList<>();
-                for (int i = 0; i < list.size(); i ++) {
+                for (int i = 0; i < list.size(); i++) {
                     StringBuilder entry = new StringBuilder();
                     for (int j = i; j < i + n && i + n - 1 < list.size(); j++) {
                         entry.append(list.get(j)).append(" ");
@@ -304,7 +317,7 @@ public class AnalyzerDispatcher {
                 double result = 0;
                 synchronized (this) {
                     String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) nchargrams similarity applied" + ConsoleColor.ANSI_RESET;
-                    if(verbose) {
+                    if (verbose) {
                         System.out.printf("2_chargrams:    %11fd %20s\n", Ngram2, " importance factor 20%");
                         System.out.printf("3_chargrams:    %11fd %20s\n", Ngram3, " importance factor 35%");
                         System.out.printf("4_chargrams:    %11fd %20s\n", Ngram4, " importance factor 45%");
@@ -321,7 +334,7 @@ public class AnalyzerDispatcher {
                         .map(CoreLabel::originalText)
                         .collect(Collectors.toList());
                 ArrayList<String> ngrams = new ArrayList<>();
-                for (int i = 0; i < a.text().length(); i ++) {
+                for (int i = 0; i < a.text().length(); i++) {
                     StringBuilder entry = new StringBuilder();
                     for (int j = i; j < i + n && i + n - 1 < a.text().length(); j++) {
                         entry.append(a.text().charAt(j));
@@ -355,11 +368,13 @@ public class AnalyzerDispatcher {
         };
 
         private final NLPlib nlp_instance;
-        private final static boolean debug = true;
+        private final QuasiSuccinctEntityHash quasiSuccinctEntityHash;
+        private static boolean debug = ClaimLinker.debug;
         private final static boolean verbose = false;
 
         SimilarityMeasure() {
             this.nlp_instance = AnalyzerDispatcher.nlp_instance;
+            this.quasiSuccinctEntityHash = this.nlp_instance.quasiSuccinctEntityHash;
         }
 
         abstract double analyze(CoreDocument claim, CoreDocument text);

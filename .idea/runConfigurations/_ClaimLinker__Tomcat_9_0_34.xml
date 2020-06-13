@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="[ClaimLinker] Tomcat 9.0.34" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 9.0.34" ALTERNATIVE_JRE_ENABLED="false">
     <option name="OPEN_IN_BROWSER" value="false" />
-    <option name="UPDATING_POLICY" value="restart-server" />
+    <option name="UPDATING_POLICY" value="redeploy-artifacts" />
     <deployment>
-      <artifact name="UDFC:war exploded">
+      <artifact name="ClaimLinker_Intellij">
         <settings>
           <option name="CONTEXT_PATH" value="/" />
         </settings>
@@ -53,7 +53,7 @@
     <method v="2">
       <option name="Make" enabled="true" />
       <option name="BuildArtifacts" enabled="true">
-        <artifact name="UDFC:war exploded" />
+        <artifact name="ClaimLinker_Intellij" />
       </option>
     </method>
   </configuration>

@@ -13,9 +13,18 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <servlet>
+        <servlet-name>BookmarkletHandler_Servlet</servlet-name>
+        <servlet-class>csd.thesis.servlet.BookmarkletHandler_Servlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
     <servlet-mapping>
         <servlet-name>claimLinker</servlet-name>
         <url-pattern>/claimlinker</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BookmarkletHandler_Servlet</servlet-name>
+        <url-pattern>/claimlinker/viaBookmarklet</url-pattern>
     </servlet-mapping>
 
 

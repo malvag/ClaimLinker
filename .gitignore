@@ -1,10 +1,7 @@
 out/
-
+apache-tomcat-9.0.34/
 parsed.txt
-data/claimskg_v1.0.csv
+data/
 target/
-data/claim_extraction_18_10_2019_annotated.csv
-
-ElasticInitTools/data/claim_extraction_18_10_2019_annotated.csv
-
-ElasticInitTools/data/claim_front.csv
+ElasticInitTools/data/
+ElasticTools/data/

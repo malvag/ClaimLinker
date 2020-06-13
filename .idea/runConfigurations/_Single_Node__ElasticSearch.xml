@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="[Single_Node] ElasticSearch" type="docker-deploy" factoryName="docker-image" singleton="false" server-name="Docker">
+  <configuration default="false" name="[Single_Node] ElasticSearch" type="docker-deploy" factoryName="docker-image" singleton="true" server-name="Docker">
     <deployment type="docker-image">
       <settings>
         <option name="imageTag" value="docker.elastic.co/elasticsearch/elasticsearch:7.6.2" />

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo "========================="
+echo "ClaimLinker STOP"
+echo "========================="
+apache-tomcat-9.0.34/bin/catalina.sh stop
+if [ ! "$(docker ps -a -q -f name=ES_single)" ]; then
+  echo "ES_single is dead"
+else
+  docker stop ES_single
+fi
+echo "ElasticSearch Server has been killed !"
