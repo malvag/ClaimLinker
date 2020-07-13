@@ -22,6 +22,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 
+enum Assoc_t {
+    author_of, topic_of, same_as, all
+}
 
 @WebServlet(name = "claimLinker_Servlet")
 public class claimLinker_Servlet extends HttpServlet {
@@ -48,7 +51,22 @@ public class claimLinker_Servlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        JsonObject respose_json = claimLinker_Servlet.ClaimLinkHandler(request);
+        JsonObjectBuilder factory = Json.createObjectBuilder();
+        JsonObjectBuilder flags = Json.createObjectBuilder();
+//        .add("claimOwner_of",request.getParameter("claimOwner_of")) // if exists
+//                .add("topic_of",request.getParameter("topic_of")) // if exists
+//                .add("same_as",request.getParameter("same_as")) // if exists
+        factory.add("message", "API ClaimLinker").add("flags", flags);
+        JsonObject respose_json = factory.build();
+//        if (request.getParameter("claimOwner_of").equals("true")) {
+//
+//        }
+//        if (request.getParameter("topic_of").equals("true")) {
+//
+//        }
+        if (request.getParameter("assoc_t").equals("same_as")) {
+            respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Assoc_t.same_as);
+        }
         PrintWriter out = response.getWriter();
         response.setContentType("text/json");
         out.println(respose_json);
@@ -56,56 +74,70 @@ public class claimLinker_Servlet extends HttpServlet {
 
     }
 
-    public static JsonObject ClaimLinkHandler(HttpServletRequest request) {
+
+    public static JsonObject ClaimLinkHandler(HttpServletRequest request, Assoc_t assoc_t) {
         Instant start = Instant.now();
         String param_url = request.getParameter("url");
         String param_selection = request.getParameter("selection");
         JsonObjectBuilder factory = Json.createObjectBuilder();
         factory.add("message", "API ClaimLinker");
-        if (param_url != null) {
-            WebArticle webArticle;
-            if (param_selection != null) {
-                webArticle = new WebArticle(param_url, param_selection, WebArticle.WebArticleType.selection);
-                factory.add("selection", webArticle.getCleaned());
-            } else {
-                webArticle = new WebArticle(param_url, null, WebArticle.WebArticleType.url);
-            }
-            factory.add("url", param_url).add("cleaned_text_from_url", webArticle.getDoc().text());
-            factory.add("results", ClaimLinkPipeline(param_selection));
-            Instant finish = Instant.now();
-            long timeElapsed = Duration.between(start, finish).toMillis();
-            factory.add("timeElapsed", timeElapsed);
-
+        if (param_url == null) {
+            return null;
         }
+        WebArticle webArticle;
+        if (param_selection != null) {
+            webArticle = new WebArticle(param_url, param_selection, WebArticle.WebArticleType.selection);
+            factory.add("selection", webArticle.getCleaned());
+        } else {
+            webArticle = new WebArticle(param_url, null, WebArticle.WebArticleType.url);
+        }
+        factory.add("url", param_url).add("cleaned_text_from_url", webArticle.getDoc().text());
+        factory.add("results", ClaimLinkPipeline(param_selection, assoc_t));
+        Instant finish = Instant.now();
+        long timeElapsed = Duration.between(start, finish).toMillis();
+        factory.add("timeElapsed", timeElapsed);
+
         return factory.build();
     }
 
-    public static JsonArray ClaimLinkPipeline(String selection) {
+    public static JsonArray ClaimLinkPipeline(String selection, Assoc_t assoc_t) {
         claimLinker.claims = null;
-        claimLinker.claims = ElasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed", URLEncoder.encode(selection, StandardCharsets.UTF_8), 100);
-        CoreDocument CD_selection = claimLinker.NLP_annotate(claimLinker.nlp_instance.getWithoutStopwords(claimLinker_Servlet.claimLinker.NLP_annotate(selection)));
-        ArrayList<Pair<Double, Claim>> records = new ArrayList<>();
-        int counter = 0;
-        for (Claim claim : claimLinker.claims) {
-            CoreDocument CD_c = claimLinker.NLP_annotate(claim.getReviewedBody());
+        if (assoc_t == Assoc_t.all) {
+            claimLinker.claims = ElasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed", URLEncoder.encode(selection, StandardCharsets.UTF_8), 100);
+            // needs optimization
+            CoreDocument CD_selection = claimLinker.NLP_annotate(
+                    claimLinker.nlp_instance.getWithoutStopwords(
+                            claimLinker_Servlet.claimLinker.NLP_annotate(selection)));
+            //
+            ArrayList<Pair<Double, Claim>> records = new ArrayList<>();
+            int counter = 0;
+            for (Claim claim : claimLinker.claims) {
+                CoreDocument CD_c = claimLinker.NLP_annotate(claim.getReviewedBody());
+                System.out.printf("%d\r", counter++);
+                records.add(new Pair<>(claimLinker.analyzerDispatcher.analyze(CD_c, CD_selection), claim));
+            }
 
-            System.out.printf("%d\r", counter++);
-            records.add(new Pair<>(claimLinker.analyzerDispatcher.analyze(CD_c, CD_selection), claim));
+            records.sort(Collections.reverseOrder());
+            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+            for (Pair<Double, Claim> elem : records) {
+                arrayBuilder.add(Json.createObjectBuilder()
+                        .add("claimReview_claimReviewed", elem.second.getReviewedBody())
+                        .add("rating_alternateName", elem.second.getRatingName())
+                        .add("extra_title", elem.second.getExtraTitle())
+                        .add("NLP_score", elem.first)
+                        .add("ElasticScore", elem.second.getElasticScore())
+
+                );
+                System.out.println(elem.first + " \n" + elem.second.getReviewedBody());
+            }
+            return arrayBuilder.build();
+        } else if (assoc_t == Assoc_t.author_of) {
+
+        } else if (assoc_t == Assoc_t.topic_of) {
+
+        } else if (assoc_t == Assoc_t.same_as) {
+
         }
-
-        records.sort(Collections.reverseOrder());
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        records.forEach(elem -> {
-            arrayBuilder.add(Json.createObjectBuilder()
-                    .add("claimReview_claimReviewed", elem.second.getReviewedBody())
-                    .add("rating_alternateName", elem.second.getRatingName())
-                    .add("extra_title", elem.second.getExtraTitle())
-                    .add("NLP_score", (double) elem.first)
-                    .add("ElasticScore", (double) elem.second.getElasticScore())
-
-            );
-            System.out.println(elem.first + " \n" + elem.second.getReviewedBody());
-        });
-        return arrayBuilder.build();
+        return null;
     }
 }

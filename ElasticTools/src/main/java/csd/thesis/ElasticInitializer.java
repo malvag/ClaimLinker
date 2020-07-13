@@ -33,7 +33,7 @@ public class ElasticInitializer {
 
     public static ArrayList<Map<String, Object>> master_claim_record;
 
-    public static synchronized RestHighLevelClient makeConnection(String path) {
+    public static synchronized void makeConnection(String path) {
         System.out.println("Trying to establish connection with elastic search...");
         counter = 0;
         if (restHighLevelClient == null) {
@@ -45,7 +45,6 @@ public class ElasticInitializer {
         ElasticInitializer.path = path;
         System.out.println("Connection established with elastic search.");
 
-        return restHighLevelClient;
     }
 
     public static synchronized void closeConnection() {
@@ -156,6 +155,5 @@ public class ElasticInitializer {
 
         closeConnection();
     }
-
 
 }

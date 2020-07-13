@@ -105,7 +105,6 @@ public class ClaimLinker {
 
     }
 
-    //Kulczynski2 ?TBD
 }
 
 
