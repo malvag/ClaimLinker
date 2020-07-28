@@ -22,10 +22,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 
-enum Assoc_t {
-    author_of, topic_of, same_as, all
-}
-
 @WebServlet(name = "claimLinker_Servlet")
 public class claimLinker_Servlet extends HttpServlet {
     protected static ClaimLinker claimLinker;

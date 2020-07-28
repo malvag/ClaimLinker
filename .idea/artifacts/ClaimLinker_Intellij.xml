@@ -4,7 +4,7 @@
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
-          <element id="module-output" name="ElasticTools" />
+          <element id="module-output" name="ElasticSearch_Tools" />
           <element id="module-output" name="UDFC" />
         </element>
         <element id="directory" name="data">
@@ -54,7 +54,6 @@
           <element id="library" level="project" name="Maven: org.apache.commons:commons-lang3:3.9" />
           <element id="library" level="project" name="Maven: de.jollyday:jollyday:0.4.9" />
           <element id="library" level="project" name="Maven: com.tdunning:t-digest:3.2" />
-          <element id="library" level="project" name="FEL-0.1.0-fat" />
           <element id="library" level="project" name="Maven: com.sun.xml.bind:jaxb-impl:2.4.0-b180830.0438" />
           <element id="library" level="project" name="Maven: javax.xml.bind:jaxb-api:2.4.0-b180830.0359" />
           <element id="library" level="project" name="Maven: org.ejml:ejml-cdense:0.38" />
@@ -108,12 +107,11 @@
           <element id="library" level="project" name="Maven: org.elasticsearch:elasticsearch-geo:7.6.2" />
           <element id="library" level="project" name="Maven: net.sourceforge.nekohtml:nekohtml:1.9.22" />
         </element>
-        <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/web.xml" />
-        <element id="file-copy" path="$PROJECT_DIR$/web/index.jsp" />
+        <element id="file-copy" path="$PROJECT_DIR$/ClaimLinker_web/web/WEB-INF/web.xml" />
         <element id="directory" name="resource">
-          <element id="dir-copy" path="$PROJECT_DIR$/web/resource" />
+          <element id="dir-copy" path="$PROJECT_DIR$/ClaimLinker_web/web/resource" />
         </element>
-        <element id="file-copy" path="$PROJECT_DIR$/Properties.xml" />
+        <element id="file-copy" path="$PROJECT_DIR$/ClaimLinker_commons/Properties.xml" />
       </element>
       <element id="directory" name="config">
         <element id="dir-copy" path="$PROJECT_DIR$/config" />

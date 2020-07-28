@@ -6,18 +6,24 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ElasticTools" />
+        <module name="ClaimLinker_commons" />
+        <module name="ClaimLinker_web" />
+        <module name="ElasticSearch_Tools" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="ClaimLinker_commons" target="13" />
+      <module name="ClaimLinker_web" target="13" />
       <module name="elastic_wrap" target="1.5" />
-      <module name="ElasticTools" target="13" />
+      <module name="ElasticSearch_Tools" target="13" />
       <module name="UDFC" target="13" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="ElasticTools" options="-Xlint:unchecked" />
+      <module name="ClaimLinker_commons" options="-Xlint:unchecked" />
+      <module name="ClaimLinker_web" options="-Xlint:unchecked" />
+      <module name="ElasticSearch_Tools" options="-Xlint:unchecked" />
       <module name="UDFC" options="" />
     </option>
   </component>

@@ -2,7 +2,6 @@ package csd.thesis;
 
 //import csd.thesis.elastic.OpenCSVWrapper;
 
-import csd.thesis.model.ViewPoint;
 
 import java.util.*;
 
@@ -11,7 +10,6 @@ public class Main {
     static private String command;
     static private int iter;
     static private final int TOP_ENTRIES_VIEW_MAX = 15;
-    static public ViewPoint masterVP;
 
     public static void main(String[] args) throws Exception {
         System.out.println("[Demo]Initiating ...");

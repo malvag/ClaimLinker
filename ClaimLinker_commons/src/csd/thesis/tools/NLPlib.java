@@ -2,13 +2,13 @@ package csd.thesis.tools;
 
 import com.yahoo.semsearch.fastlinking.hash.QuasiSuccinctEntityHash;
 import csd.thesis.misc.ConsoleColor;
-import csd.thesis.model.ViewPoint;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.*;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.Pair;
 import it.unimi.dsi.fastutil.io.BinIO;
+
 import net.didion.jwnl.JWNL;
 import net.didion.jwnl.JWNLException;
 import net.didion.jwnl.data.IndexWord;
@@ -34,14 +34,17 @@ public class NLPlib {
             System.out.println("========================================");
             System.out.println("NLPlib initializing ...");
             this.quasiSuccinctEntityHash = (QuasiSuccinctEntityHash) BinIO.loadObject(Hash_Path);
-            try {
-
-                JWNL.initialize(new FileInputStream(JWNLProperties_path));
-                System.out.println("JWNL initialization finished ...");
-            } catch (JWNLException | FileNotFoundException e) {
-//            e.printStackTrace();
-                System.out.println("JWNL OFFLINE");
-            }
+//            try {
+//
+//
+//                if(JWNLProperties_path == null)
+//                    throw new FileNotFoundException();
+//                JWNL.initialize(new FileInputStream(JWNLProperties_path));
+//                System.out.println("JWNL initialization finished ...");
+//            } catch (JWNLException | FileNotFoundException e) {
+////            e.printStackTrace();
+//                System.out.println("JWNL OFFLINE");
+//            }
             Properties props = new Properties();
             props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner"); // not enough memory
             this.initStopword(stopwords_path);

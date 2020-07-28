@@ -3,10 +3,10 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>csd.thesis</groupId>
-    <artifactId>ElasticTools</artifactId>
+    <artifactId>ElasticSearch_Tools</artifactId>
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>ElasticTools</name>
+    <name>ElasticSearch_Tools</name>
     <build>
         <plugins>
             <plugin>
@@ -41,6 +41,7 @@
         <elasticsearch.version>7.6.2</elasticsearch.version>
         <jackson.version>2.11.0</jackson.version>
         <java.version>13</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>

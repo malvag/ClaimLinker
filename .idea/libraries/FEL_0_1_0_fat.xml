@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="FEL-0.1.0-fat">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/FEL-0.1.0-fat.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ClaimLinker_commons/lib/FEL-0.1.0-fat.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/lib/FEL-0.1.0-fat.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ClaimLinker_commons/lib/FEL-0.1.0-fat.jar!/" />
     </SOURCES>
   </library>
 </component>

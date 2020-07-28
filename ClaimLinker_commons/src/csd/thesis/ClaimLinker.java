@@ -7,6 +7,8 @@ import csd.thesis.tools.NLPlib;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.util.Pair;
 
+import net.didion.jwnl.JWNL;
+import net.didion.jwnl.JWNLException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -26,8 +28,8 @@ public class ClaimLinker {
     public ClaimLinker(String JWNLProperties_path, String stopwords_path, String Hash_Path, String claims_path) throws IOException, ClassNotFoundException {
         System.out.println("========================================");
         System.out.println("ClaimLinker initializing ... ");
-        AtomicInteger counter = new AtomicInteger(0);
-        nlp_instance = new NLPlib(JWNLProperties_path, stopwords_path, Hash_Path);
+//        AtomicInteger counter = new AtomicInteger(0);
+        nlp_instance = new NLPlib(null, stopwords_path, Hash_Path);
         this.claims = new ArrayList<>();
         ElasticInitializer.path = claims_path;
 //        System.out.println("Opening CSV record of Claims");
