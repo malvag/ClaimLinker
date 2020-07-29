@@ -9,6 +9,7 @@
         <module name="ClaimLinker_commons" />
         <module name="ClaimLinker_web" />
         <module name="ElasticSearch_Tools" />
+        <module name="FEL" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -16,6 +17,7 @@
       <module name="ClaimLinker_web" target="13" />
       <module name="elastic_wrap" target="1.5" />
       <module name="ElasticSearch_Tools" target="13" />
+      <module name="FEL" target="1.8" />
       <module name="UDFC" target="13" />
     </bytecodeTargetLevel>
   </component>

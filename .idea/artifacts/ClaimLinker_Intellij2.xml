@@ -8,12 +8,12 @@
           <element id="module-output" name="UDFC" />
           <element id="module-output" name="ClaimLinker_web" />
           <element id="module-output" name="ClaimLinker_commons" />
+          <element id="module-output" name="FEL" />
         </element>
         <element id="directory" name="data">
           <element id="dir-copy" path="$PROJECT_DIR$/data" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="FEL-0.1.0-fat" />
           <element id="library" level="project" name="Maven: com.apple:AppleJavaExtensions:1.4" />
           <element id="library" level="project" name="Maven: com.carrotsearch:hppc:0.8.1" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.11.0" />

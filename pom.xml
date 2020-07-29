@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>csd.thesis</groupId>
     <artifactId>ClaimLinker</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>pom</packaging>
     <build>
         <plugins>
@@ -153,12 +153,6 @@
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>4.1</version>
-        </dependency>
-        <dependency>
-            <groupId>csd.thesis</groupId>
-            <artifactId>ElasticSearch_Tools</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

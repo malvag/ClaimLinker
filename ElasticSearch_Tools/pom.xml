@@ -5,8 +5,13 @@
     <groupId>csd.thesis</groupId>
     <artifactId>ElasticSearch_Tools</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>ElasticSearch_Tools</name>
+    <parent>
+        <artifactId>ClaimLinker</artifactId>
+        <groupId>csd.thesis</groupId>
+        <version>1.0</version>
+    </parent>
     <build>
         <plugins>
             <plugin>

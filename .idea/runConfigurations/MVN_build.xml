@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="MVN build" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="MVN build" type="MavenRunConfiguration" factoryName="Maven" singleton="false">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
@@ -12,12 +12,9 @@
             <list>
               <option value="validate" />
               <option value="compile" />
-              <option value="test" />
-              <option value="package" />
-              <option value="verify" />
             </list>
           </option>
-          <option name="pomFileName" value="pom.xml" />
+          <option name="pomFileName" />
           <option name="profilesMap">
             <map />
           </option>
@@ -26,6 +23,9 @@
         </MavenRunnerParameters>
       </option>
     </MavenSettings>
-    <method v="2" />
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="MVN clean" run_configuration_type="MavenRunConfiguration" />
+      <option name="RunConfigurationTask" enabled="true" />
+    </method>
   </configuration>
 </component>

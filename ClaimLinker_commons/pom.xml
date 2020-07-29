@@ -10,7 +10,7 @@
     <parent>
         <artifactId>ClaimLinker</artifactId>
         <groupId>csd.thesis</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
     <build>
         <plugins>
@@ -36,6 +36,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <repositories>
+        <repository>
+            <id>FEL</id>
+            <url>file://${project.basedir}/libs</url>
+        </repository>
         <repository>
             <id>BibSonomy</id>
             <name>BibSonomy</name>
@@ -123,10 +127,21 @@
         <dependency>
             <groupId>csd.thesis</groupId>
             <artifactId>ElasticSearch_Tools</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.yahoo.FEL</groupId>
+            <artifactId>FEL</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>it.unimi.dsi</groupId>
+            <artifactId>fastutil</artifactId>
+            <version>6.5.12</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
 
-<!--fix FEL to maven-->
+<!--fix FEL to maven ... DONE-->
 </project>

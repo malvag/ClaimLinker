@@ -6,7 +6,9 @@ import csd.thesis.model.Claim;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
@@ -43,7 +45,7 @@ public class ElasticWrapper {
                 jsonstr = strTemp;
             }
 
-            JsonElement je = new JsonParser().parse(jsonstr);
+            JsonElement je = JsonParser.parseString(jsonstr).getAsJsonObject();
             JsonObject jo = je.getAsJsonObject();
             AtomicInteger counter = new AtomicInteger();
             jo.getAsJsonObject("hits").getAsJsonArray("hits").forEach(claim -> {
