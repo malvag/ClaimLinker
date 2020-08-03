@@ -2,6 +2,7 @@ package csd.thesis;
 
 import com.google.gson.*;
 import csd.thesis.model.Claim;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -13,26 +14,25 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ElasticWrapper {
 
-    //The config parameters for the connection
-    private static final String HOST = "localhost";
-    private static final int PORT_ONE = 9200;
-    private static final int PORT_TWO = 9201;
-    private static final String SCHEME = "http";
-    private static String path;
-    private static int counter;
+    //The config parameters for the connection\
+    static Dotenv dotenv = Dotenv.configure().directory("ElasticSearch_Tools").ignoreIfMalformed()
+            .ignoreIfMissing().load();
+    private static final String HOST = Objects.requireNonNull(Objects.requireNonNull(dotenv.get("HOST")).replaceAll("\"",""));
+    private static final String PORT_ONE = Objects.requireNonNull(dotenv.get("PORT_ONE")).replaceAll("\"","");
+    private static final String PORT_TWO = Objects.requireNonNull(dotenv.get("PORT_TWO")).replaceAll("\"","");
+    private static final String SCHEME =  Objects.requireNonNull(dotenv.get("SCHEME")).replaceAll("\"","");
 
 
     public static ArrayList<Claim> findCatalogItemWithoutApi(String field, String value, int num_of_hits) {
         String url = SCHEME + "://" + HOST + ":" + PORT_ONE + "/_search?q=" + field + ":" + value + "&size=" + num_of_hits;
         URL obj = null;
+
+//        System.out.println(url);
         ArrayList<Claim> claimArrayList = new ArrayList<>();
         try {
             obj = new URL(url);
@@ -63,17 +63,13 @@ public class ElasticWrapper {
     }
 
     public static void main(String[] args) {
-//        findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 100);
-//        System.out.println(ElasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed","President",10).get(0).getClaimReviewedBody());
         JsonObjectBuilder factory = Json.createObjectBuilder();
-//        factory.add("url", param_url).add("cleaned_text_from_url", webArticle.getCleaned());
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         ElasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 10).forEach(claim -> {
             arrayBuilder.add(Json.createObjectBuilder().add("claimReview_claimReviewed", claim.getReviewedBody()));
         });
         factory.add("results",arrayBuilder);
         factory.add("search", Json.createArrayBuilder());
-//        factory.build();
         System.out.println(factory.build());
     }
 

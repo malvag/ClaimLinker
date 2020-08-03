@@ -32,6 +32,9 @@
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.3" level="project" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
     <orderEntry type="module" module-name="ElasticSearch_Tools" />
+    <orderEntry type="library" name="Maven: io.github.cdimascio:java-dotenv:3.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-stdlib:1.2.10" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains:annotations:13.0" level="project" />
     <orderEntry type="library" name="Maven: org.elasticsearch:elasticsearch:7.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.elasticsearch:elasticsearch-core:7.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.elasticsearch:elasticsearch-secure-sm:7.6.2" level="project" />

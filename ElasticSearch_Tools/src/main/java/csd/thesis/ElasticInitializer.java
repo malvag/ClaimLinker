@@ -1,5 +1,6 @@
 package csd.thesis;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.apache.http.HttpHost;
 import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -18,14 +19,19 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 public class ElasticInitializer {
 
     //The config parameters for the connection
-    private static final String HOST = "localhost";
-    private static final int PORT_ONE = 9200;
-    private static final int PORT_TWO = 9201;
-    private static final String SCHEME = "http";
+
+
+    static Dotenv dotenv = Dotenv.configure().directory("ElasticSearch_Tools").ignoreIfMalformed()
+            .ignoreIfMissing().load();
+    private static final String HOST = Objects.requireNonNull(Objects.requireNonNull(dotenv.get("HOST")).replaceAll("\"",""));
+    private static final String PORT_ONE = Objects.requireNonNull(dotenv.get("PORT_ONE")).replaceAll("\"","");
+    private static final String PORT_TWO = Objects.requireNonNull(dotenv.get("PORT_TWO")).replaceAll("\"","");
+    private static final String SCHEME =  Objects.requireNonNull(dotenv.get("SCHEME")).replaceAll("\"","");
     public static String path;
     private static int counter;
 
@@ -40,8 +46,8 @@ public class ElasticInitializer {
         if (restHighLevelClient == null) {
             restHighLevelClient = new RestHighLevelClient(
                     RestClient.builder(
-                            new HttpHost(HOST, PORT_ONE, SCHEME),
-                            new HttpHost(HOST, PORT_TWO, SCHEME)));
+                            new HttpHost(HOST, Integer.getInteger(PORT_ONE), SCHEME),
+                            new HttpHost(HOST, Integer.getInteger(PORT_TWO), SCHEME)));
         }
         ElasticInitializer.path = path;
         System.out.println("Connection established with elastic search.");

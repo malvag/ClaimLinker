@@ -15,7 +15,7 @@ public class OpenCSVWrapper {
 
     private static final boolean debug = false;
     private static final int MAX = 7;
-    private String path;
+    private final String path;
     public OpenCSVWrapper(String path){
         this.path = path;
     }

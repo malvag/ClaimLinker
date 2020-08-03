@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="FEL-0.1.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ClaimLinker_commons/lib/com/yahoo/FEL/FEL/0.1.0/FEL-0.1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/ClaimLinker_commons/lib/com/yahoo/FEL/FEL/0.1.0/FEL-0.1.0.jar!/" />
+    </SOURCES>
+  </library>
+</component>

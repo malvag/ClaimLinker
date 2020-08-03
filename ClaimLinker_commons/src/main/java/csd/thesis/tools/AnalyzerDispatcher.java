@@ -54,12 +54,12 @@ public class AnalyzerDispatcher {
         for (Pair<Double, CoreDocument> elem : arr) {
             score += (elem.first);
         }
-        score = (double) (score/arr.size());
+        score = score/arr.size();
         return score;
 
     }
 
-    private ArrayList<SimilarityMeasure> similarityMeasures;
+    private final ArrayList<SimilarityMeasure> similarityMeasures;
 
     public static class CompareJob implements Callable<Double> {
         private CompareJob(SimilarityMeasure measure, CoreDocument a, CoreDocument b) {
@@ -264,9 +264,9 @@ public class AnalyzerDispatcher {
 
                 synchronized (this) {
                     String out = (ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) words of specific POS similarity applied" + ConsoleColor.ANSI_RESET);
-                    if (debug) System.out.printf("[ClaimLinker] %-100s [%20s]\n", out, (double) result / elems);
+                    if (debug) System.out.printf("[ClaimLinker] %-100s [%20s]\n", out, result / elems);
                 }
-                return (double) result / elems;
+                return result / elems;
             }
         },
         jcrd_comm_ngram {
@@ -369,7 +369,7 @@ public class AnalyzerDispatcher {
 
         private final NLPlib nlp_instance;
         private final QuasiSuccinctEntityHash quasiSuccinctEntityHash;
-        private static boolean debug = ClaimLinker.debug;
+        private static final boolean debug = ClaimLinker.debug;
         private final static boolean verbose = false;
 
         SimilarityMeasure() {
