@@ -16,6 +16,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -38,7 +39,7 @@
     <repositories>
         <repository>
             <id>FEL</id>
-            <url>file://${project.basedir}/libs</url>
+            <url>${project.basedir}\lib</url>
         </repository>
         <repository>
             <id>BibSonomy</id>
