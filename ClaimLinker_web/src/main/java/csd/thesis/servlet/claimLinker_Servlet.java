@@ -27,7 +27,8 @@ public class claimLinker_Servlet extends HttpServlet {
                     getServletContext().getResource("/WEB-INF/Properties.xml").getPath(),
                     getServletContext().getResource("/WEB-INF/data/stopwords.txt").getPath(),
                     getServletContext().getResource("/WEB-INF/data/english-20200420.hash").getPath(),
-                    getServletContext().getResource("/WEB-INF/data/claim_extraction_18_10_2019_annotated.csv").getPath());
+                    getServletContext().getResource("/WEB-INF/data/claim_extraction_18_10_2019_annotated.csv").getPath(),
+                    "192.168.2.112");
             System.out.println(getServletName() + " initialization finished! ");
         } catch (Exception e) {
             e.printStackTrace();

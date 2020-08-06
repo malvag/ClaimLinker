@@ -16,7 +16,7 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        System.out.println(getServletName() +" initialization finished! ");
+        System.out.println(getServletName() + " initialization finished! ");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -28,7 +28,7 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
             response.setStatus(400);
             response.flushBuffer();
         }
-        JsonObject response_json = claimLinker_Servlet.ClaimLinkHandler(request, Assoc_t.all);
+        JsonObject response_json = claimLinker_Servlet.ClaimLinkHandler(request, Assoc_t.same_as);
 //        StringBuilder ss = new StringBuilder();
 //        URL url = new URL(request.getParameter("url"));
 //        try (
@@ -55,9 +55,9 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
                 "    <title>Hello, world!</title>\n" +
                 "  </head>\n" +
                 "  <body>\n" +
-                "<h2> Selection  : "+ response_json.getString("selection") +" </h2>\n"+
-                "<h2> URL : "+ response_json.getString("url") +" </h2>\n"+
-                "<h2> Request timeElapsed: "+ response_json.getJsonNumber("timeElapsed") +"ms </h2>\n"+
+                "<h2> Selection  : " + response_json.getString("selection") + " </h2>\n" +
+                "<h2> URL : " + response_json.getString("url") + " </h2>\n" +
+                "<h2> Request timeElapsed: " + response_json.getJsonNumber("timeElapsed") + "ms </h2>\n" +
                 "<table class=\"table\">\n" +
                 "    <thead>\n" +
                 "      <tr>\n" +
@@ -69,8 +69,8 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
                 "    </thead>\n" +
                 "    <tbody>\n";
 
-        String end =  "    </tbody>\n" +
-                "  </table>" +"\n    </div>\n" +
+        String end = "    </tbody>\n" +
+                "  </table>" + "\n    </div>\n" +
                 "\n" +
                 "    <!-- Optional JavaScript -->\n" +
                 "    <!-- jQuery first, then Popper.js, then Bootstrap JS -->\n" +
@@ -84,13 +84,13 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
         for (int i = 0; i < response_json.getJsonArray("results").size(); i++) {
             JsonObject obj = response_json.getJsonArray("results").getJsonObject(i);
             results.append("      <tr>\n" +
-                    "        <th scope=\"row\">"+i+"</th>\n" +
-                    "        <td>"+obj.getString("claimReview_claimReviewed")+"</td>\n" +
-                    "        <td>"+obj.getJsonNumber("NLP_score")+"</td>\n" +
-                    "        <td>"+obj.getJsonNumber("ElasticScore")+"</td>\n" +
-                    "      </tr>\n" );
+                    "        <th scope=\"row\">" + i + "</th>\n" +
+                    "        <td>" + obj.getString("claimReview_claimReviewed") + "</td>\n" +
+                    "        <td>" + obj.getJsonNumber("NLP_score") + "</td>\n" +
+                    "        <td>" + obj.getJsonNumber("ElasticScore") + "</td>\n" +
+                    "      </tr>\n");
         }
-        out.println(front+results.toString() + end);
+        out.println(front + results.toString() + end);
         response.setStatus(200);
     }
 }

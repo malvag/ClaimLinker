@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Claim {
-//    double NLPscore;
     Map<String, Object> objectMap;
     private CoreDocument doc;
 

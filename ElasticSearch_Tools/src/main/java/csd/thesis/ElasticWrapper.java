@@ -20,15 +20,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ElasticWrapper {
 
     //The config parameters for the connection\
-    static Dotenv dotenv = Dotenv.configure().directory("ElasticSearch_Tools").ignoreIfMalformed()
-            .ignoreIfMissing().load();
-    private static final String HOST = Objects.requireNonNull(Objects.requireNonNull(dotenv.get("HOST")).replaceAll("\"",""));
-    private static final String PORT_ONE = Objects.requireNonNull(dotenv.get("PORT_ONE")).replaceAll("\"","");
-    private static final String PORT_TWO = Objects.requireNonNull(dotenv.get("PORT_TWO")).replaceAll("\"","");
-    private static final String SCHEME =  Objects.requireNonNull(dotenv.get("SCHEME")).replaceAll("\"","");
+    private final String HOST;
+    private final int PORT_ONE;
+    private final String SCHEME;
+
+    public ElasticWrapper(String HOST, int PORT_O, int PORT_T, String SCHEME) {
+        this.HOST = HOST;
+        this.PORT_ONE = PORT_O;
+        this.SCHEME = SCHEME;
+    }
 
 
-    public static ArrayList<Claim> findCatalogItemWithoutApi(String field, String value, int num_of_hits) {
+    public ArrayList<Claim> findCatalogItemWithoutApi(String field, String value, int num_of_hits) {
         String url = SCHEME + "://" + HOST + ":" + PORT_ONE + "/_search?q=" + field + ":" + value + "&size=" + num_of_hits;
         URL obj = null;
 
@@ -63,12 +66,13 @@ public class ElasticWrapper {
     }
 
     public static void main(String[] args) {
+        ElasticWrapper demo = new ElasticWrapper("192.168.2.112", 9200, 9201, "http");
         JsonObjectBuilder factory = Json.createObjectBuilder();
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        ElasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 10).forEach(claim -> {
+        demo.findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 10).forEach(claim -> {
             arrayBuilder.add(Json.createObjectBuilder().add("claimReview_claimReviewed", claim.getReviewedBody()));
         });
-        factory.add("results",arrayBuilder);
+        factory.add("results", arrayBuilder);
         factory.add("search", Json.createArrayBuilder());
         System.out.println(factory.build());
     }

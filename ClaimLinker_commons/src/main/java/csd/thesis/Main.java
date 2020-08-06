@@ -14,7 +14,7 @@ public class Main {
         System.out.println("_______________________________________________");
 
         {
-            ClaimLinker claimLinker = new ClaimLinker("Properties.xml", "data/stopwords.txt", "data/english-20200420.hash","data/claim_extraction_18_10_2019_annotated.csv");
+            ClaimLinker claimLinker = new ClaimLinker("Properties.xml", "data/stopwords.txt", "data/english-20200420.hash", "data/claim_extraction_18_10_2019_annotated.csv", "192.168.2.112");
             claimLinker.demo_pipeline();
         }
         System.out.println("_______________________________________________");

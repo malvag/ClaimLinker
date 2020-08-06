@@ -25,36 +25,41 @@ public class ElasticInitializer {
 
     //The config parameters for the connection
 
+    private String HOST;
+    private int PORT_ONE;
+    private int PORT_TWO;
+    ;
+    private String SCHEME;
+    public String path;
+    private int counter;
 
-    static Dotenv dotenv = Dotenv.configure().directory("ElasticSearch_Tools").ignoreIfMalformed()
-            .ignoreIfMissing().load();
-    private static final String HOST = Objects.requireNonNull(Objects.requireNonNull(dotenv.get("HOST")).replaceAll("\"",""));
-    private static final String PORT_ONE = Objects.requireNonNull(dotenv.get("PORT_ONE")).replaceAll("\"","");
-    private static final String PORT_TWO = Objects.requireNonNull(dotenv.get("PORT_TWO")).replaceAll("\"","");
-    private static final String SCHEME =  Objects.requireNonNull(dotenv.get("SCHEME")).replaceAll("\"","");
-    public static String path;
-    private static int counter;
-
-    private static RestHighLevelClient restHighLevelClient;
-    private static BulkRequest bulkRequest;
+    private RestHighLevelClient restHighLevelClient;
+    private BulkRequest bulkRequest;
 
     public static ArrayList<Map<String, Object>> master_claim_record;
 
-    public static synchronized void makeConnection(String path) {
+    public ElasticInitializer(String path, String HOST, int PORT_O, int PORT_T, String SCHEME) {
+        this.path = path;
+        this.HOST = HOST;
+        this.PORT_ONE = PORT_O;
+        this.PORT_TWO = PORT_T;
+        this.SCHEME = SCHEME;
+    }
+
+    public synchronized void makeConnection() {
         System.out.println("Trying to establish connection with elastic search...");
         counter = 0;
         if (restHighLevelClient == null) {
             restHighLevelClient = new RestHighLevelClient(
                     RestClient.builder(
-                            new HttpHost(HOST, Integer.getInteger(PORT_ONE), SCHEME),
-                            new HttpHost(HOST, Integer.getInteger(PORT_TWO), SCHEME)));
+                            new HttpHost(HOST, PORT_ONE, SCHEME),
+                            new HttpHost(HOST, PORT_TWO, SCHEME)));
         }
-        ElasticInitializer.path = path;
         System.out.println("Connection established with elastic search.");
 
     }
 
-    public static synchronized void closeConnection() {
+    public synchronized void closeConnection() {
         try {
             restHighLevelClient.close();
         } catch (IOException e) {
@@ -63,7 +68,7 @@ public class ElasticInitializer {
         restHighLevelClient = null;
     }
 
-    public static void index(XContentBuilder o, boolean bulk) throws IOException {
+    public void index(XContentBuilder o, boolean bulk) throws IOException {
         IndexRequest indexRequest = new IndexRequest("claim")
                 .id(String.valueOf(counter++)).source(o);
         IndexResponse indexResponse = null;
@@ -73,7 +78,7 @@ public class ElasticInitializer {
             bulkRequest.add(indexRequest);
     }
 
-    public static void bulkIndex() {
+    public void bulkIndex() {
         boolean flag = false;
         if (bulkRequest == null)
             return;
@@ -99,9 +104,9 @@ public class ElasticInitializer {
 
     }
 
-    public static ArrayList<Map<String, Object>> openClaimsRecord() {
+    public ArrayList<Map<String, Object>> openClaimsRecord() {
         ElasticInitializer.master_claim_record = new ArrayList<>();
-        OpenCSVWrapper openCSVWrapper = new OpenCSVWrapper(ElasticInitializer.path);
+        OpenCSVWrapper openCSVWrapper = new OpenCSVWrapper(this.path);
         try {
             ElasticInitializer.master_claim_record = openCSVWrapper.parse();
         } catch (Exception e) {
@@ -110,12 +115,12 @@ public class ElasticInitializer {
         return ElasticInitializer.master_claim_record;
     }
 
-    public static void insertClaims(boolean bulk) {
-        System.out.println("Trying to read from file: " + ElasticInitializer.path);
+    public void insertClaims(boolean bulk) {
+        System.out.println("Trying to read from file: " + this.path);
         bulkRequest = new BulkRequest();
         try {
             if (ElasticInitializer.master_claim_record == null)
-                ElasticInitializer.openClaimsRecord();
+                this.openClaimsRecord();
             ElasticInitializer.master_claim_record.forEach(elem -> {
                 XContentBuilder builder = null;
                 try {
@@ -125,12 +130,13 @@ public class ElasticInitializer {
                     {
                         builder.field("claimReview_author_name", elem.get("claimReview_author_name"));
                         builder.field("claimReview_claimReviewed", elem.get("claimReview_claimReviewed"));
+                        builder.field("creativeWork_author_name", elem.get("creativeWork_author_name"));
                         builder.field("extra_title", elem.get("extra_title"));
                         builder.field("rating_alternateName", elem.get("rating_alternateName"));
 
                     }
                     builder.endObject();
-                    ElasticInitializer.index(builder, bulk);
+                    this.index(builder, bulk);
                     System.out.printf("%.2f\r", (double) counter / 33886);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -142,10 +148,10 @@ public class ElasticInitializer {
         bulkIndex();
     }
 
-    public static void deleteClaims() {
+    public void deleteClaims() {
         try {
             DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest("claim");
-            AcknowledgedResponse deleteIndexResponse = restHighLevelClient.indices().delete(deleteIndexRequest, RequestOptions.DEFAULT);
+            AcknowledgedResponse deleteIndexResponse = this.restHighLevelClient.indices().delete(deleteIndexRequest, RequestOptions.DEFAULT);
         } catch (IOException | ElasticsearchStatusException e) {
 //            e.printStackTrace();
             System.err.println("Claim index doesn't exist in ES, proceeding ...");
@@ -155,12 +161,13 @@ public class ElasticInitializer {
 
 
     public static void main(String[] args) {
-        makeConnection("data/claim_extraction_18_10_2019_annotated.csv");
-//
-        deleteClaims();
-        insertClaims(true);
+        ElasticInitializer demo = new ElasticInitializer("data/claim_extraction_18_10_2019_annotated.csv", "192.168.2.112", 9200, 9201, "http");
+        demo.makeConnection();
 
-        closeConnection();
+        demo.deleteClaims();
+        demo.insertClaims(true);
+
+        demo.closeConnection();
     }
 
 }
