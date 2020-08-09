@@ -38,10 +38,6 @@
     </properties>
     <repositories>
         <repository>
-            <id>FEL</id>
-            <url>${project.basedir}\lib</url>
-        </repository>
-        <repository>
             <id>BibSonomy</id>
             <name>BibSonomy</name>
             <url>https://dev.bibsonomy.org/maven2/</url>

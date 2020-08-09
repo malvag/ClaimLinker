@@ -17,6 +17,21 @@
       <option name="url" value="https://repo.maven.apache.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Maven Central repository" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="local_lib" />
+      <option name="name" value="local_lib" />
+      <option name="url" value="C:\Users\malva\Unsupervised-detection-of-fact-checked-claims-in-web-documents\ClaimLinker_commons/lib" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="local_lib" />
+      <option name="name" value="local_lib" />
+      <option name="url" value="C:\Users\malva\Unsupervised-detection-of-fact-checked-claims-in-web-documents\ClaimLinker_commons" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="BibSonomy" />
       <option name="name" value="BibSonomy" />
       <option name="url" value="https://dev.bibsonomy.org/maven2/" />
@@ -27,11 +42,6 @@
       <option name="url" value="C:\Users\malva\Unsupervised-detection-of-fact-checked-claims-in-web-documents\ClaimLinker_commons\libs" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="central" />
-      <option name="name" value="Maven Central repository" />
-      <option name="url" value="https://repo1.maven.org/maven2" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
@@ -40,6 +50,11 @@
       <option name="id" value="elastic-lucene-snapshots" />
       <option name="name" value="Elastic Lucene Snapshots" />
       <option name="url" value="https://s3.amazonaws.com/download.elasticsearch.org/lucenesnapshots/83f9835" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="local_lib" />
+      <option name="name" value="local_lib" />
+      <option name="url" value="C:\Users\malva\Unsupervised-detection-of-fact-checked-claims-in-web-documents\ClaimLinker_commons\lib" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="FEL" />

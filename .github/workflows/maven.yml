@@ -1,14 +1,19 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
 name: ClaimLinker CI
-'on':
+
+on:
   push:
-    branches:
-      - master
+    branches: [ master , Windows ]
   pull_request:
-    branches:
-      - master
+    branches: [ master ]
+
 jobs:
   build:
+
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 14
@@ -17,11 +22,8 @@ jobs:
           java-version: 14
       - name: Go to the FEL's directory
         run: chdir=/ClaimLinker_commons/FEL-master
-      - name: Build FEL and package-install to ClaimLinker's libraries
-        run: >-
-          mvn package install:install-file -Dfile=target/FEL-0.1.0-fat.jar
-          -DgroupId=com.yahoo.FEL -DartifactId=FEL -Dversion=0.1.0
-          -Dpackaging=jar -DlocalRepositoryPath=../lib
+      - name: package-install FEL to ClaimLinker's libraries
+        run: mvn install:install-file -Dfile=lib/FEL-0.1.0-fat.jar -DgroupId=com.yahoo.FEL -DartifactId=FEL -Dversion=0.1.0 -Dpackaging=jar -DgeneratePom=true
       - name: Go to the Claimlinker root directory
         run: chdir=/ClaimLinker_commons/FEL-master
       - name: Build
