@@ -43,17 +43,17 @@ public class claimLinker_Servlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         JsonObjectBuilder factory = Json.createObjectBuilder();
         JsonObjectBuilder flags = Json.createObjectBuilder();
-//        .add("claimOwner_of",request.getParameter("claimOwner_of")) // if exists
+//        .add("claimOwner_of",request.getParameter("author_of")) // if exists
 //                .add("topic_of",request.getParameter("topic_of")) // if exists
 //                .add("same_as",request.getParameter("same_as")) // if exists
         factory.add("message", "API ClaimLinker").add("flags", flags);
         JsonObject respose_json = factory.build();
-//        if (request.getParameter("claimOwner_of").equals("true")) {
-//
-//        }
-//        if (request.getParameter("topic_of").equals("true")) {
-//
-//        }
+        if (request.getParameter("author_of").equals("true")) {
+            respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Assoc_t.author_of);
+        }
+        if (request.getParameter("topic_of").equals("true")) {
+            respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Assoc_t.topic_of);
+        }
         if (request.getParameter("assoc_t").equals("same_as")) {
             respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Assoc_t.same_as);
         }
@@ -77,12 +77,12 @@ public class claimLinker_Servlet extends HttpServlet {
         WebArticle webArticle;
         if (param_selection != null) {
             webArticle = new WebArticle(param_url, param_selection, WebArticle.WebArticleType.selection);
-            factory.add("selection", webArticle.getCleaned());
+            factory.add("selection", webArticle.getSelection());
         } else {
             webArticle = new WebArticle(param_url, null, WebArticle.WebArticleType.url);
         }
         factory.add("url", param_url).add("cleaned_text_from_url", webArticle.getDoc().text());
-        factory.add("results", claimLinker.claimLink(param_selection, assoc_t));
+        factory.add("results", claimLinker.claimLink(webArticle.getDoc().text(), param_selection, assoc_t));
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
         factory.add("timeElapsed", timeElapsed);

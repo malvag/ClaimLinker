@@ -6,7 +6,6 @@ import edu.stanford.nlp.pipeline.CoreEntityMention;
 
 import java.util.List;
 
-//import it.uniroma1.lcl.babelfy.commons.annotation.SemanticAnnotation;
 
 public class WebArticle {
     private String cleaned;
@@ -55,9 +54,12 @@ public class WebArticle {
         return entities;
     }
 
+
+    public String getSelection() {
+        return selection;
+    }
+
     public String getCleaned() {
-        if(this.hasSelection)
-            return selection;
         return cleaned;
     }
 

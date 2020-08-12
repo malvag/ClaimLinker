@@ -1,8 +1,8 @@
 package csd.thesis;
 
 import com.google.gson.*;
+import csd.thesis.misc.ConsoleColor;
 import csd.thesis.model.Claim;
-import io.github.cdimascio.dotenv.Dotenv;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -53,7 +53,7 @@ public class ElasticWrapper {
             AtomicInteger counter = new AtomicInteger();
             jo.getAsJsonObject("hits").getAsJsonArray("hits").forEach(claim -> {
                 JsonObject claim_obj = claim.getAsJsonObject();
-                System.out.println((counter.getAndIncrement()) + " " + claim_obj.get("_score") + " " + claim_obj.getAsJsonObject("_source").get("claimReview_claimReviewed"));
+                System.out.println(ConsoleColor.ANSI_GREEN + "[ES_wrapper_api] "+ (counter.getAndIncrement()) + " " + claim_obj.get("_score") + " " + claim_obj.getAsJsonObject("_source").get("claimReview_claimReviewed")+ConsoleColor.ANSI_RESET);
                 claimArrayList.add(new Claim(claim_obj));
             });
 

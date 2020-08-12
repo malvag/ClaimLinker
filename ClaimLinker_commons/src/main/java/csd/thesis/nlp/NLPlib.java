@@ -1,4 +1,4 @@
-package csd.thesis.tools;
+package csd.thesis.nlp;
 
 import com.yahoo.semsearch.fastlinking.hash.QuasiSuccinctEntityHash;
 import csd.thesis.misc.ConsoleColor;
@@ -19,9 +19,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-
-//mvn install:install-file -Dfile=/Users/malvagos/UDFC/ClaimLinker_commons/lib/FEL-0.1.0-fat.jar -DgroupId=<group-id> -DartifactId=<artifact-id> -Dversion=<version> -Dpackaging=<packaging>
-//mvn install:install-file              -DartifactId=FEL      -Dversion=0.1.0>     -Dpackaging=jar      -DgeneratePom=true
 
 public class NLPlib {
     private final StanfordCoreNLP master_pipeline;
@@ -99,7 +96,7 @@ public class NLPlib {
 //            System.out.println(elem);
             cleaned.updateAndGet(v -> v + elem.originalText() + " ");
         });
-        System.out.println(ConsoleColor.ANSI_CYAN + "[NLPlib] INFO stopwords removed" + ConsoleColor.ANSI_RESET);
+//        System.out.println(ConsoleColor.ANSI_CYAN + "[NLPlib] stopwords removed" + ConsoleColor.ANSI_RESET);
         return cleaned.get();
     }
 //
@@ -197,7 +194,7 @@ public class NLPlib {
             if (debug) System.out.println("[NLPlib] Sentence #" + counter++);
             for (CoreLabel token : ((CoreMap) sentence).get(CoreAnnotations.TokensAnnotation.class)) {
                 if (debug) {
-                    System.out.printf("[NLPlib] Token : %15s - %15s", token, token.originalText());
+                    System.out.printf("[NLPlib] Token : %15s - %15s\n", token, token.originalText());
                 }
                 if (!this.stopwords.contains(token.originalText()))
                     without_stopwords.add(token);

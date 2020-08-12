@@ -1,4 +1,4 @@
-package csd.thesis.tools;
+package csd.thesis.nlp;
 
 import com.yahoo.semsearch.fastlinking.FastEntityLinker;
 import com.yahoo.semsearch.fastlinking.hash.QuasiSuccinctEntityHash;
@@ -31,8 +31,10 @@ public class AnalyzerDispatcher {
 
     public double analyze(CoreDocument claim, CoreDocument text) {
         double score=0;
+        int counter = 0;
         ArrayList<Pair<Double,CoreDocument>> arr = new ArrayList<>();
         for (CoreSentence sentence : text.sentences()) {
+//            System.out.printf("sentence #%d\r", counter++);
             double sum = 0d;
             CoreDocument doced_sentence = new CoreDocument(sentence.text());
             AnalyzerDispatcher.nlp_instance.NLPlib_annotate(doced_sentence);
@@ -48,9 +50,6 @@ public class AnalyzerDispatcher {
         }
         Collections.sort(arr);
         this.similarityMeasures.trimToSize();
-        //            System.out.println("Sentence " + (double) (elem.first / this.similarityMeasures.size()));
-        //            System.out.println(elem.second.toString());
-        //            System.out.println("====");
         for (Pair<Double, CoreDocument> elem : arr) {
             score += (elem.first);
         }

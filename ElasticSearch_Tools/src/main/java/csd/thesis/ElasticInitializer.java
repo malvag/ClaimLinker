@@ -128,8 +128,8 @@ public class ElasticInitializer {
 
                     builder.startObject();
                     {
-                        builder.field("claimReview_author_name", elem.get("claimReview_author_name"));
                         builder.field("claimReview_claimReviewed", elem.get("claimReview_claimReviewed"));
+//                        builder.field("claimReview_datePublished", elem.get("claimReview_datePublished"));
                         builder.field("creativeWork_author_name", elem.get("creativeWork_author_name"));
                         builder.field("extra_title", elem.get("extra_title"));
                         builder.field("rating_alternateName", elem.get("rating_alternateName"));

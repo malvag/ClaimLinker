@@ -3,7 +3,7 @@ package csd.thesis;
 //import csd.thesis.elastic.OpenCSVWrapper;
 
 
-public class Main {
+public class demo {
     static boolean default_operation;
     static private String command;
     static private int iter;
