@@ -29,24 +29,19 @@ public class AnalyzerDispatcher {
         this.similarityMeasures.addAll(Arrays.asList(similarityMeasure_array));
     }
 
-    public double analyze(CoreDocument claim, CoreDocument text) {
+    public double analyze(CoreDocument text, CoreDocument claim) {
         double score=0;
-        int counter = 0;
         ArrayList<Pair<Double,CoreDocument>> arr = new ArrayList<>();
         for (CoreSentence sentence : text.sentences()) {
-//            System.out.printf("sentence #%d\r", counter++);
             double sum = 0d;
             CoreDocument doced_sentence = new CoreDocument(sentence.text());
             AnalyzerDispatcher.nlp_instance.NLPlib_annotate(doced_sentence);
-
-//            System.out.println(sentence.text());
             for (SimilarityMeasure similarityMeasure : this.similarityMeasures) {
                 double result = similarityMeasure.analyze(claim, doced_sentence);
                 sum += (result >= 0) ? result : 0;
             }
             sum /= similarityMeasures.size();
-            arr.add(new Pair<Double,CoreDocument>(sum,doced_sentence));
-//            break;
+            arr.add(new Pair<>(sum, doced_sentence));
         }
         Collections.sort(arr);
         this.similarityMeasures.trimToSize();
@@ -71,7 +66,7 @@ public class AnalyzerDispatcher {
         SimilarityMeasure similarityMeasure;
 
         @Override
-        public Double call() throws Exception {
+        public Double call() {
             return this.similarityMeasure.analyze(a, b);
         }
     }
@@ -199,26 +194,25 @@ public class AnalyzerDispatcher {
                     String ne = elem.get(CoreAnnotations.PartOfSpeechAnnotation.class);
 //                    System.out.println(ne + " " + elem.originalText());
                     if (ne.startsWith("NN")) {
-                        A_Nouns.add(new Pair<String, String>(ne, elem.originalText()));
+                        A_Nouns.add(new Pair<>(ne, elem.originalText()));
                     } else if (ne.startsWith("RB")) {
-                        A_Adverbs.add(new Pair<String, String>(ne, elem.originalText()));
+                        A_Adverbs.add(new Pair<>(ne, elem.originalText()));
                     } else if (ne.startsWith("VB")) {
-                        A_Verbs.add(new Pair<String, String>(ne, elem.originalText()));
+                        A_Verbs.add(new Pair<>(ne, elem.originalText()));
                     } else if (ne.equals("WP")) {
-                        A_Wh_pronoun.add(new Pair<String, String>(ne, elem.originalText()));
+                        A_Wh_pronoun.add(new Pair<>(ne, elem.originalText()));
                     }
                 });
                 text.tokens().forEach(elem -> {
                     String ne = elem.get(CoreAnnotations.PartOfSpeechAnnotation.class);
-//                    System.out.println(ne + " " + elem.originalText());
                     if (ne.startsWith("NN")) {
-                        B_Nouns.add(new Pair<String, String>(ne, elem.originalText()));
+                        B_Nouns.add(new Pair<>(ne, elem.originalText()));
                     } else if (ne.startsWith("RB")) {
-                        B_Adverbs.add(new Pair<String, String>(ne, elem.originalText()));
+                        B_Adverbs.add(new Pair<>(ne, elem.originalText()));
                     } else if (ne.startsWith("VB")) {
-                        B_Verbs.add(new Pair<String, String>(ne, elem.originalText()));
+                        B_Verbs.add(new Pair<>(ne, elem.originalText()));
                     } else if (ne.equals("WP")) {
-                        B_Wh_pronoun.add(new Pair<String, String>(ne, elem.originalText()));
+                        B_Wh_pronoun.add(new Pair<>(ne, elem.originalText()));
                     }
                 });
                 if (verbose) {
@@ -242,7 +236,7 @@ public class AnalyzerDispatcher {
                     System.out.println("Adverbs:    " + this.similarity(A_Adverbs, B_Adverbs));
                     System.out.println("Wh_pronoun: " + this.similarity(A_Wh_pronoun, B_Wh_pronoun));
                 }
-                double result = 0d, tmp = 0d;
+                double result = 0d, tmp;
                 int elems = 0;
                 if ((tmp = this.similarity(A_Verbs, B_Verbs)) >= 0) {
                     result += tmp;
@@ -275,7 +269,7 @@ public class AnalyzerDispatcher {
                 double Ngram2 = this.similarity(getNgrams(2, claim), getNgrams(2, text));
                 double Ngram3 = this.similarity(getNgrams(3, claim), getNgrams(3, text));
                 double Ngram4 = this.similarity(getNgrams(4, claim), getNgrams(4, text));
-                double result = 0;
+                double result;
                 synchronized (this) {
                     String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) ngrams similarity applied" + ConsoleColor.ANSI_RESET;
                     if (verbose) {
@@ -313,7 +307,7 @@ public class AnalyzerDispatcher {
                 double Ngram2 = this.similarity(getNchargrams(2, claim), getNchargrams(2, text));
                 double Ngram3 = this.similarity(getNchargrams(3, claim), getNchargrams(3, text));
                 double Ngram4 = this.similarity(getNchargrams(4, claim), getNchargrams(4, text));
-                double result = 0;
+                double result;
                 synchronized (this) {
                     String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) nchargrams similarity applied" + ConsoleColor.ANSI_RESET;
                     if (verbose) {
@@ -351,12 +345,8 @@ public class AnalyzerDispatcher {
                 HashMap<CharSequence, Integer> hash = new HashMap<>();
                 HashMap<CharSequence, Integer> hash2 = new HashMap<>();
 
-                claim.tokens().forEach(elem -> {
-                    hash.put(elem.originalText(), 1);
-                });
-                text.tokens().forEach(elem -> {
-                    hash2.put(elem.originalText(), 1);
-                });
+                claim.tokens().forEach(elem -> hash.put(elem.originalText(), 1));
+                text.tokens().forEach(elem -> hash2.put(elem.originalText(), 1));
                 double result = sim.cosineSimilarity(hash, hash2);
                 synchronized (this) {
                     String out = ConsoleColor.ANSI_GREEN + "INFO Cosine similarity applied" + ConsoleColor.ANSI_RESET;
@@ -388,7 +378,7 @@ public class AnalyzerDispatcher {
             if (l1.containsAll(l2) && l2.containsAll(l1)) return 1d;
 
             List<T> intersectionList = l1.stream().filter(l2::contains).distinct().collect(Collectors.toList());
-            List<T> unionList = new ArrayList<T>();
+            List<T> unionList = new ArrayList<>();
             unionList.addAll(l1);
             unionList.addAll(l2);
             unionList = unionList.stream().distinct().collect(Collectors.toList());

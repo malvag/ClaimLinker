@@ -19,11 +19,11 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
         System.out.println(getServletName() + " initialization finished! ");
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (request.getParameter("url") == null) {
             response.setStatus(400);
             response.flushBuffer();
@@ -42,6 +42,7 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
 //        }
         PrintWriter out = response.getWriter();
         response.setContentType("text/html");
+        assert response_json != null;
         String front = "<!doctype html>\n" +
                 "<html lang=\"en\">\n" +
                 "  <head>\n" +
@@ -83,12 +84,15 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
         StringBuilder results = new StringBuilder();
         for (int i = 0; i < response_json.getJsonArray("results").size(); i++) {
             JsonObject obj = response_json.getJsonArray("results").getJsonObject(i);
-            results.append("      <tr>\n" +
-                    "        <th scope=\"row\">" + i + "</th>\n" +
-                    "        <td>" + obj.getString("claimReview_claimReviewed") + "</td>\n" +
-                    "        <td>" + obj.getJsonNumber("NLP_score") + "</td>\n" +
-                    "        <td>" + obj.getJsonNumber("ElasticScore") + "</td>\n" +
-                    "      </tr>\n");
+            results.append("      <tr>\n" + "        <th scope=\"row\">")
+                    .append(i).append("</th>\n").append("        <td>")
+                    .append(obj.getString("claimReview_claimReviewed"))
+                    .append("</td>\n").append("        <td>")
+                    .append(obj.getJsonNumber("NLP_score"))
+                    .append("</td>\n").append("        <td>")
+                    .append(obj.getJsonNumber("ElasticScore"))
+                    .append("</td>\n")
+                    .append("      </tr>\n");
         }
         out.println(front + results.toString() + end);
         response.setStatus(200);

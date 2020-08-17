@@ -12,9 +12,12 @@ public class WebArticle {
     private String selection;
     private boolean hasSelection;
     private List<CoreEntityMention> entities;
-    //    private List<SemanticAnnotation> bfyAnnotations;
     private CoreDocument doc;
     private String url;
+
+    public boolean doesItHaveSelection() {
+        return hasSelection;
+    }
 
     public enum WebArticleType {
         selection, url
@@ -35,9 +38,6 @@ public class WebArticle {
     public void setEntities(List<CoreEntityMention> entities) {
         this.entities = entities;
     }
-//    public void setBfyAnnotations(List<SemanticAnnotation> bfyAnnotations) {
-//        this.bfyAnnotations = bfyAnnotations;
-//    }
 
     public String getUrl() {
         return url;
@@ -47,13 +47,9 @@ public class WebArticle {
         return doc;
     }
 
-    //    public List<SemanticAnnotation> getBfyAnnotations() {
-//        return bfyAnnotations;
-//    }
     public List<CoreEntityMention> getEntities() {
         return entities;
     }
-
 
     public String getSelection() {
         return selection;
@@ -74,21 +70,4 @@ public class WebArticle {
             this.selection = selection;
         }
     }
-
-//    public void annotate(NLPlib nlp_instance,WebArticleType type) {
-//        if(type == WebArticleType.selection)
-//            this.doc = new CoreDocument(this.selection);
-//        this.doc = new CoreDocument(this.doc.text());
-//        nlp_instance.NLPlib_annotate(this.doc);
-//    }
-
-    private void removeStopWords() {
-
-    }
-
-    private void stem() {
-
-    }
-
-
 }

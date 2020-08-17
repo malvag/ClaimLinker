@@ -33,7 +33,7 @@ public class ElasticWrapper {
 
     public ArrayList<Claim> findCatalogItemWithoutApi(String field, String value, int num_of_hits) {
         String url = SCHEME + "://" + HOST + ":" + PORT_ONE + "/_search?q=" + field + ":" + value + "&size=" + num_of_hits;
-        URL obj = null;
+        URL obj;
 
 //        System.out.println(url);
         ArrayList<Claim> claimArrayList = new ArrayList<>();
@@ -69,16 +69,15 @@ public class ElasticWrapper {
         ElasticWrapper demo = new ElasticWrapper("192.168.2.112", 9200, 9201, "http");
         JsonObjectBuilder factory = Json.createObjectBuilder();
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        demo.findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 10).forEach(claim -> {
-            arrayBuilder.add(Json.createObjectBuilder().add("claimReview_claimReviewed", claim.getReviewedBody()));
-        });
+        demo.findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 10).forEach(claim ->
+                arrayBuilder.add(Json.createObjectBuilder().add("claimReview_claimReviewed", claim.getReviewedBody())));
         factory.add("results", arrayBuilder);
         factory.add("search", Json.createArrayBuilder());
         System.out.println(factory.build());
     }
 
     static Map<String, Object> createMapFromJsonObject(JsonObject jo) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         for (Map.Entry<String, JsonElement> entry : jo.entrySet()) {
             String key = entry.getKey();
             JsonElement value = entry.getValue();
@@ -92,7 +91,7 @@ public class ElasticWrapper {
             return createMapFromJsonObject(je.getAsJsonObject());
         } else if (je.isJsonArray()) {
             JsonArray array = je.getAsJsonArray();
-            List<Object> list = new ArrayList<Object>(array.size());
+            List<Object> list = new ArrayList<>(array.size());
             for (JsonElement element : array) {
                 list.add(getValueFromJsonElement(element));
             }

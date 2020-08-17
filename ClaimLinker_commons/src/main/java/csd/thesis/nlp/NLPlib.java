@@ -74,8 +74,8 @@ public class NLPlib {
     public String getStemmed(CoreDocument a) {
         PorterStemmer ps = new PorterStemmer();
         if (a == null) return "null";
-        String stemmed_str = "";
-        ArrayList<String> stemmed = new ArrayList<String>();
+        String stemmed_str;
+        ArrayList<String> stemmed = new ArrayList<>();
         a.tokens().forEach(token -> {
             ps.setCurrent(token.originalText());
             ps.stem();
@@ -91,7 +91,7 @@ public class NLPlib {
 
     public String getWithoutStopwords(CoreDocument a) {
         AtomicReference<String> cleaned = new AtomicReference<>("");
-        if (a == null) this.setDoc(a);
+        if (a != null) this.setDoc(a);
         this.removeStopWords().forEach(elem -> {
 //            System.out.println(elem);
             cleaned.updateAndGet(v -> v + elem.originalText() + " ");
@@ -208,7 +208,7 @@ public class NLPlib {
     }
 
     private void initStopword(String file_path) {
-        this.stopwords = new ArrayList<String>();
+        this.stopwords = new ArrayList<>();
         try (BufferedReader in = new BufferedReader(new FileReader(file_path))) {
             String input;
             while ((input = in.readLine()) != null) {

@@ -65,7 +65,7 @@ public class ClaimLinker {
 		return document;
 	}
 
-	public void demo_pipeline() throws UnsupportedEncodingException {
+	public void demo_pipeline() {
 		System.out.println("Demo pipeline started!");
 		String t2 //= "Today I opened a major Apple Manufacturing plant in Texas that will bring high paying jobs back to America.";
 				= "C++ designer Bjarne Stroustrup ";
@@ -139,28 +139,21 @@ public class ClaimLinker {
 					}
 				}
 			}
-			entities.forEach(elem -> {
-				System.out.printf("Person entities : %15s  \n", elem);
-			});
+			entities.forEach(elem -> System.out.printf("Person entities : %15s  \n", elem));
 			// match the persons with the claims_author in ES
 			Set<Claim> unique_claims = new HashSet<>();
-			entities.forEach(entity -> {
-				unique_claims.addAll(this.elasticWrapper.findCatalogItemWithoutApi("creativeWork_author_name", URLEncoder.encode(entity.toString(), StandardCharsets.UTF_8), 50));
-			});
+			entities.forEach(entity -> unique_claims.addAll(this.elasticWrapper.findCatalogItemWithoutApi("creativeWork_author_name", URLEncoder.encode(entity.toString(), StandardCharsets.UTF_8), 50)));
 			this.claims = Lists.newArrayList(unique_claims);
 			// generate candidates and rank them with Sim Measures
 			CoreDocument CD_text = this.NLP_annotate(
 					this.nlp_instance.getWithoutStopwords(
 							this.NLP_annotate(text)));
-			this.claims.forEach(elem -> {
-				System.out.printf("Candidate claim: %15s  \n",  elem.getReviewedBody());
-			});
+			this.claims.forEach(elem -> System.out.printf("Candidate claim: %15s  \n",  elem.getReviewedBody()));
 			ArrayList<Pair<Double, Claim>> records = new ArrayList<>();
-			int counter = 0;
+
 			System.out.println("== Processing claim # ==");
 			for (Claim claim : this.claims) {
 				CoreDocument CD_c = this.NLP_annotate(claim.getReviewedBody());
-//				System.out.printf("%d\r", counter++);
 				records.add(new Pair<>(this.analyzerDispatcher.analyze(CD_c, CD_text), claim));
 			}
 
