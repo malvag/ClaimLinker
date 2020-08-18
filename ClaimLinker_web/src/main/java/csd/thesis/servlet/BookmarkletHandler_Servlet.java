@@ -28,7 +28,7 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
             response.setStatus(400);
             response.flushBuffer();
         }
-        JsonObject response_json = claimLinker_Servlet.ClaimLinkHandler(request, Assoc_t.author_of);
+        JsonObject response_json = claimLinker_Servlet.ClaimLinkHandler(request, Assoc_t.topic_of);
 //        StringBuilder ss = new StringBuilder();
 //        URL url = new URL(request.getParameter("url"));
 //        try (

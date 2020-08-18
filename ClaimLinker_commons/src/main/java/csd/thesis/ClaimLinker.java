@@ -25,6 +25,11 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
+
 public class ClaimLinker {
 	public ArrayList<Claim> claims;
 	public NLPlib nlp_instance;
@@ -123,6 +128,9 @@ public class ClaimLinker {
 		} else if (assoc_t == Assoc_t.author_of) {
 
 			// find the Persons from selection
+			// match the persons with the claims_author in ES
+			// generate candidates and rank them with Sim Measures based on the whole text's similarities per sentence
+
 			CoreDocument CD_selection = this.NLP_annotate(
 					this.nlp_instance.getWithoutStopwords(
 							this.NLP_annotate(selection)));
@@ -140,18 +148,16 @@ public class ClaimLinker {
 				}
 			}
 			entities.forEach(elem -> System.out.printf("Person entities : %15s  \n", elem));
-			// match the persons with the claims_author in ES
+
 			Set<Claim> unique_claims = new HashSet<>();
 			entities.forEach(entity -> unique_claims.addAll(this.elasticWrapper.findCatalogItemWithoutApi("creativeWork_author_name", URLEncoder.encode(entity.toString(), StandardCharsets.UTF_8), 50)));
 			this.claims = Lists.newArrayList(unique_claims);
-			// generate candidates and rank them with Sim Measures
 			CoreDocument CD_text = this.NLP_annotate(
 					this.nlp_instance.getWithoutStopwords(
 							this.NLP_annotate(text)));
-			this.claims.forEach(elem -> System.out.printf("Candidate claim: %15s  \n",  elem.getReviewedBody()));
 			ArrayList<Pair<Double, Claim>> records = new ArrayList<>();
 
-			System.out.println("== Processing claim # ==");
+			System.out.println("Processing candidate claims");
 			for (Claim claim : this.claims) {
 				CoreDocument CD_c = this.NLP_annotate(claim.getReviewedBody());
 				records.add(new Pair<>(this.analyzerDispatcher.analyze(CD_c, CD_text), claim));
@@ -178,6 +184,57 @@ public class ClaimLinker {
 			// find the NN* from selection
 			// Given those nouns, we can submit a keyword query to an Elasticsearch index and get a ranked list of candidate claims
 			// generate candidates and rank them with Sim Measures
+
+			CoreDocument CD_selection = this.NLP_annotate(
+					this.nlp_instance.getWithoutStopwords(
+							this.NLP_annotate(selection)));
+			Annotation document = new Annotation(CD_selection.annotation());
+			List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+			Set<CoreMap> NNouns = new HashSet<>();
+
+
+			for (CoreMap sentence : sentences) {
+				for (CoreLabel token : sentence.get(CoreAnnotations.TokensAnnotation.class)) {
+					String ne = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
+					if (ne.startsWith("NN"))
+						NNouns.add(token);
+				}
+			}
+			NNouns.forEach(elem -> System.out.printf("Nouns : %15s  \n", elem));
+			// match the persons with the claims_author in ES
+			Set<Claim> unique_claims = new HashSet<>();
+			NNouns.forEach(noun -> unique_claims.addAll(this.elasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed", URLEncoder.encode(noun.toString(), StandardCharsets.UTF_8), 50)));
+			List<Claim> unique = unique_claims.stream()
+					.collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparing(Claim::getReviewedBody))),
+							ArrayList::new));
+
+			this.claims = Lists.newArrayList(unique);
+			// generate candidates and rank them with Sim Measures
+			CoreDocument CD_text = this.NLP_annotate(
+					this.nlp_instance.getWithoutStopwords(
+							this.NLP_annotate(text)));
+			ArrayList<Pair<Double, Claim>> records = new ArrayList<>();
+
+			System.out.println("Processing candidate claims");
+			for (Claim claim : this.claims) {
+				CoreDocument CD_c = this.NLP_annotate(claim.getReviewedBody());
+				records.add(new Pair<>(this.analyzerDispatcher.analyze(CD_c, CD_text), claim));
+			}
+
+			records.sort(Collections.reverseOrder());
+			JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+			for (Pair<Double, Claim> elem : records) {
+				arrayBuilder.add(Json.createObjectBuilder()
+								.add("claimReview_claimReviewed", elem.second.getReviewedBody())
+								.add("rating_alternateName", elem.second.getRatingName())
+								.add("extra_title", elem.second.getExtraTitle())
+//                        .add("author_name", elem.second.getAuthorName())
+								.add("NLP_score", elem.first)
+								.add("ElasticScore", elem.second.getElasticScore())
+
+				);
+			}
+			return arrayBuilder.build();
 
 		} else if (assoc_t == Assoc_t.same_as) {
 
