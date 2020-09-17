@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Claim {
-//    double NLPscore;
+    //    double NLPscore;
     Map<String, Object> objectMap;
     private CoreDocument doc;
 
@@ -56,6 +56,11 @@ public class Claim {
 
     public String getExtraTitle() {
         return (String) this.objectMap.get("extra_title");
+    }
+
+    public String getAuthorName() {
+        String auth_name = (String) this.objectMap.get("creativeWork_author_name");
+        return auth_name == null || auth_name.isEmpty() ? "" : auth_name;
     }
 
     public String toJson() throws JsonProcessingException {

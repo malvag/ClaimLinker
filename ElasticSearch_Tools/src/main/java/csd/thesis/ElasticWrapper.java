@@ -1,6 +1,7 @@
 package csd.thesis;
 
 import com.google.gson.*;
+import csd.thesis.misc.ConsoleColor;
 import csd.thesis.model.Claim;
 
 import javax.json.Json;
@@ -13,26 +14,28 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ElasticWrapper {
 
-    //The config parameters for the connection
-    private static final String HOST = "localhost";
-    private static final int PORT_ONE = 9200;
-    private static final int PORT_TWO = 9201;
-    private static final String SCHEME = "http";
-    private static String path;
-    private static int counter;
+    //The config parameters for the connection\
+    private final String HOST;
+    private final int PORT_ONE;
+    private final String SCHEME;
+
+    public ElasticWrapper(String HOST, int PORT_O, int PORT_T) {
+        this.HOST = HOST;
+        this.PORT_ONE = PORT_O;
+        this.SCHEME = "http";
+    }
 
 
-    public static ArrayList<Claim> findCatalogItemWithoutApi(String field, String value, int num_of_hits) {
+    public ArrayList<Claim> findCatalogItemWithoutApi(String field, String value, int num_of_hits) {
         String url = SCHEME + "://" + HOST + ":" + PORT_ONE + "/_search?q=" + field + ":" + value + "&size=" + num_of_hits;
-        URL obj = null;
+        URL obj;
+
+//        System.out.println(url);
         ArrayList<Claim> claimArrayList = new ArrayList<>();
         try {
             obj = new URL(url);
@@ -50,7 +53,7 @@ public class ElasticWrapper {
             AtomicInteger counter = new AtomicInteger();
             jo.getAsJsonObject("hits").getAsJsonArray("hits").forEach(claim -> {
                 JsonObject claim_obj = claim.getAsJsonObject();
-                System.out.println((counter.getAndIncrement()) + " " + claim_obj.get("_score") + " " + claim_obj.getAsJsonObject("_source").get("claimReview_claimReviewed"));
+                System.out.println(ConsoleColor.ANSI_GREEN + "[ES_wrapper_api] "+ (counter.getAndIncrement()) + " " + claim_obj.get("_score") + " " + claim_obj.getAsJsonObject("_source").get("claimReview_claimReviewed")+ConsoleColor.ANSI_RESET);
                 claimArrayList.add(new Claim(claim_obj));
             });
 
@@ -63,22 +66,18 @@ public class ElasticWrapper {
     }
 
     public static void main(String[] args) {
-//        findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 100);
-//        System.out.println(ElasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed","President",10).get(0).getClaimReviewedBody());
+        ElasticWrapper demo = new ElasticWrapper("192.168.2.112", 9200, 9201);
         JsonObjectBuilder factory = Json.createObjectBuilder();
-//        factory.add("url", param_url).add("cleaned_text_from_url", webArticle.getCleaned());
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        ElasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 10).forEach(claim -> {
-            arrayBuilder.add(Json.createObjectBuilder().add("claimReview_claimReviewed", claim.getReviewedBody()));
-        });
-        factory.add("results",arrayBuilder);
+        demo.findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 10).forEach(claim ->
+                arrayBuilder.add(Json.createObjectBuilder().add("claimReview_claimReviewed", claim.getReviewedBody())));
+        factory.add("results", arrayBuilder);
         factory.add("search", Json.createArrayBuilder());
-//        factory.build();
         System.out.println(factory.build());
     }
 
     static Map<String, Object> createMapFromJsonObject(JsonObject jo) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         for (Map.Entry<String, JsonElement> entry : jo.entrySet()) {
             String key = entry.getKey();
             JsonElement value = entry.getValue();
@@ -92,7 +91,7 @@ public class ElasticWrapper {
             return createMapFromJsonObject(je.getAsJsonObject());
         } else if (je.isJsonArray()) {
             JsonArray array = je.getAsJsonArray();
-            List<Object> list = new ArrayList<Object>(array.size());
+            List<Object> list = new ArrayList<>(array.size());
             for (JsonElement element : array) {
                 list.add(getValueFromJsonElement(element));
             }

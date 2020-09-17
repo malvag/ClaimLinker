@@ -6,10 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ClaimLinker_commons" />
         <module name="ClaimLinker_web" />
+        <module name="ClaimLinker_commons" />
         <module name="ElasticSearch_Tools" />
-        <module name="FEL" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

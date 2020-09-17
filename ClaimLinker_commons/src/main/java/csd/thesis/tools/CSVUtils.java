@@ -14,7 +14,7 @@ public class CSVUtils {
     public ArrayList<Map<String, Object>> parse(String csvFile) throws Exception {
         ArrayList<Map<String, Object>> list = new ArrayList<>();
         int count = 0;
-        String row = "";
+        String row;
         ArrayList<String> fields = new ArrayList<>();
         Reader in = new FileReader(csvFile);
         BufferedReader csvReader = new BufferedReader(in);
@@ -26,8 +26,7 @@ public class CSVUtils {
         String[] row_arr = row.split(",");
 
         //fill the field names
-        for (int i = 0; i < row_arr.length; i++)
-            fields.add(row_arr[i]);
+        Collections.addAll(fields, row_arr);
 
         while (scanner.hasNext()) {
             Map<String, Object> obj = new LinkedHashMap<>();
@@ -47,7 +46,6 @@ public class CSVUtils {
                 try {
                     obj.put(fields.get(i), line.get(i));
                 } catch (IndexOutOfBoundsException e) {
-                    continue;
                 }
             }
             list.add(obj);
@@ -72,7 +70,7 @@ public class CSVUtils {
         List<String> result = new ArrayList<>();
 
         //if empty, return!
-        if (cvsLine == null && cvsLine.isEmpty()) {
+        if (Objects.requireNonNull(cvsLine).isEmpty()) {
             return result;
         }
 
@@ -135,7 +133,6 @@ public class CSVUtils {
 
                 } else if (ch == '\r') {
                     //ignore LF characters
-                    continue;
                 } else if (ch == '\n') {
                     //the end, break!
                     break;

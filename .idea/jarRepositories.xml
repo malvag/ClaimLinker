@@ -2,14 +2,19 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
-      <option name="id" value="central" />
-      <option name="name" value="Central Repository" />
-      <option name="url" value="https://repo.maven.apache.org/maven2" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="FEL" />
       <option name="name" value="FEL" />
       <option name="url" value="file://$PROJECT_DIR$/ClaimLinker_commons/libs" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="malvag" />
+      <option name="name" value="Evangelos_Maliaroudakis" />
+      <option name="url" value="https://dev.malvag.org/maven2/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
@@ -17,9 +22,19 @@
       <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="elastic-lucene-snapshots" />
-      <option name="name" value="Elastic Lucene Snapshots" />
-      <option name="url" value="https://s3.amazonaws.com/download.elasticsearch.org/lucenesnapshots/83f9835" />
+      <option name="id" value="local_lib" />
+      <option name="name" value="local_lib" />
+      <option name="url" value="C:\Users\malva\Unsupervised-detection-of-fact-checked-claims-in-web-documents\ClaimLinker_commons/lib" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="local_lib" />
+      <option name="name" value="local_lib" />
+      <option name="url" value="C:\Users\malva\Unsupervised-detection-of-fact-checked-claims-in-web-documents\ClaimLinker_commons" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="FEL" />
+      <option name="name" value="FEL" />
+      <option name="url" value="C:\Users\malva\Unsupervised-detection-of-fact-checked-claims-in-web-documents\ClaimLinker_commons\libs" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="BibSonomy" />
@@ -32,9 +47,24 @@
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="malvag" />
-      <option name="name" value="Evangelos_Maliaroudakis" />
-      <option name="url" value="https://dev.malvag.org/maven2/" />
+      <option name="id" value="elastic-lucene-snapshots" />
+      <option name="name" value="Elastic Lucene Snapshots" />
+      <option name="url" value="https://s3.amazonaws.com/download.elasticsearch.org/lucenesnapshots/83f9835" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="local_lib" />
+      <option name="name" value="local_lib" />
+      <option name="url" value="C:\Users\malva\Unsupervised-detection-of-fact-checked-claims-in-web-documents\ClaimLinker_commons\lib" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="FEL" />
+      <option name="name" value="FEL" />
+      <option name="url" value="file://C:\Users\malva\Unsupervised-detection-of-fact-checked-claims-in-web-documents\ClaimLinker_commons/libs" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="FEL" />
+      <option name="name" value="FEL" />
+      <option name="url" value="C:\Users\malva\Unsupervised-detection-of-fact-checked-claims-in-web-documents\ClaimLinker_commons\lib" />
     </remote-repository>
   </component>
 </project>
