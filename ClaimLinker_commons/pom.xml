@@ -95,17 +95,6 @@
             <artifactId>jsoup</artifactId>
             <version>1.12.1</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>edu.stanford.nlp</groupId>-->
-        <!--            <artifactId>stanford-corenlp</artifactId>-->
-        <!--            <version>4.0.0</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>edu.stanford.nlp</groupId>-->
-        <!--            <artifactId>stanford-corenlp</artifactId>-->
-        <!--            <version>4.0.0</version>-->
-        <!--            <classifier>models</classifier>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
@@ -140,5 +129,5 @@
         </dependency>
     </dependencies>
 
-<!--fix FEL to maven ... DONE-->
+    <!--fix FEL to maven ... DONE-->
 </project>

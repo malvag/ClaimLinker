@@ -24,10 +24,10 @@ public class ElasticWrapper {
     private final int PORT_ONE;
     private final String SCHEME;
 
-    public ElasticWrapper(String HOST, int PORT_O, int PORT_T, String SCHEME) {
+    public ElasticWrapper(String HOST, int PORT_O, int PORT_T) {
         this.HOST = HOST;
         this.PORT_ONE = PORT_O;
-        this.SCHEME = SCHEME;
+        this.SCHEME = "http";
     }
 
 
@@ -66,7 +66,7 @@ public class ElasticWrapper {
     }
 
     public static void main(String[] args) {
-        ElasticWrapper demo = new ElasticWrapper("192.168.2.112", 9200, 9201, "http");
+        ElasticWrapper demo = new ElasticWrapper("192.168.2.112", 9200, 9201);
         JsonObjectBuilder factory = Json.createObjectBuilder();
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         demo.findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 10).forEach(claim ->

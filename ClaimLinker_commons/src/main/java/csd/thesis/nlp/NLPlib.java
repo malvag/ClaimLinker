@@ -33,8 +33,6 @@ public class NLPlib {
             System.out.println("NLPlib initializing ...");
             this.quasiSuccinctEntityHash = (QuasiSuccinctEntityHash) BinIO.loadObject(Hash_Path);
 //            try {
-//
-//
 //                if(JWNLProperties_path == null)
 //                    throw new FileNotFoundException();
 //                JWNL.initialize(new FileInputStream(JWNLProperties_path));
@@ -47,9 +45,8 @@ public class NLPlib {
             props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner"); // not enough memory
             this.initStopword(stopwords_path);
             master_pipeline = new StanfordCoreNLP(props);
-
-            System.out.println("NLPlib initialization finished ...");
             System.out.println("========================================");
+            System.out.println("NLPlib initialization finished ...");
         }
     }
 

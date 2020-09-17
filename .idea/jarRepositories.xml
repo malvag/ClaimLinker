@@ -32,14 +32,14 @@
       <option name="url" value="C:\Users\malva\Unsupervised-detection-of-fact-checked-claims-in-web-documents\ClaimLinker_commons" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="BibSonomy" />
-      <option name="name" value="BibSonomy" />
-      <option name="url" value="https://dev.bibsonomy.org/maven2/" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="FEL" />
       <option name="name" value="FEL" />
       <option name="url" value="C:\Users\malva\Unsupervised-detection-of-fact-checked-claims-in-web-documents\ClaimLinker_commons\libs" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="BibSonomy" />
+      <option name="name" value="BibSonomy" />
+      <option name="url" value="https://dev.bibsonomy.org/maven2/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="jboss.community" />

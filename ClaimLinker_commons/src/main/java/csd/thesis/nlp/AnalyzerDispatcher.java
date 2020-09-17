@@ -55,21 +55,21 @@ public class AnalyzerDispatcher {
 
     private final ArrayList<SimilarityMeasure> similarityMeasures;
 
-    public static class CompareJob implements Callable<Double> {
-        private CompareJob(SimilarityMeasure measure, CoreDocument a, CoreDocument b) {
-            this.similarityMeasure = measure;
-            this.a = a;
-            this.b = b;
-        }
-
-        CoreDocument a, b;
-        SimilarityMeasure similarityMeasure;
-
-        @Override
-        public Double call() {
-            return this.similarityMeasure.analyze(a, b);
-        }
-    }
+//    public static class CompareJob implements Callable<Double> {
+//        private CompareJob(SimilarityMeasure measure, CoreDocument a, CoreDocument b) {
+//            this.similarityMeasure = measure;
+//            this.a = a;
+//            this.b = b;
+//        }
+//
+//        CoreDocument a, b;
+//        SimilarityMeasure similarityMeasure;
+//
+//        @Override
+//        public Double call() {
+//            return this.similarityMeasure.analyze(a, b);
+//        }
+//    }
 
     public enum SimilarityMeasure {
         jcrd_comm_words {
@@ -301,7 +301,7 @@ public class AnalyzerDispatcher {
             }
         },
         jcrd_comm_nchargram {
-            //    Num of common n-grams (e.g., 2-grams, 3-grams, 4-grams, 5-grams)
+            //    Num of common n-chargrams (e.g., 2-grams, 3-grams, 4-grams, 5-grams)
             @Override
             double analyze(CoreDocument claim, CoreDocument text) {
                 double Ngram2 = this.similarity(getNchargrams(2, claim), getNchargrams(2, text));

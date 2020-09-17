@@ -25,7 +25,6 @@
     </MavenSettings>
     <method v="2">
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="MVN clean" run_configuration_type="MavenRunConfiguration" />
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="MVN install fel" run_configuration_type="MavenRunConfiguration" />
     </method>
   </configuration>
 </component>

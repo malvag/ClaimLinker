@@ -42,8 +42,7 @@ public class ClaimLinker {
 		System.out.println("ClaimLinker initializing ... ");
 		nlp_instance = new NLPlib(JWNLProperties_path, stopwords_path, Hash_Path);
 		this.claims = new ArrayList<>();
-//        ElasticInitializer elasticInitializer = new ElasticInitializer(claims_path,ES_host,9200,9201,"http");
-		this.elasticWrapper = new ElasticWrapper(ES_host, 9200, 9201, "http");
+		this.elasticWrapper = new ElasticWrapper(ES_host, 9200, 9201);
 		this.analyzerDispatcher = new AnalyzerDispatcher(this.nlp_instance);
 		this.analyzerDispatcher.addSimMeasure(new AnalyzerDispatcher.SimilarityMeasure[]{
 				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_words,           //Common (jaccard) words
@@ -70,32 +69,9 @@ public class ClaimLinker {
 		return document;
 	}
 
-	public void demo_pipeline() {
-		System.out.println("Demo pipeline started!");
-		String t2 //= "Today I opened a major Apple Manufacturing plant in Texas that will bring high paying jobs back to America.";
-				= "C++ designer Bjarne Stroustrup ";
-		String text = "Bjarne Stroustrup is a Danish computer scientist, most notable for the creation and development of the C++ programming language.[4] He is a visiting professor at Columbia University, and works at Morgan Stanley as a Managing Director in New York.";
-		Instant start = Instant.now();
-		JsonArray results = this.claimLink(text, t2, Assoc_t.author_of);
-		Instant finish = Instant.now();
-		long timeElapsed = Duration.between(start, finish).toMillis();
-		if (results == null)
-			return;
-		for (int i = 0; i < results.size(); i++) {
-			JsonObject j = results.getJsonObject(i);
-			System.out.printf("%4d %150s %20f %20f \n", i, j.getString("claimReview_claimReviewed"), j.getJsonNumber("NLP_score").doubleValue(), j.getJsonNumber("ElasticScore").doubleValue());
-		}
-
-		System.out.println("_______________________________________________");
-		System.out.println("Time passed: " + (double) timeElapsed / 1000 + "s");
-		System.out.println("Demo pipeline shutting down ...");
-
-
-	}
-
 	public JsonArray claimLink(String text, String selection, Assoc_t assoc_t) {
 		this.claims = null;
-		System.out.println(ConsoleColor.ANSI_YELLOW + "Attempting to claimlink with assoc_t " + assoc_t + ConsoleColor.ANSI_RESET);
+		System.out.println(ConsoleColor.ANSI_YELLOW + "Attempting to claimlink with association_type " + assoc_t + ConsoleColor.ANSI_RESET);
 		if (assoc_t == Assoc_t.all) {
 			this.claims = this.elasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed", URLEncoder.encode(selection, StandardCharsets.UTF_8), 100);
 			// needs optimization // too slow
