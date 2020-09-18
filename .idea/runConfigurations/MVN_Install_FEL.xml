@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="MVN build" type="MavenRunConfiguration" factoryName="Maven" singleton="false">
+  <configuration default="false" name="MVN Install FEL" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
@@ -10,8 +10,13 @@
           </option>
           <option name="goals">
             <list>
-              <option value="validate" />
-              <option value="compile" />
+              <option value="install:install-file" />
+              <option value="-Dfile=$PROJECT_DIR$/ClaimLinker_commons/lib/FEL-0.1.0-fat.jar" />
+              <option value="-DgroupId=com.yahoo.semsearch" />
+              <option value="-DartifactId=FEL" />
+              <option value="-Dversion=0.1.0" />
+              <option value="-Dpackaging=jar" />
+              <option value="-DgeneratePom=true" />
             </list>
           </option>
           <option name="pomFileName" />
@@ -19,13 +24,10 @@
             <map />
           </option>
           <option name="resolveToWorkspace" value="false" />
-          <option name="workingDirPath" value="$PROJECT_DIR$" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/ClaimLinker_commons" />
         </MavenRunnerParameters>
       </option>
     </MavenSettings>
-    <method v="2">
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="MVN clean" run_configuration_type="MavenRunConfiguration" />
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="MVN Install FEL" run_configuration_type="MavenRunConfiguration" />
-    </method>
+    <method v="2" />
   </configuration>
 </component>
