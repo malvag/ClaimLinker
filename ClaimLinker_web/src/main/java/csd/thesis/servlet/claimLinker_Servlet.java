@@ -1,7 +1,7 @@
 package csd.thesis.servlet;
 
 import csd.thesis.ClaimLinker;
-import csd.thesis.model.Assoc_t;
+import csd.thesis.model.Association_type;
 import csd.thesis.model.WebArticle;
 
 import javax.json.*;
@@ -48,14 +48,16 @@ public class claimLinker_Servlet extends HttpServlet {
 //                .add("same_as",request.getParameter("same_as")) // if exists
         factory.add("message", "API ClaimLinker").add("flags", flags);
         JsonObject respose_json = factory.build();
-        if (request.getParameter("author_of").equals("true")) {
-            respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Assoc_t.author_of);
-        }
-        if (request.getParameter("topic_of").equals("true")) {
-            respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Assoc_t.topic_of);
-        }
-        if (request.getParameter("assoc_t").equals("same_as")) {
-            respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Assoc_t.same_as);
+        if (request.getParameter("all").equals("true")) {
+            respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Association_type.all);
+        }else {
+            if (request.getParameter("author_of").equals("true")) {
+                respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Association_type.author_of);
+            } else if (request.getParameter("topic_of").equals("true")) {
+                respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Association_type.topic_of);
+            } else if (request.getParameter("same_as").equals("true")) {
+                respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Association_type.same_as);
+            }
         }
         PrintWriter out = response.getWriter();
         response.setContentType("text/json");
@@ -65,24 +67,24 @@ public class claimLinker_Servlet extends HttpServlet {
     }
 
 
-    public static JsonObject ClaimLinkHandler(HttpServletRequest request, Assoc_t assoc_t) {
+    public static JsonObject ClaimLinkHandler(HttpServletRequest request, Association_type associationtype) {
         Instant start = Instant.now();
         String param_url = request.getParameter("url");
-        String param_selection = request.getParameter("selection");
+        String context = request.getParameter("context");
         JsonObjectBuilder factory = Json.createObjectBuilder();
         factory.add("message", "API ClaimLinker");
         if (param_url == null) {
             return null;
         }
         WebArticle webArticle;
-        if (param_selection != null) {
-            webArticle = new WebArticle(param_url, param_selection, WebArticle.WebArticleType.selection);
+        if (context != null) {
+            webArticle = new WebArticle(param_url, context, WebArticle.WebArticleType.selection);
             factory.add("selection", webArticle.getSelection());
         } else {
             webArticle = new WebArticle(param_url, null, WebArticle.WebArticleType.url);
         }
         factory.add("url", param_url).add("cleaned_text_from_url", webArticle.getDoc().text());
-        factory.add("results", claimLinker.claimLink(webArticle.getDoc().text(), param_selection, assoc_t));
+        factory.add("results", (JsonArrayBuilder) claimLinker.claimLink(webArticle.getDoc().text(), context, 5, 0.4, associationtype));
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
         factory.add("timeElapsed", timeElapsed);

@@ -35,7 +35,7 @@ public class ElasticWrapper {
         String url = SCHEME + "://" + HOST + ":" + PORT_ONE + "/_search?q=" + field + ":" + value + "&size=" + num_of_hits;
         URL obj;
 
-//        System.out.println(url);
+        System.out.println(url);
         ArrayList<Claim> claimArrayList = new ArrayList<>();
         try {
             obj = new URL(url);
@@ -53,7 +53,7 @@ public class ElasticWrapper {
             AtomicInteger counter = new AtomicInteger();
             jo.getAsJsonObject("hits").getAsJsonArray("hits").forEach(claim -> {
                 JsonObject claim_obj = claim.getAsJsonObject();
-                System.out.println(ConsoleColor.ANSI_GREEN + "[ES_wrapper_api] "+ (counter.getAndIncrement()) + " " + claim_obj.get("_score") + " " + claim_obj.getAsJsonObject("_source").get("claimReview_claimReviewed")+ConsoleColor.ANSI_RESET);
+                System.out.println(ConsoleColor.ANSI_GREEN + "[ES_API] "+ (counter.getAndIncrement()) + " " + claim_obj.get("_score") + " " + claim_obj.getAsJsonObject("_source").get("claimReview_claimReviewed")+ConsoleColor.ANSI_RESET);
                 claimArrayList.add(new Claim(claim_obj));
             });
 

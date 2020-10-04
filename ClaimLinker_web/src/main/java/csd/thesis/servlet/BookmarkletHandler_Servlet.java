@@ -1,6 +1,6 @@
 package csd.thesis.servlet;
 
-import csd.thesis.model.Assoc_t;
+import csd.thesis.model.Association_type;
 
 import javax.json.JsonObject;
 import javax.servlet.ServletException;
@@ -28,7 +28,7 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
             response.setStatus(400);
             response.flushBuffer();
         }
-        JsonObject response_json = claimLinker_Servlet.ClaimLinkHandler(request, Assoc_t.topic_of);
+        JsonObject response_json = claimLinker_Servlet.ClaimLinkHandler(request, Association_type.topic_of);
 //        StringBuilder ss = new StringBuilder();
 //        URL url = new URL(request.getParameter("url"));
 //        try (

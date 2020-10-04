@@ -5,18 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.JsonObject;
 import edu.stanford.nlp.pipeline.CoreDocument;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Claim {
-    //    double NLPscore;
+public class Claim implements Comparable<Claim> {
     Map<String, Object> objectMap;
     private CoreDocument doc;
 
-    Claim() {
-
-    }
+    Claim() {}
 
     public Claim(JsonObject claim_obj) {
         objectMap = new HashMap<>();
@@ -24,23 +22,17 @@ public class Claim {
         this.objectMap.put("_score", claim_obj.get("_score").getAsDouble());
         this.objectMap.put("extra_title", claim_obj.getAsJsonObject("_source").get("extra_title").getAsString());
         this.objectMap.put("rating_alternateName", claim_obj.getAsJsonObject("_source").get("rating_alternateName").getAsString());
+        this.objectMap.put("creativeWork_author_name", claim_obj.getAsJsonObject("_source").get("creativeWork_author_name").getAsString());
     }
 
     public Claim(Map<String, Object> in) {
         this.objectMap = in;
     }
 
-    public CoreDocument getDoc() {
-        return doc;
-    }
-
     public void setDoc(CoreDocument doc) {
         this.doc = doc;
     }
-
-    public Map<String, Object> getObjectMap() {
-        return objectMap;
-    }
+    public void setNLPScore(double nlpScore){this.objectMap.put("nlp_score",nlpScore);}
 
     public double getElasticScore() {
         return (double) this.objectMap.get("_score");
@@ -53,6 +45,11 @@ public class Claim {
     public String getRatingName() {
         return (String) this.objectMap.get("rating_alternateName");
     }
+
+    public Double getNLPScore() {
+        return (Double) this.objectMap.get("nlp_score");
+    }
+
 
     public String getExtraTitle() {
         return (String) this.objectMap.get("extra_title");
@@ -76,5 +73,10 @@ public class Claim {
         } catch (JsonProcessingException e) {
             return null;
         }
+    }
+
+    @Override
+    public int compareTo(@NotNull Claim o) {
+        return Double.compare(this.getNLPScore(), o.getNLPScore());
     }
 }

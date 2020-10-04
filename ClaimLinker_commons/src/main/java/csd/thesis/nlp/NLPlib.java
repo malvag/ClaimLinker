@@ -130,9 +130,10 @@ public class NLPlib {
         return doc;
     }
 
-    public void NLPlib_annotate(CoreDocument doc) {
+    public CoreDocument NLPlib_annotate(CoreDocument doc) {
         this.setDoc(doc);
         this.master_pipeline.annotate(doc);
+        return this.doc;
     }
 
     public void setDoc(CoreDocument doc) {
