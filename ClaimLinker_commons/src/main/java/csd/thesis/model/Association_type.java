@@ -181,7 +181,7 @@ public enum Association_type {
 				synchronized (this) {
 					System.out.printf("[Same_as]  : %15s  \n", sentence.toString());
 					CLAnnotation tmp = annotationSet.stream().filter(item -> item.equals(annotation)).findFirst().get();
-					CoreDocument doc = claimLinker.nlp_instance.NLPlib_annotate(new CoreDocument(sentence.toString()));
+					CoreDocument doc = claimLinker.NLP_annotate(sentence.toString());
 					tmp.getLinkedClaims().addAll(claimLinker.elasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed", URLEncoder.encode(
 							claimLinker.nlp_instance.getWithoutStopwords(doc), StandardCharsets.UTF_8), hits));
 				}
