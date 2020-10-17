@@ -2,6 +2,7 @@ package csd.thesis;
 
 import csd.thesis.model.Association_type;
 import csd.thesis.model.CLAnnotation;
+import csd.thesis.nlp.AnalyzerDispatcher;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -11,13 +12,13 @@ import java.time.Duration;
 import java.util.Set;
 
 class ClaimLinkerTest {
-    public static void main(String[] args) throws Exception {
-        testClaimLink();
-    }
+	public static void main(String[] args) throws Exception {
+		testClaimLink();
+	}
 
-    static void testClaimLink() throws Exception {
-        System.out.println("[Demo]Initiating ...");
-        System.out.println("_______________________________________________");
+	static void testClaimLink() throws Exception {
+		System.out.println("[Demo]Initiating ...");
+		System.out.println("_______________________________________________");
 
 //        Set<CLAnnotation> results_sample1 = demo_pipeline("Well, I think that trade is an important issue.    Of course, we are 5 percent of the world's population; we have to trade with the other 95 percent.    And we need to have smart, fair trade deals.    We also, though, need to have a tax system that rewards work and not just financial transactions.    And the kind of plan that Donald has put forth would be trickle-down economics all over again.    In fact, it would be the most extreme version, the biggest tax cuts for the top percent of the people in this country than we've ever had.    I call it trumped-up trickle-down, because that's exactly what it would be.    That is not how we grow the economy.    We just have a different view about what's best for growing the economy, how we make investments that will actually produce jobs and rising incomes.    I think we come at it from somewhat different perspectives.    I understand that.    You know, Donald was very fortunate in his life, and that's all to his benefit.    He started his business with \$14 million, borrowed from his father, and he really believes that the more you help wealthy people, the better off we'll be and that everything will work out from there.    I don't buy that.    I have a different experience.    My father was a small-businessman.    He worked really hard.    He printed drapery fabrics on long tables, where he pulled out those fabrics and he went down with a silkscreen and dumped the paint in and took the squeegee and kept going.    And so what I believe is the more we can do for the middle class, the more we can invest in you, your education, your skills, your future, the better we will be off and the better we'll grow.    That's the kind of economy I want us to see again.");
 //        FileWriter myWriter = new FileWriter("results_sample1.json");
@@ -27,29 +28,39 @@ class ClaimLinkerTest {
 //        FileWriter myWriter = new FileWriter("results_sample2.json");
 //        myWriter.write(results_sample2 as String);
 //        myWriter.close();
-//        Set<CLAnnotation> results_sample3 = demo_pipeline("The fact is, he's going to advocate for the largest tax cuts we've ever seen, three times more than the tax cuts under the Bush administration.    I have said repeatedly throughout this campaign: I will not raise taxes on anyone making \$250,000 or less.    I also will not add a penny to the debt.    I have costed out what I'm going to do.    He will, through his massive tax cuts, add \$20 trillion to the debt.    Well, he mentioned the debt.    We know how to get control of the debt.    When my husband was president, we went from a \$300 billion deficit to a \$200 billion surplus and we were actually on the path to eliminating the national debt.    When President Obama came into office, he inherited the worst economic disaster since the Great Depression.    He has cut the deficit by two-thirds.    So, yes, one of the ways you go after the debt, one of the ways you create jobs is by investing in people.    So I do have investments, investments in new jobs, investments in education, skill training, and the opportunities for people to get ahead and stay ahead. That's the kind of approach that will work. ");
+//        Set<CLAnnotation> results_sample3 = demo_pipeline("The fact is, he's going to advocate for the largest tax cuts we've ever seen, three times more than the tax cuts under the Bush administration.    I have said repeatedly throughout this campaign: I will not raise taxes on anyone making $250,000 or less.    I also will not add a penny to the debt.    I have costed out what I'm going to do.    He will, through his massive tax cuts, add 20 trillion to the debt.    Well, he mentioned the debt.    We know how to get control of the debt.    When my husband was president, we went from a $300 billion deficit to a $200 billion surplus and we were actually on the path to eliminating the national debt.    When President Obama came into office, he inherited the worst economic disaster since the Great Depression.    He has cut the deficit by two-thirds.    So, yes, one of the ways you go after the debt, one of the ways you create jobs is by investing in people.    So I do have investments, investments in new jobs, investments in education, skill training, and the opportunities for people to get ahead and stay ahead. That's the kind of approach that will work.");
 //        FileWriter myWriter = new FileWriter("results_sample3.json");
 //        myWriter.write(results_sample3 as String);
 //        myWriter.close();
-        Set<CLAnnotation> results_sample5 = demo_pipeline("Well, I think that trade is an important issue. Of course, we are 5 percent of the world's population; we have to trade with the other 95 percent. You konw, interest on debt will soon exceed security spending. I think we come at it from somewhat different perspectives. I understand that. You know, Donald was very fortunate in his life, and that's all to his benefit. Obama's administration spent more on Cash for the Clunkers than on our space program. Ted used Nazi terminology, something like 'subhuman mongrel' for describing President Obama.  My father was a small-businessman, he worked really hard.  He printed drapery fabrics on long tables, where he pulled out those fabrics and he went down with a silkscreen and dumped the paint in and took the squeegee and kept going. \n");
+		Set<CLAnnotation> results_sample5 = demo_pipeline("Well, I think that trade is an important issue. Of course, we are 5 percent of the world's population; we have to trade with the other 95 percent. You konw, interest on debt will soon exceed security spending. I think we come at it from somewhat different perspectives. I understand that. You know, Donald was very fortunate in his life, and that's all to his benefit. Obama's administration spent more on Cash for the Clunkers than on our space program. Ted used Nazi terminology, something like 'subhuman mongrel' for describing President Obama.  My father was a small-businessman, he worked really hard.  He printed drapery fabrics on long tables, where he pulled out those fabrics and he went down with a silkscreen and dumped the paint in and took the squeegee and kept going. \n");
+//        Set<CLAnnotation> results_sample5 = demo_pipeline("Of course, we are 5 percent of the world's population; we have to trade with the other 95 percent \n");
         FileWriter myWriter = new FileWriter("results_sample5.json");
         myWriter.write(String.valueOf(results_sample5));
         myWriter.close();
-        System.out.println("_______________________________________________");
-        System.out.println("[Demo]Exited without errors ...");
+		System.out.println("_______________________________________________");
+		System.out.println("[Demo]Exited without errors ...");
 
-    }
+	}
 
-    static Set<CLAnnotation> demo_pipeline(String text) throws IOException, ClassNotFoundException {
-        ClaimLinker CLInstance = null;
-        CLInstance = new ClaimLinker("Properties.xml", "data/stopwords.txt", "data/english-20200420.hash", "data/claim_extraction_18_10_2019_annotated.csv", "localhost");
-        System.out.println("Demo pipeline started!");
+	static Set<CLAnnotation> demo_pipeline(String text) throws IOException, ClassNotFoundException {
+		AnalyzerDispatcher.SimilarityMeasure[] similarityMeasures = new AnalyzerDispatcher.SimilarityMeasure[]{
+				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_words,           //Common (jaccard) words
+				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_lemm_words,      //Common (jaccard) lemmatized words
+				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_ne,              //Common (jaccard) named entities
+				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_dissambig_ents,  //Common (jaccard) disambiguated entities BFY
+				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_pos_words,       //Common (jaccard) words of specific POS
+				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_ngram,           //Common (jaccard) ngrams
+				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_nchargram,       //Common (jaccard) nchargrams
+				AnalyzerDispatcher.SimilarityMeasure.vec_cosine_sim             //Cosine similarity
+		};
+		ClaimLinker CLInstance = new ClaimLinker(20, similarityMeasures, "data/stopwords.txt", "data/english-20200420.hash", "data/claim_extraction_18_10_2019_annotated.csv", "192.168.2.112");
+		System.out.println("Demo pipeline started!");
 //        String t2 = "C++ designer Bjarne Stroustrup";
-        Set<CLAnnotation> results = CLInstance.claimLink(text, "", 5, 0.4, Association_type.same_as);
-        System.out.println("_______________________________________________");
-        System.out.println("Demo pipeline shutting down ...");
-        return results;
+		Set<CLAnnotation> results = CLInstance.claimLink(text, "", 5, 0.4, Association_type.same_as);
+		System.out.println("_______________________________________________");
+		System.out.println("Demo pipeline shutting down ...");
+		return results;
 
-    }
+	}
 
 }

@@ -12,6 +12,7 @@ import edu.stanford.nlp.util.Pair;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
+import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -170,7 +171,7 @@ public enum Association_type {
 			List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
 			int sentencePosition = 0;
 			Map<CLAnnotation, CoreMap> claims_map = new HashMap<>();
-
+			//Create a new CLAnnotation for every sentence
 			for (CoreMap sentence : sentences) {
 				CLAnnotation annotation = new CLAnnotation(sentence.toString(), -1, -1, sentencePosition, this);
 				this.annotationSet.add(annotation);
@@ -188,14 +189,24 @@ public enum Association_type {
 			});
 			System.out.println("[Same_as] Processing candidate claims");
 			this.annotationSet.forEach(annotation -> {
-				PriorityQueue<Claim> records = new PriorityQueue<>();
+				PriorityQueue<Claim> tmp = new PriorityQueue<>();
+				CoreDocument CD_sentence = claimLinker.NLP_annotate(annotation.getText());
 				for (Claim claim : annotation.getLinkedClaims()) {
 					CoreDocument CD_c = claimLinker.NLP_annotate(claim.getReviewedBody());
-					claim.setNLPScore(claimLinker.analyzerDispatcher.analyze(CD_c, CD_text));
-					records.add(claim);
+//					claim.setNLPScore(claimLinker.analyzerDispatcher.analyze(CD_c, CD_text)); // for the whole text
+					claim.setNLPScore(claimLinker.analyzerDispatcher.analyze(CD_c, CD_sentence));// for the specific sentence
+					tmp.add(claim);
 				}
-				while (records.size() > num_of_result) {
-					records.remove(); // get only as many results as we needed
+				ArrayList<Claim> records = new ArrayList<>();
+				while (!tmp.isEmpty()) {
+					records.add(0, tmp.poll());
+				}
+
+				if (records.size() > num_of_result) {
+					// get only as many results as we needed
+					for (int i = records.size() - 1; i > num_of_result - 1; i--) {
+						records.remove(i);
+					}
 				}
 				annotation.setLinkedClaims(new ArrayList<>(records));
 			});

@@ -27,27 +27,20 @@ public class NLPlib {
     private final static boolean debug = false;
     protected QuasiSuccinctEntityHash quasiSuccinctEntityHash;
 
-    public NLPlib(String JWNLProperties_path, String stopwords_path, String Hash_Path) throws IOException, ClassNotFoundException {
-        synchronized (this) {
+    public NLPlib( String stopwords_path, String Hash_Path) throws IOException, ClassNotFoundException {
             System.out.println("========================================");
             System.out.println("NLPlib initializing ...");
             this.quasiSuccinctEntityHash = (QuasiSuccinctEntityHash) BinIO.loadObject(Hash_Path);
-//            try {
-//                if(JWNLProperties_path == null)
-//                    throw new FileNotFoundException();
-//                JWNL.initialize(new FileInputStream(JWNLProperties_path));
-//                System.out.println("JWNL initialization finished ...");
-//            } catch (JWNLException | FileNotFoundException e) {
-////            e.printStackTrace();
-//                System.out.println("JWNL OFFLINE");
-//            }
             Properties props = new Properties();
             props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner"); // not enough memory
             this.initStopword(stopwords_path);
             master_pipeline = new StanfordCoreNLP(props);
             System.out.println("========================================");
             System.out.println("NLPlib initialization finished ...");
-        }
+            if(master_pipeline == null){
+                System.err.println("NLP error");
+                System.exit(100);
+            }
     }
 
     public List<String> getLemmas(CoreDocument a) {

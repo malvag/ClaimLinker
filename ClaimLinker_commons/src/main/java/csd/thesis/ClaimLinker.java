@@ -33,23 +33,24 @@ public class ClaimLinker {
 	public AnalyzerDispatcher analyzerDispatcher;
 	public ElasticWrapper elasticWrapper;
 
-	public ClaimLinker(String JWNLProperties_path, String stopwords_path, String Hash_Path, String claims_path, String ES_host) throws IOException, ClassNotFoundException {
+	public ClaimLinker(double ES_threshold, AnalyzerDispatcher.SimilarityMeasure[] similarityMeasures, String stopwords_path, String Hash_Path, String claims_path, String ES_host) throws IOException, ClassNotFoundException {
 		System.out.println("========================================");
 		System.out.println("ClaimLinker initializing ... ");
-		nlp_instance = new NLPlib(JWNLProperties_path, stopwords_path, Hash_Path);
+		this.nlp_instance = new NLPlib(stopwords_path, Hash_Path);
 		this.claims = new ArrayList<>();
-		this.elasticWrapper = new ElasticWrapper(ES_host, 9200, 9201);
+		this.elasticWrapper = new ElasticWrapper(ES_threshold, ES_host, 9200, 9201);
 		this.analyzerDispatcher = new AnalyzerDispatcher(this.nlp_instance);
-		this.analyzerDispatcher.addSimMeasure(new AnalyzerDispatcher.SimilarityMeasure[]{
-				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_words,           //Common (jaccard) words
-				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_lemm_words,      //Common (jaccard) lemmatized words
-				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_ne,              //Common (jaccard) named entities
-				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_dissambig_ents,  //Common (jaccard) disambiguated entities BFY
-				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_pos_words,       //Common (jaccard) words of specific POS
-				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_ngram,           //Common (jaccard) ngrams
-				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_nchargram,       //Common (jaccard) nchargrams
-				AnalyzerDispatcher.SimilarityMeasure.vec_cosine_sim             //Cosine similarity
-		});
+		this.analyzerDispatcher.addSimMeasure(
+				similarityMeasures
+//				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_words,           //Common (jaccard) words
+//				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_lemm_words,      //Common (jaccard) lemmatized words
+//				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_ne,              //Common (jaccard) named entities
+//				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_dissambig_ents,  //Common (jaccard) disambiguated entities BFY
+//				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_pos_words,       //Common (jaccard) words of specific POS
+//				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_ngram,           //Common (jaccard) ngrams
+//				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_nchargram,       //Common (jaccard) nchargrams
+//				AnalyzerDispatcher.SimilarityMeasure.vec_cosine_sim             //Cosine similarity
+		);
 		System.out.println("========================================");
 		System.out.println("ClaimLinker's initialization finished...");
 		System.out.println("========================================");
