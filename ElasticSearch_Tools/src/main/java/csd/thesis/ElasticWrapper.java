@@ -26,13 +26,24 @@ public class ElasticWrapper {
 	private final String SCHEME;
 	private final double threshold;
 	private final double secondary_threshold;
-
-	public ElasticWrapper(double threshold, String HOST, int PORT_O, int PORT_T) {
+	private final boolean use_SoftThreshold;
+	public ElasticWrapper(double threshold,String HOST, int PORT_O, int PORT_T) {
 		this.HOST = HOST;
 		this.PORT_ONE = PORT_O;
 		this.SCHEME = "http";
 		this.threshold = threshold;
 		this.secondary_threshold = threshold - 10 >= 0 ? threshold - 10 : 0;
+		this.use_SoftThreshold = false;
+
+	}
+
+	public ElasticWrapper(boolean use_SoftThreshold,double threshold,String HOST, int PORT_O, int PORT_T) {
+		this.HOST = HOST;
+		this.PORT_ONE = PORT_O;
+		this.SCHEME = "http";
+		this.secondary_threshold = threshold - 10 >= 0 ? threshold - 10 : 0;
+		this.threshold = threshold;
+		this.use_SoftThreshold = use_SoftThreshold;
 	}
 
 
@@ -65,16 +76,17 @@ public class ElasticWrapper {
 					pillow_claimArrayList.add(new Claim(claim_obj));
 
 			});
-//			pillow_claimArrayList.sort(Collections.reverseOrder());
 
-			for (Claim claim : pillow_claimArrayList) {
-				if (claim.getElasticScore() > this.secondary_threshold &&
-						claimArrayList.size() < 10)
-					claimArrayList.add(claim);
+			if (use_SoftThreshold) {
+				for (Claim claim : pillow_claimArrayList) {
+					if (claim.getElasticScore() > this.secondary_threshold &&
+							claimArrayList.size() < 10)
+						claimArrayList.add(claim);
 
+				}
 			}
 			for (Claim claim : claimArrayList) {
-				System.out.println(ConsoleColor.ANSI_GREEN + "[ES_API] " + (counter.getAndIncrement()) + " " + claim.getElasticScore() + " " + claim.getReviewedBody() + ConsoleColor.ANSI_RESET);
+				System.out.println(ConsoleColor.ANSI_GREEN + "[ES_API] " + (counter.getAndIncrement()) + " " + claim.getElasticScore() + " " + claim.getReviewedBody() +  ConsoleColor.ANSI_RESET);
 			}
 
 

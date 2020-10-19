@@ -188,7 +188,9 @@ public enum Association_type {
 				}
 			});
 			System.out.println("[Same_as] Processing candidate claims");
+			this.annotationSet.removeIf((CLAnnotation a) -> a.getLinkedClaims().size()==0);
 			this.annotationSet.forEach(annotation -> {
+
 				PriorityQueue<Claim> tmp = new PriorityQueue<>();
 				CoreDocument CD_sentence = claimLinker.NLP_annotate(annotation.getText());
 				for (Claim claim : annotation.getLinkedClaims()) {
@@ -209,6 +211,7 @@ public enum Association_type {
 					}
 				}
 				annotation.setLinkedClaims(new ArrayList<>(records));
+
 			});
 			Instant finish = Instant.now();
 			long timeElapsed = Duration.between(start, finish).toMillis();

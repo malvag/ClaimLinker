@@ -24,6 +24,8 @@ public class Claim implements Comparable<Claim> {
 		this.objectMap.put("extra_title", claim_obj.getAsJsonObject("_source").get("extra_title").getAsString());
 		this.objectMap.put("rating_alternateName", claim_obj.getAsJsonObject("_source").get("rating_alternateName").getAsString());
 		this.objectMap.put("creativeWork_author_name", claim_obj.getAsJsonObject("_source").get("creativeWork_author_name").getAsString());
+		this.objectMap.put("claimReview_url", claim_obj.getAsJsonObject("_source").get("claimReview_url").getAsString());
+
 	}
 
 	public Claim(Map<String, Object> in) {
@@ -54,6 +56,9 @@ public class Claim implements Comparable<Claim> {
 		return (Double) this.objectMap.get("nlp_score");
 	}
 
+	public String getclaimReviewedURL() {
+		return (String) this.objectMap.get("claimReview_url");
+	}
 
 	public String getExtraTitle() {
 		return (String) this.objectMap.get("extra_title");
