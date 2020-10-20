@@ -72,7 +72,7 @@ public enum Association_type {
 			entities.forEach((annotation, mention) -> {
 				System.out.printf("[Author_of] Person entities : %15s  \n", mention.toString());
 				CLAnnotation tmp = annotationSet.stream().filter(item -> item.equals(annotation)).findFirst().get();
-				tmp.getLinkedClaims().addAll(claimLinker.elasticWrapper.findCatalogItemWithoutApi("creativeWork_author_name", URLEncoder.encode(mention.toString(), StandardCharsets.UTF_8), hits));
+				tmp.getLinkedClaims().addAll(claimLinker.elasticWrapper.findCatalogItemWithoutApi(true,this.threshold,"creativeWork_author_name", URLEncoder.encode(mention.toString(), StandardCharsets.UTF_8), hits));
 			});
 
 			CoreDocument CD_text = claimLinker.NLP_annotate(
@@ -133,7 +133,7 @@ public enum Association_type {
 			NNouns_map.forEach((annotation, noun) -> {
 				System.out.printf("[Topic_of]  : %15s  \n", noun.toString());
 				CLAnnotation tmp = annotationSet.stream().filter(item -> item.equals(annotation)).findFirst().get();
-				tmp.getLinkedClaims().addAll(claimLinker.elasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed", URLEncoder.encode(noun.lemma(), StandardCharsets.UTF_8), hits));
+				tmp.getLinkedClaims().addAll(claimLinker.elasticWrapper.findCatalogItemWithoutApi(true,this.threshold,"claimReview_claimReviewed", URLEncoder.encode(noun.lemma(), StandardCharsets.UTF_8), hits));
 			});
 
 			// generate candidates and rank them with Sim Measures
@@ -183,7 +183,7 @@ public enum Association_type {
 					System.out.printf("[Same_as]  : %15s  \n", sentence.toString());
 					CLAnnotation tmp = annotationSet.stream().filter(item -> item.equals(annotation)).findFirst().get();
 					CoreDocument doc = claimLinker.NLP_annotate(sentence.toString());
-					tmp.getLinkedClaims().addAll(claimLinker.elasticWrapper.findCatalogItemWithoutApi("claimReview_claimReviewed", URLEncoder.encode(
+					tmp.getLinkedClaims().addAll(claimLinker.elasticWrapper.findCatalogItemWithoutApi(false,this.threshold,"claimReview_claimReviewed", URLEncoder.encode(
 							claimLinker.nlp_instance.getWithoutStopwords(doc), StandardCharsets.UTF_8), hits));
 				}
 			});
@@ -206,9 +206,7 @@ public enum Association_type {
 
 				if (records.size() > num_of_result) {
 					// get only as many results as we needed
-					for (int i = records.size() - 1; i > num_of_result - 1; i--) {
-						records.remove(i);
-					}
+					records.subList(num_of_result, records.size()).clear();
 				}
 				annotation.setLinkedClaims(new ArrayList<>(records));
 
@@ -236,8 +234,16 @@ public enum Association_type {
 		}
 	};
 
-	Association_type() {
+	protected double threshold;
+
+	Association_type(){
 		this.annotationSet = new HashSet<>();
+		this.threshold = 20;
+	}
+
+	Association_type(double threshold) {
+		this();
+		this.threshold = threshold;
 	}
 
 	public Set<CLAnnotation> annotationSet;

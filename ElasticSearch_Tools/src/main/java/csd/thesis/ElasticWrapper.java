@@ -20,37 +20,25 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ElasticWrapper {
 
-	//The config parameters for the connection\
+	//The config parameters for the connection
 	private final String HOST;
 	private final int PORT_ONE;
 	private final String SCHEME;
-	private final double threshold;
-	private final double secondary_threshold;
 	private final boolean use_SoftThreshold;
-	public ElasticWrapper(double threshold,String HOST, int PORT_O, int PORT_T) {
+
+	public ElasticWrapper(double threshold, String HOST, int PORT_O, int PORT_T) {
 		this.HOST = HOST;
 		this.PORT_ONE = PORT_O;
 		this.SCHEME = "http";
-		this.threshold = threshold;
-		this.secondary_threshold = threshold - 10 >= 0 ? threshold - 10 : 0;
 		this.use_SoftThreshold = false;
 
 	}
 
-	public ElasticWrapper(boolean use_SoftThreshold,double threshold,String HOST, int PORT_O, int PORT_T) {
-		this.HOST = HOST;
-		this.PORT_ONE = PORT_O;
-		this.SCHEME = "http";
-		this.secondary_threshold = threshold - 10 >= 0 ? threshold - 10 : 0;
-		this.threshold = threshold;
-		this.use_SoftThreshold = use_SoftThreshold;
-	}
 
-
-	public ArrayList<Claim> findCatalogItemWithoutApi(String field, String value, int num_of_hits) {
+	public ArrayList<Claim> findCatalogItemWithoutApi(boolean use_SoftThreshold, double threshold, String field, String value, int num_of_hits) {
 		String url = SCHEME + "://" + HOST + ":" + PORT_ONE + "/_search?q=" + field + ":" + value + "&size=" + num_of_hits;
 		URL obj;
-
+		double secondary_threshold = threshold - 10 >= 0 ? threshold - 10 : 0;
 		System.out.println(url);
 		ArrayList<Claim> claimArrayList = new ArrayList<>();
 		ArrayList<Claim> pillow_claimArrayList = new ArrayList<>();
@@ -79,14 +67,14 @@ public class ElasticWrapper {
 
 			if (use_SoftThreshold) {
 				for (Claim claim : pillow_claimArrayList) {
-					if (claim.getElasticScore() > this.secondary_threshold &&
+					if (claim.getElasticScore() > secondary_threshold &&
 							claimArrayList.size() < 10)
 						claimArrayList.add(claim);
 
 				}
 			}
 			for (Claim claim : claimArrayList) {
-				System.out.println(ConsoleColor.ANSI_GREEN + "[ES_API] " + (counter.getAndIncrement()) + " " + claim.getElasticScore() + " " + claim.getReviewedBody() +  ConsoleColor.ANSI_RESET);
+				System.out.println(ConsoleColor.ANSI_GREEN + "[ES_API] " + (counter.getAndIncrement()) + " " + claim.getElasticScore() + " " + claim.getReviewedBody() + ConsoleColor.ANSI_RESET);
 			}
 
 
@@ -95,17 +83,6 @@ public class ElasticWrapper {
 //            e.printStackTrace();
 		}
 		return claimArrayList;
-	}
-
-	public static void main(String[] args) {
-		ElasticWrapper demo = new ElasticWrapper(20, "192.168.2.112", 9200, 9201);
-		JsonObjectBuilder factory = Json.createObjectBuilder();
-		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-		demo.findCatalogItemWithoutApi("claimReview_claimReviewed", "President", 10).forEach(claim ->
-				arrayBuilder.add(Json.createObjectBuilder().add("claimReview_claimReviewed", claim.getReviewedBody())));
-		factory.add("results", arrayBuilder);
-		factory.add("search", Json.createArrayBuilder());
-		System.out.println(factory.build());
 	}
 
 	static Map<String, Object> createMapFromJsonObject(JsonObject jo) {
