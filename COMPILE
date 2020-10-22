@@ -1,0 +1,9 @@
+#!/bin/bash
+
+echo "========================="
+echo "ClaimLinker COMPILE"
+echo "========================="
+cd ClaimLinker_commons
+mvn install:install-file -Dfile=./lib/FEL-0.1.0-fat.jar -DgroupId=com.yahoo.semsearch -DartifactId=FEL -Dversion=0.1.0 -Dpackaging=jar -DgeneratePom=true
+cd ..
+mvn clean compile package

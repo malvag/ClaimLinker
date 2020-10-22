@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.Set;
 
-class ClaimLinkerTest {
+public class ClaimLinkerTest {
 	public static void main(String[] args) throws Exception {
 		testClaimLink();
 	}
