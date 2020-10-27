@@ -72,7 +72,7 @@ public enum Association_type {
 			entities.forEach((annotation, mention) -> {
 				System.out.printf("[Author_of] Person entities : %15s  \n", mention.toString());
 				CLAnnotation tmp = annotationSet.stream().filter(item -> item.equals(annotation)).findFirst().get();
-				tmp.getLinkedClaims().addAll(claimLinker.elasticWrapper.findCatalogItemWithoutApi(true,this.threshold,"creativeWork_author_name", URLEncoder.encode(mention.toString(), StandardCharsets.UTF_8), hits));
+				tmp.getLinkedClaims().addAll(claimLinker.elasticWrapper.findCatalogItemWithoutApi(true,this.threshold,new String[]{"creativeWork_author_name"}, URLEncoder.encode(mention.toString(), StandardCharsets.UTF_8), hits));
 			});
 
 			CoreDocument CD_text = claimLinker.NLP_annotate(
@@ -133,7 +133,7 @@ public enum Association_type {
 			NNouns_map.forEach((annotation, noun) -> {
 				System.out.printf("[Topic_of]  : %15s  \n", noun.toString());
 				CLAnnotation tmp = annotationSet.stream().filter(item -> item.equals(annotation)).findFirst().get();
-				tmp.getLinkedClaims().addAll(claimLinker.elasticWrapper.findCatalogItemWithoutApi(true,this.threshold,"claimReview_claimReviewed", URLEncoder.encode(noun.lemma(), StandardCharsets.UTF_8), hits));
+				tmp.getLinkedClaims().addAll(claimLinker.elasticWrapper.findCatalogItemWithoutApi(true,this.threshold,new String[]{"claimReview_claimReviewed","extra_title"}, URLEncoder.encode(noun.lemma(), StandardCharsets.UTF_8), hits));
 			});
 
 			// generate candidates and rank them with Sim Measures
@@ -183,7 +183,7 @@ public enum Association_type {
 					System.out.printf("[Same_as]  : %15s  \n", sentence.toString());
 					CLAnnotation tmp = annotationSet.stream().filter(item -> item.equals(annotation)).findFirst().get();
 					CoreDocument doc = claimLinker.NLP_annotate(sentence.toString());
-					tmp.getLinkedClaims().addAll(claimLinker.elasticWrapper.findCatalogItemWithoutApi(false,this.threshold,"claimReview_claimReviewed", URLEncoder.encode(
+					tmp.getLinkedClaims().addAll(claimLinker.elasticWrapper.findCatalogItemWithoutApi(false,this.threshold,new String[]{"claimReview_claimReviewed","extra_title"}, URLEncoder.encode(
 							claimLinker.nlp_instance.getWithoutStopwords(doc), StandardCharsets.UTF_8), hits));
 				}
 			});
