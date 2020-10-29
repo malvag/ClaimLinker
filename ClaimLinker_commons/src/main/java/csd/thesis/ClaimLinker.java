@@ -29,7 +29,7 @@ import static java.util.stream.Collectors.toCollection;
 public class ClaimLinker {
 	public ArrayList<Claim> claims;
 	public NLPlib nlp_instance;
-	public final static boolean debug = false;
+	public final static boolean debug = true;
 	public AnalyzerDispatcher analyzerDispatcher;
 	public ElasticWrapper elasticWrapper;
 

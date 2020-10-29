@@ -1,8 +1,10 @@
 package csd.thesis;
 
 import com.google.gson.*;
+import com.roxstudio.utils.CUrl;
 import csd.thesis.misc.ConsoleColor;
 import csd.thesis.model.Claim;
+import org.apache.commons.lang3.ObjectUtils;
 
 
 import javax.json.Json;
@@ -14,7 +16,10 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -31,27 +36,36 @@ public class ElasticWrapper {
 		this.PORT_ONE = PORT_O;
 		this.SCHEME = "http";
 		this.use_SoftThreshold = false;
-
 	}
 
+	public ArrayList<Claim> findCatalogItemWithoutApi(boolean use_SoftThreshold, double threshold, String[] field, String value, int num_of_hits)  {
+		String url = SCHEME + "://" + HOST + ":" + PORT_ONE + "/_search";
 
-	public ArrayList<Claim> findCatalogItemWithoutApi(boolean use_SoftThreshold, double threshold, String field, String value, int num_of_hits) {
-		String url = SCHEME + "://" + HOST + ":" + PORT_ONE + "/_search?q=" + field + ":" + value + "&size=" + num_of_hits;
-		URL obj;
-		double secondary_threshold = threshold - 10 >= 0 ? threshold - 10 : 0;
-		System.out.println(url);
+		String curl_begin = "curl -X GET \"192.168.2.112:9200/_search?pretty\" -H \"Content-Type: application/json\" -d";
+
+		String data = String.format("'{\"query\": { \"multi_match\" : {  \"query\":    \"%s\", \n      \"fields\": [", value);
+
+		StringBuilder ss = new StringBuilder();
+		for (String s : field) ss.append("\"").append(s).append("\", ");
+		ss.replace(ss.length()-2,ss.length(),"");
+
+		ss.append("]}}}'");
+		data += ss.toString();
+		String curl = curl_begin + data;
+
+
 		ArrayList<Claim> claimArrayList = new ArrayList<>();
 		ArrayList<Claim> pillow_claimArrayList = new ArrayList<>();
-		try {
-			obj = new URL(url);
-			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-			con.setRequestMethod("GET");
-			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-			BufferedReader br = new BufferedReader(new InputStreamReader(obj.openStream()));
-			String strTemp, jsonstr = "";
-			while ((strTemp = br.readLine()) != null) {
-				jsonstr = strTemp;
-			}
+//		System.out.println(url+"\n"+data);
+		CUrl xcurl = new CUrl(url)
+				.header("Content-Type : application/json")
+				.data(data);
+
+		xcurl.exec();
+
+		String jsonstr = xcurl.getStdout(CUrl.UTF8, null);
+			double secondary_threshold = threshold - 10 >= 0 ? threshold - 10 : 0;
+
 
 			JsonElement je = JsonParser.parseString(jsonstr).getAsJsonObject();
 			JsonObject jo = je.getAsJsonObject();
@@ -78,11 +92,12 @@ public class ElasticWrapper {
 			}
 
 
-		} catch (IOException e) {
-			System.err.println("ElasticSearch error");
-//            e.printStackTrace();
-		}
 		return claimArrayList;
+	}
+
+	public static void main(String[] args) {
+		new ElasticWrapper(20, "192.168.2.112", 9200, 9201).findCatalogItemWithoutApi(false,20,new String[]{"claimReview_claimReviewed","extra_title"}, URLEncoder.encode("Trump", StandardCharsets.UTF_8), 10);
+
 	}
 
 	static Map<String, Object> createMapFromJsonObject(JsonObject jo) {

@@ -35,6 +35,7 @@ public class AnalyzerDispatcher {
 
 	public double analyze(CoreDocument text, CoreDocument claim) {
 		double score = 0;
+		System.out.print((ClaimLinker.debug)?claim.text()+"\nvs\n" + text.text() + "\n":"");
 		ArrayList<Pair<Double, CoreDocument>> arr = new ArrayList<>();
 		double sum = 0d;
 		CoreDocument doced_sentence = new CoreDocument(text.text());
@@ -44,6 +45,7 @@ public class AnalyzerDispatcher {
 			sum += (result >= 0) ? result : 0;
 		}
 		sum /= similarityMeasures.size();
+		System.out.print((ClaimLinker.debug)?"--\n":"");
 
 		return sum;
 
@@ -117,8 +119,6 @@ public class AnalyzerDispatcher {
 			}
 		},
 		jcrd_comm_dissambig_ents {
-			private QuasiSuccinctEntityHash quasiSuccinctEntityHash;
-
 			//    Common (jaccard) disambiguated entities (result of Babelfy)
 			@Override
 			double analyze(CoreDocument claim, CoreDocument text) {
@@ -134,28 +134,34 @@ public class AnalyzerDispatcher {
 				List<FastEntityLinker.EntityResult> results_claim = null;
 
 				try {
-					this.quasiSuccinctEntityHash = super.nlp_instance.quasiSuccinctEntityHash;
-					FastEntityLinker fel = new FastEntityLinker(this.quasiSuccinctEntityHash, new EmptyContext());
+					QuasiSuccinctEntityHash quasiSuccinctEntityHash = super.nlp_instance.quasiSuccinctEntityHash;
+					FastEntityLinker fel = new FastEntityLinker(quasiSuccinctEntityHash, new EmptyContext());
 					int threshold = -4;
 
 					long time = -System.nanoTime();
 					//claim
 					results_claim = fel.getResults(claim.text(), threshold);
-					for (FastEntityLinker.EntityResult er : results_claim) {
-						if (debug)
+					if (verbose) {
+						for (FastEntityLinker.EntityResult er : results_claim) {
 							System.out.println(er.s.getSpan() + " (" + er.s.getStartOffset() + ", " + er.s.getEndOffset() + ")" + "\t\t" + er.text + "\t\t" + er.score);
-					}
-					if (debug) System.out.println("====");
-					results_text = fel.getResults(text.text(), threshold);
-					for (FastEntityLinker.EntityResult er : results_text) {
-						if (debug)
+						}
+						System.out.println("====");
+						results_text = fel.getResults(text.text(), threshold);
+						for (FastEntityLinker.EntityResult er : results_text) {
 							System.out.println(er.s.getSpan() + " (" + er.s.getStartOffset() + ", " + er.s.getEndOffset() + ")" + "\t\t" + er.text + "\t\t" + er.score);
+						}
 					}
 				} catch (Exception e) {
 					System.err.println("FEL error");
 				}
-				if (results_claim == null || results_text == null)
+				if (results_claim == null || results_text == null) {
+
+					synchronized (this) {
+						String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) disambiguated entities FEL similarity applied" + ConsoleColor.ANSI_RESET;
+						if (debug) System.out.printf("[ClaimLinker] %-100s [%9s][%9s]\n", out,"(ignored)", -1);
+					}
 					return -1;
+				}
 				if (verbose) {
 					for (FastEntityLinker.EntityResult er : results_claim) {
 						if (debug)
@@ -167,12 +173,15 @@ public class AnalyzerDispatcher {
 					}
 				}
 				if (results_claim.size() == 0 || results_text.size() == 0) {
-					if (debug) System.out.println(-1);
+					synchronized (this) {
+						String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) disambiguated entities FEL similarity applied" + ConsoleColor.ANSI_RESET;
+						if (debug) System.out.printf("[ClaimLinker] %-100s [%9s][%9s]\n", out,"(ignored)", -1);
+					}
 					return -1;
 				}
 				double result = similarity(results_claim, results_claim);
 				synchronized (this) {
-					String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) disambiguated entities BFY similarity applied" + ConsoleColor.ANSI_RESET;
+					String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) disambiguated entities FEL similarity applied" + ConsoleColor.ANSI_RESET;
 					if (debug) System.out.printf("[ClaimLinker] %-100s [%20s]\n", out, result);
 				}
 				return result;

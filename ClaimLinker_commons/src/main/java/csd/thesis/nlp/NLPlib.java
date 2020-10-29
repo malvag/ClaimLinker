@@ -45,6 +45,7 @@ public class NLPlib {
 
     public List<String> getLemmas(CoreDocument a) {
         if (a == null) return null;
+        this.NLPlib_annotate(a);
         return this.doc.tokens().stream()
                 .map(CoreLabel::lemma)
                 .collect(Collectors.toList());
