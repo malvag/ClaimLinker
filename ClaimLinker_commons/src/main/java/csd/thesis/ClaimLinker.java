@@ -40,17 +40,7 @@ public class ClaimLinker {
 		this.claims = new ArrayList<>();
 		this.elasticWrapper = new ElasticWrapper(ES_threshold, ES_host, 9200, 9201);
 		this.analyzerDispatcher = new AnalyzerDispatcher(this.nlp_instance);
-		this.analyzerDispatcher.addSimMeasure(
-				similarityMeasures
-//				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_words,           //Common (jaccard) words
-//				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_lemm_words,      //Common (jaccard) lemmatized words
-//				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_ne,              //Common (jaccard) named entities
-//				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_dissambig_ents,  //Common (jaccard) disambiguated entities BFY
-//				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_pos_words,       //Common (jaccard) words of specific POS
-//				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_ngram,           //Common (jaccard) ngrams
-//				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_nchargram,       //Common (jaccard) nchargrams
-//				AnalyzerDispatcher.SimilarityMeasure.vec_cosine_sim             //Cosine similarity
-		);
+		this.analyzerDispatcher.addSimMeasure(similarityMeasures);
 		System.out.println("========================================");
 		System.out.println("ClaimLinker's initialization finished...");
 		System.out.println("========================================");

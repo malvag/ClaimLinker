@@ -18,9 +18,17 @@
         <servlet-class>csd.thesis.servlet.BookmarkletHandler_Servlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <servlet>
+        <servlet-name>claimLinker_app</servlet-name>
+        <jsp-file>/app.jsp</jsp-file>
+    </servlet>
     <servlet-mapping>
         <servlet-name>claimLinker</servlet-name>
         <url-pattern>/claimlinker</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>claimLinker_app</servlet-name>
+        <url-pattern>/claimlinker/app</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>BookmarkletHandler_Servlet</servlet-name>

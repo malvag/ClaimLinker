@@ -10,6 +10,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.util.Pair;
+import org.apache.avro.generic.GenericData;
 import org.apache.commons.text.similarity.CosineSimilarity;
 import org.apache.commons.text.similarity.JaccardSimilarity;
 
@@ -35,7 +36,7 @@ public class AnalyzerDispatcher {
 
 	public double analyze(CoreDocument text, CoreDocument claim) {
 		double score = 0;
-		System.out.print((ClaimLinker.debug)?claim.text()+"\nvs\n" + text.text() + "\n":"");
+		System.out.print((ClaimLinker.debug) ? claim.text() + "\nvs\n" + text.text() + "\n" : "");
 		ArrayList<Pair<Double, CoreDocument>> arr = new ArrayList<>();
 		double sum = 0d;
 		CoreDocument doced_sentence = new CoreDocument(text.text());
@@ -45,7 +46,7 @@ public class AnalyzerDispatcher {
 			sum += (result >= 0) ? result : 0;
 		}
 		sum /= similarityMeasures.size();
-		System.out.print((ClaimLinker.debug)?"--\n":"");
+		System.out.print((ClaimLinker.debug) ? "--\n" : "");
 
 		return sum;
 
@@ -119,13 +120,9 @@ public class AnalyzerDispatcher {
 			}
 		},
 		jcrd_comm_dissambig_ents {
-			//    Common (jaccard) disambiguated entities (result of Babelfy)
+			//    Common (jaccard) disambiguated entities (result of FEL)
 			@Override
 			double analyze(CoreDocument claim, CoreDocument text) {
-				ArrayList<String> listA = super.nlp_instance.getAnnotationSentences(claim);
-				ArrayList<String> listB = super.nlp_instance.getAnnotationSentences(text);
-				ArrayList<String> bfyA = new ArrayList<>();
-				ArrayList<String> bfyB = new ArrayList<>();
 				if (verbose) {
 					System.out.println("- Document A:\"" + claim.text() + "\"");
 					System.out.println("- Document B:\"" + text.text() + "\"");
@@ -141,45 +138,28 @@ public class AnalyzerDispatcher {
 					long time = -System.nanoTime();
 					//claim
 					results_claim = fel.getResults(claim.text(), threshold);
-					if (verbose) {
-						for (FastEntityLinker.EntityResult er : results_claim) {
-							System.out.println(er.s.getSpan() + " (" + er.s.getStartOffset() + ", " + er.s.getEndOffset() + ")" + "\t\t" + er.text + "\t\t" + er.score);
-						}
-						System.out.println("====");
-						results_text = fel.getResults(text.text(), threshold);
-						for (FastEntityLinker.EntityResult er : results_text) {
-							System.out.println(er.s.getSpan() + " (" + er.s.getStartOffset() + ", " + er.s.getEndOffset() + ")" + "\t\t" + er.text + "\t\t" + er.score);
-						}
-					}
+					results_text = fel.getResults(text.text(), threshold);
+
 				} catch (Exception e) {
 					System.err.println("FEL error");
 				}
-				if (results_claim == null || results_text == null) {
+//				if (results_claim == null || results_text == null) {
+//
+//					synchronized (this) {
+//						String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) disambiguated entities FEL similarity applied" + ConsoleColor.ANSI_RESET;
+//						if (debug) System.out.printf("[ClaimLinker] %-100s [%9s][%9s]\n", out,"(ignored)", -1);
+//					}
+//					return -1;
+//				}
 
-					synchronized (this) {
-						String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) disambiguated entities FEL similarity applied" + ConsoleColor.ANSI_RESET;
-						if (debug) System.out.printf("[ClaimLinker] %-100s [%9s][%9s]\n", out,"(ignored)", -1);
-					}
-					return -1;
-				}
-				if (verbose) {
-					for (FastEntityLinker.EntityResult er : results_claim) {
-						if (debug)
-							System.out.println(er.s.getSpan() + " (" + er.s.getStartOffset() + ", " + er.s.getEndOffset() + ")" + "\t\t" + er.text + "\t\t" + er.score);
-					}
-					for (FastEntityLinker.EntityResult er : results_text) {
-						if (debug)
-							System.out.println(er.s.getSpan() + " (" + er.s.getStartOffset() + ", " + er.s.getEndOffset() + ")" + "\t\t" + er.text + "\t\t" + er.score);
-					}
-				}
-				if (results_claim.size() == 0 || results_text.size() == 0) {
-					synchronized (this) {
-						String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) disambiguated entities FEL similarity applied" + ConsoleColor.ANSI_RESET;
-						if (debug) System.out.printf("[ClaimLinker] %-100s [%9s][%9s]\n", out,"(ignored)", -1);
-					}
-					return -1;
-				}
-				double result = similarity(results_claim, results_claim);
+//				if (results_claim.size() == 0 || results_text.size() == 0) {
+//					synchronized (this) {
+//						String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) disambiguated entities FEL similarity applied" + ConsoleColor.ANSI_RESET;
+//						if (debug) System.out.printf("[ClaimLinker] %-100s [%9s][%9s]\n", out,"(ignored)", -1);
+//					}
+//					return -1;
+//				}
+				double result = similarity(results_claim, results_text);
 				synchronized (this) {
 					String out = ConsoleColor.ANSI_GREEN + "INFO Common (jaccard) disambiguated entities FEL similarity applied" + ConsoleColor.ANSI_RESET;
 					if (debug) System.out.printf("[ClaimLinker] %-100s [%20s]\n", out, result);
@@ -378,25 +358,55 @@ public class AnalyzerDispatcher {
 
 		abstract double analyze(CoreDocument claim, CoreDocument text);
 
-		/**
-		 * @author kui.liu
-		 */
 		public <T> Double similarity(final List<T> l1, final List<T> l2) {
-
+			List<String> sl1 = new ArrayList<>();
+			List<String> sl2 = new ArrayList<>();
 			if (l1 == null || l2 == null) return Double.NaN;
 			if (l1.isEmpty() || l2.isEmpty()) return -1d;
 			if (l1.containsAll(l2) && l2.containsAll(l1)) return 1d;
+			if (verbose) {
+				System.out.println("====");
+				System.out.print("[");
+			}
+			l1.forEach(elem -> {
+				if (elem instanceof FastEntityLinker.EntityResult) {
+					if (verbose) System.out.println(((FastEntityLinker.EntityResult) elem).text + ", ");
+					sl1.add(((FastEntityLinker.EntityResult) elem).text.toString());
+				} else
+					System.out.print(verbose?elem+", ":"");
+			});
+			if (verbose) {
+				System.out.println("] vs ");
+				System.out.print("[");
+			}
+			l2.forEach(elem -> {
+				if (elem instanceof FastEntityLinker.EntityResult) {
+					if (verbose) System.out.println(((FastEntityLinker.EntityResult) elem).text + ", ");
+					sl2.add(((FastEntityLinker.EntityResult) elem).text.toString());
+				} else System.out.print(verbose?elem+", ":"");
+			});
+			System.out.print(verbose?"]\n":"");
+			int unionNum, intersectionNum;
+			if (l1.get(0) instanceof FastEntityLinker.EntityResult && l2.get(0) instanceof FastEntityLinker.EntityResult) {
+				List<String> intersectionList = sl1.stream().filter(sl2::contains).distinct().collect(Collectors.toList());
+				List<String> s_unionList = new ArrayList<>();
+				s_unionList.addAll(sl1);
+				s_unionList.addAll(sl2);
+				s_unionList = s_unionList.stream().distinct().collect(Collectors.toList());
+				intersectionNum = intersectionList.size();
+				unionNum = s_unionList.size();
 
-			List<T> intersectionList = l1.stream().filter(l2::contains).distinct().collect(Collectors.toList());
-			List<T> unionList = new ArrayList<>();
-			unionList.addAll(l1);
-			unionList.addAll(l2);
-			unionList = unionList.stream().distinct().collect(Collectors.toList());
-
-			int intersectionNum = intersectionList.size();
-			int unionNum = unionList.size();
-
+			} else {
+				List<T> intersectionList = l1.stream().filter(l2::contains).distinct().collect(Collectors.toList());
+				List<T> unionList = new ArrayList<>();
+				unionList.addAll(l1);
+				unionList.addAll(l2);
+				unionList = unionList.stream().distinct().collect(Collectors.toList());
+				intersectionNum = intersectionList.size();
+				unionNum = unionList.size();
+			}
 			return (double) intersectionNum / unionNum;
+
 		}
 
 	}

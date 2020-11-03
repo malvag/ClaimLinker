@@ -29,17 +29,6 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
             response.flushBuffer();
         }
         JsonObject response_json = claimLinker_Servlet.ClaimLinkHandler(request, Association_type.topic_of);
-//        StringBuilder ss = new StringBuilder();
-//        URL url = new URL(request.getParameter("url"));
-//        try (
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-//        ) {
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                ss.append(line).append("\n");
-//            }
-//            System.out.println("Page downloaded.");
-//        }
         PrintWriter out = response.getWriter();
         response.setContentType("text/html");
         assert response_json != null;

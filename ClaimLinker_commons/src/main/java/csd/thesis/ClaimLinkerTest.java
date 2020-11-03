@@ -33,7 +33,7 @@ public class ClaimLinkerTest {
 //        myWriter3.write(String.valueOf(results_sample3));
 //        myWriter3.close();
 //		Set<CLAnnotation> results_sample5 = demo_pipeline("Well, I think that trade is an important issue. Of course, we are 5 percent of the world's population; we have to trade with the other 95 percent. You konw, interest on debt will soon exceed security spending. I think we come at it from somewhat different perspectives. I understand that. You know, Donald was very fortunate in his life, and that's all to his benefit. Obama's administration spent more on Cash for the Clunkers than on our space program. Ted used Nazi terminology, something like 'subhuman mongrel' for describing President Obama.  My father was a small-businessman, he worked really hard.  He printed drapery fabrics on long tables, where he pulled out those fabrics and he went down with a silkscreen and dumped the paint in and took the squeegee and kept going. \n");
-        Set<CLAnnotation> results_sample5 = demo_pipeline("Of course, we are 5 percent of the world's population; we have to trade with the other 95 percent \n");
+        Set<CLAnnotation> results_sample5 = demo_pipeline("Of course, we are 5 percent of the world's population; we have to trade with the other 95 percent. Trump \n");
         FileWriter myWriter4 = new FileWriter("results_sample5.json");
 //        myWriter4.write(String.valueOf(results_sample5));
 //        myWriter4.close();

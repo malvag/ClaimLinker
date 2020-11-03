@@ -22,6 +22,7 @@
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.8.11" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-smile:2.8.11" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.8.11" />
+          <element id="library" level="project" name="Maven: com.github.rockswang:java-curl:1.2.2.2" />
           <element id="library" level="project" name="Maven: com.github.spullara.mustache.java:compiler:0.9.6" />
           <element id="library" level="project" name="Maven: com.google.code.findbugs:jsr305:3.0.2" />
           <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.6" />
@@ -30,7 +31,7 @@
           <element id="library" level="project" name="Maven: com.sun.xml.bind:jaxb-core:2.3.0.1" />
           <element id="library" level="project" name="Maven: com.sun.xml.bind:jaxb-impl:2.4.0-b180830.0438" />
           <element id="library" level="project" name="Maven: com.tdunning:t-digest:3.2" />
-          <element id="library" level="project" name="Maven: com.yahoo.FEL:FEL:0.1.0" />
+          <element id="library" level="project" name="Maven: com.yahoo.semsearch:FEL:0.1.0" />
           <element id="library" level="project" name="Maven: commons-beanutils:commons-beanutils:1.9.3" />
           <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.11" />
           <element id="library" level="project" name="Maven: commons-collections:commons-collections:3.2.2" />
@@ -46,7 +47,7 @@
           <element id="library" level="project" name="Maven: javax.servlet:javax.servlet-api:3.0.1" />
           <element id="library" level="project" name="Maven: javax.xml.bind:jaxb-api:2.4.0-b180830.0359" />
           <element id="library" level="project" name="Maven: joda-time:joda-time:2.10.4" />
-          <element id="library" level="project" name="Maven: junit:junit:3.8.1" />
+          <element id="library" level="project" name="Maven: junit:junit:4.13.1" />
           <element id="library" level="project" name="Maven: net.didion:jwnl:1.4.1" />
           <element id="library" level="project" name="Maven: net.sf.jopt-simple:jopt-simple:5.0.2" />
           <element id="library" level="project" name="Maven: net.sourceforge.nekohtml:nekohtml:1.9.22" />
@@ -98,6 +99,7 @@
           <element id="library" level="project" name="Maven: org.elasticsearch:elasticsearch:7.6.2" />
           <element id="library" level="project" name="Maven: org.elasticsearch:jna:4.5.1" />
           <element id="library" level="project" name="Maven: org.glassfish:javax.json:1.0.4" />
+          <element id="library" level="project" name="Maven: org.hamcrest:hamcrest-core:1.3" />
           <element id="library" level="project" name="Maven: org.hdrhistogram:HdrHistogram:2.1.9" />
           <element id="library" level="project" name="Maven: org.jetbrains.kotlin:kotlin-stdlib:1.2.10" />
           <element id="library" level="project" name="Maven: org.jetbrains:annotations:13.0" />
@@ -112,15 +114,19 @@
           <element id="library" level="project" name="Maven: xml-apis:xml-apis:1.3.03" />
           <element id="library" level="project" name="Maven: xml-apis:xml-apis:1.4.01" />
           <element id="library" level="project" name="Maven: xom:xom:1.3.2" />
+          <element id="library" level="application" name="jquery-3.4.1.slim" />
+          <element id="library" level="application" name="popper.js" />
+          <element id="library" level="project" name="Maven: org.json:json:20131018" />
         </element>
         <element id="file-copy" path="$PROJECT_DIR$/ClaimLinker_web/web/WEB-INF/web.xml" />
-        <element id="directory" name="resource">
-          <element id="dir-copy" path="$PROJECT_DIR$/ClaimLinker_web/web/resource" />
-        </element>
         <element id="file-copy" path="$PROJECT_DIR$/ClaimLinker_commons/Properties.xml" />
       </element>
       <element id="directory" name="config">
         <element id="dir-copy" path="$PROJECT_DIR$/config" />
+      </element>
+      <element id="file-copy" path="$PROJECT_DIR$/ClaimLinker_web/web/app.jsp" />
+      <element id="directory" name="resource">
+        <element id="dir-copy" path="$PROJECT_DIR$/ClaimLinker_web/web/resource" />
       </element>
     </root>
   </artifact>

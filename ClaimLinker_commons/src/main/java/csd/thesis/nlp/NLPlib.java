@@ -161,7 +161,7 @@ public class NLPlib {
                     if ("O".equals(ne)) {
                         inEntity = false;
                         tokens.add(currentEntity);
-                        if (debug) System.out.println("Extracted " + currentEntityType + " " + currentEntity.trim());
+//                        System.out.println("Extracted " + currentEntityType + " " + currentEntity.trim());
 
                     } else {
                         currentEntity += " " + token.originalText();
