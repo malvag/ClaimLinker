@@ -1,6 +1,6 @@
-package csd.thesis.servlet;
+package csd.claimlinker.es.web.servlet;
 
-import csd.thesis.model.Association_type;
+import csd.claimlinker.es.model.Association_type;
 
 import javax.json.JsonObject;
 import javax.servlet.ServletException;

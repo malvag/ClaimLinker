@@ -1,18 +1,13 @@
-package csd.thesis.model;
+package csd.claimlinker.es.model;
 
-import com.google.common.collect.Lists;
-import csd.thesis.ClaimLinker;
-import csd.thesis.misc.ConsoleColor;
+import csd.claimlinker.es.ClaimLinker;
+import csd.claimlinker.es.misc.ConsoleColor;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.util.CoreMap;
-import edu.stanford.nlp.util.Pair;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -21,8 +16,6 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toCollection;
 
 public enum Association_type {
 

@@ -1,7 +1,7 @@
-package csd.thesis.nlp;
+package csd.claimlinker.es.nlp;
 
 import com.yahoo.semsearch.fastlinking.hash.QuasiSuccinctEntityHash;
-import csd.thesis.misc.ConsoleColor;
+import csd.claimlinker.es.misc.ConsoleColor;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;

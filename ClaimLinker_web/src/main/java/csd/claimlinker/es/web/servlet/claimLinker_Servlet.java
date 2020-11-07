@@ -1,12 +1,10 @@
-package csd.thesis.servlet;
+package csd.claimlinker.es.web.servlet;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import csd.thesis.ClaimLinker;
-import csd.thesis.model.Association_type;
-import csd.thesis.model.CLAnnotation;
-import csd.thesis.model.WebArticle;
-import csd.thesis.nlp.AnalyzerDispatcher;
+import csd.claimlinker.es.ClaimLinker;
+import csd.claimlinker.es.model.Association_type;
+import csd.claimlinker.es.model.CLAnnotation;
+import csd.claimlinker.es.model.WebArticle;
+import csd.claimlinker.es.nlp.AnalyzerDispatcher;
 import org.json.JSONObject;
 
 import javax.json.*;
@@ -20,8 +18,6 @@ import java.io.PrintWriter;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 @WebServlet(name = "claimLinker_Servlet")
 public class claimLinker_Servlet extends HttpServlet {
@@ -45,7 +41,6 @@ public class claimLinker_Servlet extends HttpServlet {
 			claimLinker = new ClaimLinker(20, similarityMeasures,
 					getServletContext().getResource("/WEB-INF/data/stopwords.txt").getPath(),
 					getServletContext().getResource("/WEB-INF/data/english-20200420.hash").getPath(),
-					getServletContext().getResource("/WEB-INF/data/claim_extraction_18_10_2019_annotated.csv").getPath(),
 					"192.168.2.112");
 			System.out.println(getServletName() + " initialization finished! ");
 		} catch (Exception e) {

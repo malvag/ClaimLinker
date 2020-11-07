@@ -1,21 +1,18 @@
-package csd.thesis.nlp;
+package csd.claimlinker.es.nlp;
 
 import com.yahoo.semsearch.fastlinking.FastEntityLinker;
 import com.yahoo.semsearch.fastlinking.hash.QuasiSuccinctEntityHash;
 import com.yahoo.semsearch.fastlinking.view.EmptyContext;
-import csd.thesis.ClaimLinker;
-import csd.thesis.misc.ConsoleColor;
+import csd.claimlinker.es.ClaimLinker;
+import csd.claimlinker.es.misc.ConsoleColor;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
-import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.util.Pair;
-import org.apache.avro.generic.GenericData;
 import org.apache.commons.text.similarity.CosineSimilarity;
 import org.apache.commons.text.similarity.JaccardSimilarity;
 
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 public class AnalyzerDispatcher {

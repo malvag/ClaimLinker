@@ -1,30 +1,17 @@
-package csd.thesis;
+package csd.claimlinker.es;
 
-import com.google.common.collect.Lists;
-import csd.thesis.misc.ConsoleColor;
-import csd.thesis.model.Association_type;
-import csd.thesis.model.CLAnnotation;
-import csd.thesis.model.Claim;
-import csd.thesis.nlp.AnalyzerDispatcher;
-import csd.thesis.nlp.NLPlib;
-import edu.stanford.nlp.ling.CoreAnnotations;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.pipeline.Annotation;
+import csd.claimlinker.es.nlp.NLPlib;
+import csd.claimlinker.es.misc.ConsoleColor;
+import csd.claimlinker.es.model.Association_type;
+import csd.claimlinker.es.model.CLAnnotation;
+import csd.claimlinker.es.model.Claim;
+import csd.claimlinker.es.nlp.AnalyzerDispatcher;
 import edu.stanford.nlp.pipeline.CoreDocument;
-import edu.stanford.nlp.util.CoreMap;
-import edu.stanford.nlp.util.Pair;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toCollection;
 
 public class ClaimLinker {
 	public ArrayList<Claim> claims;
@@ -33,7 +20,7 @@ public class ClaimLinker {
 	public AnalyzerDispatcher analyzerDispatcher;
 	public ElasticWrapper elasticWrapper;
 
-	public ClaimLinker(double ES_threshold, AnalyzerDispatcher.SimilarityMeasure[] similarityMeasures, String stopwords_path, String Hash_Path, String claims_path, String ES_host) throws IOException, ClassNotFoundException {
+	public ClaimLinker(double ES_threshold, AnalyzerDispatcher.SimilarityMeasure[] similarityMeasures, String stopwords_path, String Hash_Path, String ES_host) throws IOException, ClassNotFoundException {
 		System.out.println("========================================");
 		System.out.println("ClaimLinker initializing ... ");
 		this.nlp_instance = new NLPlib(stopwords_path, Hash_Path);

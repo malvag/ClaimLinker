@@ -1,14 +1,11 @@
-package csd.thesis;
+package csd.claimlinker.es;
 
-import csd.thesis.model.Association_type;
-import csd.thesis.model.CLAnnotation;
-import csd.thesis.nlp.AnalyzerDispatcher;
+import csd.claimlinker.es.model.Association_type;
+import csd.claimlinker.es.model.CLAnnotation;
+import csd.claimlinker.es.nlp.AnalyzerDispatcher;
 
-import javax.json.JsonArray;
-import javax.json.JsonObject;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.Set;
 
 public class ClaimLinkerTest {
@@ -53,7 +50,7 @@ public class ClaimLinkerTest {
 				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_nchargram,       //Common (jaccard) nchargrams
 				AnalyzerDispatcher.SimilarityMeasure.vec_cosine_sim             //Cosine similarity
 		};
-		ClaimLinker CLInstance = new ClaimLinker(20, similarityMeasures, "data/stopwords.txt", "data/english-20200420.hash", "data/claim_extraction_18_10_2019_annotated.csv", "192.168.2.112");
+		ClaimLinker CLInstance = new ClaimLinker(20, similarityMeasures, "data/stopwords.txt", "data/english-20200420.hash", "192.168.2.112");
 		System.out.println("Demo pipeline started!");
 //        String t2 = "C++ designer Bjarne Stroustrup";
 		Set<CLAnnotation> results = CLInstance.claimLink(text, "", 5, 0.4, Association_type.all);

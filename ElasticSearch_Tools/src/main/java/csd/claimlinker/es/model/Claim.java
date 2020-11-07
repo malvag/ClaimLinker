@@ -1,4 +1,4 @@
-package csd.thesis.model;
+package csd.claimlinker.es.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

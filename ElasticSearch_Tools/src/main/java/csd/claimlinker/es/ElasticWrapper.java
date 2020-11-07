@@ -1,22 +1,12 @@
-package csd.thesis;
+package csd.claimlinker.es;
 
 import com.google.gson.*;
 import com.roxstudio.utils.CUrl;
-import csd.thesis.misc.ConsoleColor;
-import csd.thesis.model.Claim;
-import org.apache.commons.lang3.ObjectUtils;
+import csd.claimlinker.es.misc.ConsoleColor;
+import csd.claimlinker.es.model.Claim;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;

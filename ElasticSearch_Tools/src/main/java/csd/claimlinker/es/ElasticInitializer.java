@@ -1,4 +1,4 @@
-package csd.thesis;
+package csd.claimlinker.es;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.ElasticsearchStatusException;
@@ -26,7 +26,6 @@ public class ElasticInitializer {
 	private final String HOST;
 	private final int PORT_ONE;
 	private final int PORT_TWO;
-	private final String SCHEME;
 	public final String path;
 	private int counter;
 
@@ -35,12 +34,11 @@ public class ElasticInitializer {
 
 	public static ArrayList<Map<String, Object>> master_claim_record;
 
-	public ElasticInitializer(String path, String HOST, int PORT_O, int PORT_T, String SCHEME) {
+	public ElasticInitializer(String path, String HOST, int PORT_O, int PORT_T) {
 		this.path = path;
 		this.HOST = HOST;
 		this.PORT_ONE = PORT_O;
 		this.PORT_TWO = PORT_T;
-		this.SCHEME = SCHEME;
 	}
 
 	public synchronized void makeConnection() {
@@ -49,8 +47,8 @@ public class ElasticInitializer {
 		if (restHighLevelClient == null) {
 			restHighLevelClient = new RestHighLevelClient(
 					RestClient.builder(
-							new HttpHost(HOST, PORT_ONE, SCHEME),
-							new HttpHost(HOST, PORT_TWO, SCHEME)));
+							new HttpHost(HOST, PORT_ONE, "http"),
+							new HttpHost(HOST, PORT_TWO, "http")));
 		}
 		System.out.println("Connection established with elastic search.");
 
@@ -161,13 +159,21 @@ public class ElasticInitializer {
 
 
 	public static void main(String[] args) {
-		ElasticInitializer demo = new ElasticInitializer("data/claim_extraction_18_10_2019_annotated.csv", "192.168.2.112", 9200, 9201, "http");
-		demo.makeConnection();
 
-		demo.deleteClaims();
-		demo.insertClaims(true);
+		if(args.length>1 && args[0].equals("-f")){
+			//"data/claim_extraction_18_10_2019_annotated.csv"
+			String ip = "localhost";
+			if(args[2].equals("-h"))
+				ip = args[3];
+			ElasticInitializer demo = new ElasticInitializer(args[1], ip, 9200, 9201);
+			demo.makeConnection();
 
-		demo.closeConnection();
+			demo.deleteClaims();
+			demo.insertClaims(true);
+
+			demo.closeConnection();
+		}
+
 	}
 
 }

@@ -1,4 +1,4 @@
-package csd.thesis.tools;
+package csd.claimlinker.es.tools;
 
 import de.l3s.boilerpipe.BoilerpipeProcessingException;
 import de.l3s.boilerpipe.extractors.ArticleExtractor;

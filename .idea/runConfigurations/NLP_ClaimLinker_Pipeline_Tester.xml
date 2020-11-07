@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="NLP-ClaimLinker Pipeline Tester" type="Application" factoryName="Application" singleton="true" show_console_on_std_err="true">
-    <option name="MAIN_CLASS_NAME" value="csd.thesis.ClaimLinkerTest" />
+    <option name="MAIN_CLASS_NAME" value="csd.claimlinker.es.ClaimLinkerTest" />
     <module name="ClaimLinker_commons" />
     <option name="VM_PARAMETERS" value="-Xmx4096m" />
     <method v="2">
