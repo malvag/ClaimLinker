@@ -4,16 +4,4 @@
 echo "========================="
 echo "ClaimLinker START"
 echo "========================="
-java -cp .:ClaimLinker_commons/target/ClaimLinker_commons-1.0-jar-with-dependencies.jar:ClaimLinker_web/target/ClaimLinker_web-1.0.jar:ElasticSearch_Tools/target/ElasticSearch_Tools-1.0.jar: csd.thesis.ClaimLinkerTest
-# cd target/ClaimLinker-1.0-SNAPSHOT
-# jar -cvf ../ClaimLinker.war WEB-INF
-# cd ..
-# cp ClaimLinker.war ../apache-tomcat-9.0.34/webapps
-# cd ..
-# apache-tomcat-9.0.34/bin/catalina.sh start
-# if [ ! "$(docker ps -a -q -f name=ES_single)" ]; then
-#   docker run -p 9200:9200 -p 9201:9201 -d --env discovery.type=single-node --name ES_single docker.elastic.co/elasticsearch/elasticsearch:7.6.2
-# else
-#   docker start ES_single
-# fi
-# echo "ElasticSearch Server has started...!"
+java -cp .:ClaimLinker_commons/target/ClaimLinker_commons-1.0-jar-with-dependencies.jar:ClaimLinker_web/target/ClaimLinker_web-1.0.jar:ElasticSearch_Tools/target/ElasticSearch_Tools-1.0.jar: csd.claimlinker.ClaimLinkerTest

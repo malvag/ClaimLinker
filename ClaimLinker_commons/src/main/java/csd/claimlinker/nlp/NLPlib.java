@@ -1,4 +1,4 @@
-package csd.claimlinker.es.nlp;
+package csd.claimlinker.nlp;
 
 import com.yahoo.semsearch.fastlinking.hash.QuasiSuccinctEntityHash;
 import csd.claimlinker.es.misc.ConsoleColor;

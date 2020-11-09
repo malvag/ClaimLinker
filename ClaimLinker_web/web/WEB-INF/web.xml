@@ -6,7 +6,7 @@
 
     <servlet>
         <servlet-name>claimLinker</servlet-name>
-        <servlet-class>csd.claimlinker.es.web.servlet.claimLinker_Servlet</servlet-class>
+        <servlet-class>csd.claimlinker.web.servlet.claimLinker_Servlet</servlet-class>
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
             <param-value>first</param-value>
@@ -15,7 +15,7 @@
     </servlet>
     <servlet>
         <servlet-name>BookmarkletHandler_Servlet</servlet-name>
-        <servlet-class>csd.claimlinker.es.web.servlet.BookmarkletHandler_Servlet</servlet-class>
+        <servlet-class>csd.claimlinker.web.servlet.BookmarkletHandler_Servlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>

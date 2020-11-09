@@ -1,6 +1,6 @@
-package csd.claimlinker.es.model;
+package csd.claimlinker.model;
 
-import csd.claimlinker.es.ClaimLinker;
+import csd.claimlinker.ClaimLinker;
 import csd.claimlinker.es.misc.ConsoleColor;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;

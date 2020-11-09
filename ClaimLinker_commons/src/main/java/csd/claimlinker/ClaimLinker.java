@@ -1,11 +1,12 @@
-package csd.claimlinker.es;
+package csd.claimlinker;
 
-import csd.claimlinker.es.nlp.NLPlib;
+import csd.claimlinker.es.ElasticWrapper;
+import csd.claimlinker.nlp.NLPlib;
 import csd.claimlinker.es.misc.ConsoleColor;
-import csd.claimlinker.es.model.Association_type;
-import csd.claimlinker.es.model.CLAnnotation;
-import csd.claimlinker.es.model.Claim;
-import csd.claimlinker.es.nlp.AnalyzerDispatcher;
+import csd.claimlinker.model.Association_type;
+import csd.claimlinker.model.CLAnnotation;
+import csd.claimlinker.model.Claim;
+import csd.claimlinker.nlp.AnalyzerDispatcher;
 import edu.stanford.nlp.pipeline.CoreDocument;
 
 import java.io.IOException;

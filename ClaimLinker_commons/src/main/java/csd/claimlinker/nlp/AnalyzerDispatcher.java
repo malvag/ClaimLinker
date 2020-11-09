@@ -1,9 +1,9 @@
-package csd.claimlinker.es.nlp;
+package csd.claimlinker.nlp;
 
 import com.yahoo.semsearch.fastlinking.FastEntityLinker;
 import com.yahoo.semsearch.fastlinking.hash.QuasiSuccinctEntityHash;
 import com.yahoo.semsearch.fastlinking.view.EmptyContext;
-import csd.claimlinker.es.ClaimLinker;
+import csd.claimlinker.ClaimLinker;
 import csd.claimlinker.es.misc.ConsoleColor;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;

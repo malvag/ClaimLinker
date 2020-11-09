@@ -3,7 +3,7 @@ package csd.claimlinker.es;
 import com.google.gson.*;
 import com.roxstudio.utils.CUrl;
 import csd.claimlinker.es.misc.ConsoleColor;
-import csd.claimlinker.es.model.Claim;
+import csd.claimlinker.model.Claim;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

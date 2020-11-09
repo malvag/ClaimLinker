@@ -1,10 +1,10 @@
-package csd.claimlinker.es.web.servlet;
+package csd.claimlinker.web.servlet;
 
-import csd.claimlinker.es.ClaimLinker;
-import csd.claimlinker.es.model.Association_type;
-import csd.claimlinker.es.model.CLAnnotation;
-import csd.claimlinker.es.model.WebArticle;
-import csd.claimlinker.es.nlp.AnalyzerDispatcher;
+import csd.claimlinker.ClaimLinker;
+import csd.claimlinker.model.Association_type;
+import csd.claimlinker.model.CLAnnotation;
+import csd.claimlinker.model.WebArticle;
+import csd.claimlinker.nlp.AnalyzerDispatcher;
 import org.json.JSONObject;
 
 import javax.json.*;

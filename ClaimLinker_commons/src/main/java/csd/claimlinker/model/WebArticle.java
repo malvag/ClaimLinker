@@ -1,6 +1,6 @@
-package csd.claimlinker.es.model;
+package csd.claimlinker.model;
 
-import csd.claimlinker.es.tools.URL_Parser;
+import csd.claimlinker.tools.URL_Parser;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.CoreEntityMention;
 
