@@ -15,6 +15,10 @@ import org.apache.commons.text.similarity.JaccardSimilarity;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ *
+ * AnalyzerDispatcher is responsible for providing a simple API, running everything in the context of similarity measures.
+ */
 public class AnalyzerDispatcher {
 	protected static NLPlib nlp_instance;
 
@@ -23,6 +27,10 @@ public class AnalyzerDispatcher {
 		this.similarityMeasures = new ArrayList<>();
 	}
 
+	public AnalyzerDispatcher(NLPlib nlp_instance,SimilarityMeasure[] similarityMeasure_array) {
+		this(nlp_instance);
+		this.addSimMeasure(similarityMeasure_array);
+	}
 
 	public void addSimMeasure(SimilarityMeasure[] similarityMeasure_array) {
 		this.similarityMeasures.addAll(Arrays.asList(similarityMeasure_array));
@@ -32,7 +40,6 @@ public class AnalyzerDispatcher {
 	}
 
 	public double analyze(CoreDocument text, CoreDocument claim) {
-		double score = 0;
 		System.out.print((ClaimLinker.debug) ? claim.text() + "\nvs\n" + text.text() + "\n" : "");
 		ArrayList<Pair<Double, CoreDocument>> arr = new ArrayList<>();
 		double sum = 0d;
@@ -44,28 +51,11 @@ public class AnalyzerDispatcher {
 		}
 		sum /= similarityMeasures.size();
 		System.out.print((ClaimLinker.debug) ? "--\n" : "");
-
 		return sum;
-
 	}
 
 	private final ArrayList<SimilarityMeasure> similarityMeasures;
 
-//    public static class CompareJob implements Callable<Double> {
-//        private CompareJob(SimilarityMeasure measure, CoreDocument a, CoreDocument b) {
-//            this.similarityMeasure = measure;
-//            this.a = a;
-//            this.b = b;
-//        }
-//
-//        CoreDocument a, b;
-//        SimilarityMeasure similarityMeasure;
-//
-//        @Override
-//        public Double call() {
-//            return this.similarityMeasure.analyze(a, b);
-//        }
-//    }
 
 	public enum SimilarityMeasure {
 		jcrd_comm_words {
@@ -355,6 +345,11 @@ public class AnalyzerDispatcher {
 
 		abstract double analyze(CoreDocument claim, CoreDocument text);
 
+
+		/**
+		 * Jaccard Similarity
+		 *
+		 */
 		public <T> Double similarity(final List<T> l1, final List<T> l2) {
 			List<String> sl1 = new ArrayList<>();
 			List<String> sl2 = new ArrayList<>();

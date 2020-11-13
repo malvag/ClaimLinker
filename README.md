@@ -44,7 +44,13 @@ i.e.
 		 - **claim_extraction_18_10_2019_annotated.csv**
 		 - **english-20200420.hash**
 		 -  **stopwords.txt**
+		 
+#### ElasticSearch setup
+
+You can check [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html) how you can set up a single-node elasticsearch using docker.
+
 ## Usage
+
 Initializing ElasticSearch:
 ```bash
 java ElasticInitializer -f "data.csv" -h "elasticsearch_host"
@@ -58,7 +64,7 @@ Using it as a library:
 ```java
 ClaimLinker CLInstance = new ClaimLinker(elastic_search_threashold, similarityMeasures, stopwords_file, english_hash_FEL, ElasticSearch_host);
 
-CLInstance.claimLink(text, num_of_returned_claims,similarity_threshold, associationtype)
+CLInstance.claimLink(text, num_of_returned_claims, associationtype)
 ```
 i.e. (csd.claimlinker.ClaimLinkerTest)
 ```java
@@ -79,7 +85,7 @@ static Set<CLAnnotation> demo_pipeline(String text) throws IOException, ClassNot
 	};
 	ClaimLinker CLInstance = new ClaimLinker(20, similarityMeasures, "data/stopwords.txt", "data/english-20200420.hash", "192.168.2.112");
 	System.out.println("Demo pipeline started!");
-	Set<CLAnnotation> results = CLInstance.claimLink(text, "", 5, 0.4, Association_type.all);
+	Set<CLAnnotation> results = CLInstance.claimLink(text, "", 5, Association_type.all);
 	return results;
 }
 ```

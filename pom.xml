@@ -7,6 +7,7 @@
     <artifactId>ClaimLinker</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
+
     <build>
         <plugins>
             <plugin>
@@ -87,4 +88,5 @@
         <module>ClaimLinker_commons</module>
         <module>ClaimLinker_web</module>
     </modules>
+
 </project>

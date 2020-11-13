@@ -41,7 +41,7 @@ public class claimLinker_Servlet extends HttpServlet {
 			claimLinker = new ClaimLinker(20, similarityMeasures,
 					getServletContext().getResource("/WEB-INF/data/stopwords.txt").getPath(),
 					getServletContext().getResource("/WEB-INF/data/english-20200420.hash").getPath(),
-					"192.168.2.112");
+					"localhost");
 			System.out.println(getServletName() + " initialization finished! ");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -93,7 +93,7 @@ public class claimLinker_Servlet extends HttpServlet {
 		String text = request.getParameter("text");
 		JsonObjectBuilder factory = Json.createObjectBuilder();
 		JSONObject JSON = new JSONObject();
-		ArrayList<CLAnnotation> clAnnotations = new ArrayList(claimLinker.claimLink(text, 5, 0.4, associationtype));
+		ArrayList<CLAnnotation> clAnnotations = new ArrayList(claimLinker.claimLink(text, 5, associationtype));
 		clAnnotations.trimToSize();
 		JSON.put("clresults",clAnnotations);
 
@@ -118,7 +118,7 @@ public class claimLinker_Servlet extends HttpServlet {
 		webArticle = new WebArticle(param_url, null, WebArticle.WebArticleType.url);
 
 		factory.add("url", param_url).add("cleaned_text_from_url", webArticle.getDoc().text());
-		factory.add("clresults", (JsonObjectBuilder) claimLinker.claimLink(webArticle.getDoc().text(), 5, 0.2, associationtype));
+		factory.add("clresults", (JsonObjectBuilder) claimLinker.claimLink(webArticle.getDoc().text(), 5, associationtype));
 		Instant finish = Instant.now();
 		long timeElapsed = Duration.between(start, finish).toMillis();
 		factory.add("timeElapsed", timeElapsed);

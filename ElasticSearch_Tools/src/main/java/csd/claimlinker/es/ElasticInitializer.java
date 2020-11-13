@@ -6,12 +6,14 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
@@ -26,7 +28,7 @@ public class ElasticInitializer {
 	private final String HOST;
 	private final int PORT_ONE;
 	private final int PORT_TWO;
-	public final String path;
+	public String path;
 	private int counter;
 
 	private RestHighLevelClient restHighLevelClient;
@@ -34,11 +36,22 @@ public class ElasticInitializer {
 
 	public static ArrayList<Map<String, Object>> master_claim_record;
 
+	public ElasticInitializer(String HOST, int PORT_O, int PORT_T) {
+		this.HOST = HOST;
+		this.PORT_ONE = PORT_O;
+		this.PORT_TWO = PORT_T;
+	}
+
 	public ElasticInitializer(String path, String HOST, int PORT_O, int PORT_T) {
 		this.path = path;
 		this.HOST = HOST;
 		this.PORT_ONE = PORT_O;
 		this.PORT_TWO = PORT_T;
+	}
+
+	public synchronized boolean exists(String index) throws IOException {
+		GetIndexRequest request = new GetIndexRequest(index);
+		return restHighLevelClient.indices().exists(request, RequestOptions.DEFAULT);
 	}
 
 	public synchronized void makeConnection() {
@@ -97,7 +110,6 @@ public class ElasticInitializer {
 		else {
 			assert failure != null;
 			System.err.println("Bulk index finished with errors: ");
-			err.printStackTrace();
 
 		}
 
@@ -111,6 +123,10 @@ public class ElasticInitializer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public void insertClaims(boolean bulk,String path){
+		this.path = path;
+		this.insertClaims(bulk);
 	}
 
 	public void insertClaims(boolean bulk) {
@@ -151,7 +167,6 @@ public class ElasticInitializer {
 			DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest("claim");
 			AcknowledgedResponse deleteIndexResponse = this.restHighLevelClient.indices().delete(deleteIndexRequest, RequestOptions.DEFAULT);
 		} catch (IOException | ElasticsearchStatusException e) {
-//            e.printStackTrace();
 			System.err.println("Claim index doesn't exist in ES, proceeding ...");
 		}
 

@@ -70,11 +70,11 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.8.0-beta4</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.13.2</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.logging.log4j</groupId>-->
+<!--            <artifactId>log4j-core</artifactId>-->
+<!--            <version>2.13.2</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>net.didion</groupId>
             <artifactId>jwnl</artifactId>

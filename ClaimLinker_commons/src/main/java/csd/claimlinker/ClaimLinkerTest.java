@@ -34,7 +34,7 @@ public class ClaimLinkerTest {
 		};
 		ClaimLinker CLInstance = new ClaimLinker(20, similarityMeasures, "data/stopwords.txt", "data/english-20200420.hash", "localhost");
 		System.out.println("Demo pipeline started!");
-		Set<CLAnnotation> results = CLInstance.claimLink(text, 5, 0.4, Association_type.all);
+		Set<CLAnnotation> results = CLInstance.claimLink(text, 5, Association_type.all);
 		return results;
 	}
 

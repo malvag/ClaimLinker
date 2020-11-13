@@ -20,6 +20,10 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+/**
+ * NLPlib is a wrapper class of StanfordNLP CoreNLP, providing an API handling CoreNLPs Annotators.
+ */
+
 public class NLPlib {
     private final StanfordCoreNLP master_pipeline;
     private CoreDocument doc;
@@ -28,19 +32,13 @@ public class NLPlib {
     protected QuasiSuccinctEntityHash quasiSuccinctEntityHash;
 
     public NLPlib( String stopwords_path, String Hash_Path) throws IOException, ClassNotFoundException {
-            System.out.println("========================================");
             System.out.println("NLPlib initializing ...");
             this.quasiSuccinctEntityHash = (QuasiSuccinctEntityHash) BinIO.loadObject(Hash_Path);
             Properties props = new Properties();
             props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner"); // not enough memory
             this.initStopword(stopwords_path);
             master_pipeline = new StanfordCoreNLP(props);
-            System.out.println("========================================");
             System.out.println("NLPlib initialization finished ...");
-            if(master_pipeline == null){
-                System.err.println("NLP error");
-                System.exit(100);
-            }
     }
 
     public List<String> getLemmas(CoreDocument a) {
@@ -124,9 +122,14 @@ public class NLPlib {
         return doc;
     }
 
-    public void NLPlib_annotate(CoreDocument doc) {
+    public CoreDocument NLPlib_annotate(String doc) {
+        CoreDocument a = new CoreDocument(doc);
+        return NLPlib_annotate(a);
+    }
+    public CoreDocument NLPlib_annotate(CoreDocument doc) {
         this.setDoc(doc);
         this.master_pipeline.annotate(doc);
+        return doc;
     }
 
     public void setDoc(CoreDocument doc) {

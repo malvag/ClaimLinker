@@ -24,13 +24,13 @@ public enum Association_type {
 		// match the persons with the claims_author in ES
 		// generate candidates and rank them with Sim Measures based on the whole text's similarities per sentence
 		@Override
-		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result, double similarity_threshold) {
+		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result) {
 			final int hits = 100;
 			System.out.println(ConsoleColor.ANSI_YELLOW + "[Author_of] Attempting to claimlink with association_type " + this + ConsoleColor.ANSI_RESET);
 			Instant start = Instant.now();
-			CoreDocument CD_selection = claimLinker.NLP_annotate(
+			CoreDocument CD_selection = claimLinker.nlp_instance.NLPlib_annotate(
 					claimLinker.nlp_instance.getWithoutStopwords(
-							claimLinker.NLP_annotate(text)));
+							claimLinker.nlp_instance.NLPlib_annotate(text)));
 			Annotation document = new Annotation(CD_selection.annotation());
 			List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
 			Map<CLAnnotation, CoreMap> entities = new HashMap<>();
@@ -65,20 +65,20 @@ public enum Association_type {
 			entities.forEach((annotation, mention) -> {
 				System.out.printf("[Author_of] Person entities : %15s  \n", mention.toString());
 				CLAnnotation tmp = annotationSet.stream().filter(item -> item.equals(annotation)).findFirst().get();
-				ArrayList<Claim> results = claimLinker.elasticWrapper.findCatalogItemWithoutApi(true,this.threshold,new String[]{"creativeWork_author_name"}, URLEncoder.encode(mention.toString(), StandardCharsets.UTF_8), hits);
+				ArrayList<Claim> results = claimLinker.elasticWrapper.findCatalogItemWithoutApi(true,new String[]{"creativeWork_author_name"}, URLEncoder.encode(mention.toString(), StandardCharsets.UTF_8), hits);
 				if(results != null)
 					tmp.getLinkedClaims().addAll(results);
 			});
 
-			CoreDocument CD_text = claimLinker.NLP_annotate(
+			CoreDocument CD_text = claimLinker.nlp_instance.NLPlib_annotate(
 					claimLinker.nlp_instance.getWithoutStopwords(
-							claimLinker.NLP_annotate(text)));
+							claimLinker.nlp_instance.NLPlib_annotate(text)));
 
 			System.out.println("[Author_of] Processing candidate claims");
 			this.annotationSet.forEach(annotation -> {
 				PriorityQueue<Claim> records = new PriorityQueue<>();
 				for (Claim claim : annotation.getLinkedClaims()) {
-					CoreDocument CD_c = claimLinker.NLP_annotate(claim.getReviewedBody());
+					CoreDocument CD_c = claimLinker.nlp_instance.NLPlib_annotate(claim.getReviewedBody());
 					claim.setNLPScore(claimLinker.analyzerDispatcher.analyze(CD_c, CD_text));
 					records.add(claim);
 				}
@@ -99,16 +99,15 @@ public enum Association_type {
 		// generate candidates and rank them with Sim Measures
 		// Given a sentence, we can submit a keyword query to an Elasticsearch index and get a ranked list of candidate claims
 		@Override
-		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result, double similarity_threshold) {
+		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result) {
 			System.out.println(ConsoleColor.ANSI_YELLOW + "Attempting to claimlink with association_type " + this + ConsoleColor.ANSI_RESET);
 			Instant start = Instant.now();
 			final int hits = 30;
-			CoreDocument CD_text = claimLinker.NLP_annotate(
+			CoreDocument CD_text = claimLinker.nlp_instance.NLPlib_annotate(
 					claimLinker.nlp_instance.getWithoutStopwords(
-							claimLinker.NLP_annotate(text)));
+							claimLinker.nlp_instance.NLPlib_annotate(text)));
 			Annotation document = new Annotation(CD_text.annotation());
 			List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
-//			Set<String> NNouns = new HashSet<>();
 			Map<CLAnnotation, CoreLabel> NNouns_map = new HashMap<>();
 
 			int sentencePosition = 0;
@@ -116,7 +115,6 @@ public enum Association_type {
 				for (CoreLabel token : sentence.get(CoreAnnotations.TokensAnnotation.class)) {
 					String ne = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
 					if (ne.startsWith("NN")) {
-//						NNouns.add(token.lemma());
 						CLAnnotation annotation = new CLAnnotation(token.lemma(), token.beginPosition(), token.endPosition(), sentencePosition, this);
 						this.annotationSet.add(annotation);
 						NNouns_map.put(annotation, token);
@@ -128,7 +126,7 @@ public enum Association_type {
 			NNouns_map.forEach((annotation, noun) -> {
 				System.out.printf("[Topic_of]  : %15s  \n", noun.toString());
 				CLAnnotation tmp = annotationSet.stream().filter(item -> item.equals(annotation)).findFirst().get();
-				ArrayList<Claim> results = claimLinker.elasticWrapper.findCatalogItemWithoutApi(true,this.threshold,new String[]{"claimReview_claimReviewed","extra_title"}, URLEncoder.encode(noun.lemma(), StandardCharsets.UTF_8), hits);
+				ArrayList<Claim> results = claimLinker.elasticWrapper.findCatalogItemWithoutApi(true,new String[]{"claimReview_claimReviewed","extra_title"}, URLEncoder.encode(noun.lemma(), StandardCharsets.UTF_8), hits);
 				if(results != null)
 					tmp.getLinkedClaims().addAll(results);
 			});
@@ -139,7 +137,7 @@ public enum Association_type {
 			this.annotationSet.forEach(annotation -> {
 				PriorityQueue<Claim> records = new PriorityQueue<>();
 				for (Claim claim : annotation.getLinkedClaims()) {
-					CoreDocument CD_c = claimLinker.NLP_annotate(claim.getReviewedBody());
+					CoreDocument CD_c = claimLinker.nlp_instance.NLPlib_annotate(claim.getReviewedBody());
 					claim.setNLPScore(claimLinker.analyzerDispatcher.analyze(CD_c, CD_text));
 					records.add(claim);
 				}
@@ -159,11 +157,11 @@ public enum Association_type {
 		// generate candidates and rank them with Sim Measures
 		// Given a sentence, we can submit a keyword query to an Elasticsearch index and get a ranked list of candidate claims
 		@Override
-		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result, double similarity_threshold) {
+		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result) {
 			System.out.println(ConsoleColor.ANSI_YELLOW + "Attempting to claimlink with association_type " + this + ConsoleColor.ANSI_RESET);
 			Instant start = Instant.now();
 			final int hits = 30;
-			CoreDocument CD_text = claimLinker.NLP_annotate(text);
+			CoreDocument CD_text = claimLinker.nlp_instance.NLPlib_annotate(text);
 			Annotation document = new Annotation(CD_text.annotation());
 			List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
 			int sentencePosition = 0;
@@ -179,8 +177,8 @@ public enum Association_type {
 				synchronized (this) {
 					System.out.printf("[Same_as]  : %15s  \n", sentence.toString());
 					CLAnnotation tmp = annotationSet.stream().filter(item -> item.equals(annotation)).findFirst().get();
-					CoreDocument doc = claimLinker.NLP_annotate(sentence.toString());
-					ArrayList<Claim> results = claimLinker.elasticWrapper.findCatalogItemWithoutApi(false,this.threshold,new String[]{"claimReview_claimReviewed","extra_title"}, URLEncoder.encode(
+					CoreDocument doc = claimLinker.nlp_instance.NLPlib_annotate(sentence.toString());
+					ArrayList<Claim> results = claimLinker.elasticWrapper.findCatalogItemWithoutApi(false,new String[]{"claimReview_claimReviewed","extra_title"}, URLEncoder.encode(
 							claimLinker.nlp_instance.getWithoutStopwords(doc), StandardCharsets.UTF_8), hits);
 					if(results != null)
 						tmp.getLinkedClaims().addAll(results);
@@ -191,10 +189,9 @@ public enum Association_type {
 			this.annotationSet.forEach(annotation -> {
 
 				PriorityQueue<Claim> tmp = new PriorityQueue<>();
-				CoreDocument CD_sentence = claimLinker.NLP_annotate(annotation.getText());
+				CoreDocument CD_sentence = claimLinker.nlp_instance.NLPlib_annotate(annotation.getText());
 				for (Claim claim : annotation.getLinkedClaims()) {
-					CoreDocument CD_c = claimLinker.NLP_annotate(claim.getReviewedBody());
-//					claim.setNLPScore(claimLinker.analyzerDispatcher.analyze(CD_c, CD_text)); // for the whole text
+					CoreDocument CD_c = claimLinker.nlp_instance.NLPlib_annotate(claim.getReviewedBody());
 					claim.setNLPScore(claimLinker.analyzerDispatcher.analyze(CD_c, CD_sentence));// for the specific sentence
 					tmp.add(claim);
 				}
@@ -218,17 +215,15 @@ public enum Association_type {
 		}
 	}, all {
 		@Override
-		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result, double similarity_threshold) {
+		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result) {
 			Instant start = Instant.now();
-			this.annotationSet.addAll(Association_type.author_of.annotate(claimLinker, text, num_of_result, similarity_threshold));
-			this.annotationSet.addAll(Association_type.topic_of.annotate(claimLinker, text, num_of_result, similarity_threshold));
-			this.annotationSet.addAll(Association_type.same_as.annotate(claimLinker, text, num_of_result, similarity_threshold));
+			this.annotationSet.addAll(Association_type.author_of.annotate(claimLinker, text, num_of_result));
+			this.annotationSet.addAll(Association_type.topic_of.annotate(claimLinker, text, num_of_result));
+			this.annotationSet.addAll(Association_type.same_as.annotate(claimLinker, text, num_of_result));
 			System.out.println("----");
 			Instant finish = Instant.now();
 			long timeElapsed = Duration.between(start, finish).toMillis();
 			System.out.println("[All] Time passed: " + (double) timeElapsed / 1000 + "s");
-//			this.annotationSet.forEach(System.out::println);
-
 			return this.annotationSet;
 		}
 	};
@@ -247,5 +242,5 @@ public enum Association_type {
 
 	public Set<CLAnnotation> annotationSet;
 
-	abstract public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result, double similarity_threshold);
+	abstract public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result);
 }

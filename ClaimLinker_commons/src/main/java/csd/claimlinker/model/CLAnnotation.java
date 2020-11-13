@@ -6,6 +6,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.util.*;
 
+/**
+ * CLAnnotation provides a model of text and its details, in addition with its linked claims and the association type of that link.
+ */
 public class CLAnnotation {
 	private String text;
 	private int tokenBeginPosition;
