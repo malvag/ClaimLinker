@@ -56,7 +56,9 @@ java -cp .:ClaimLinker_commons/target/ClaimLinker_commons-1.0-jar-with-dependenc
 ```
 Using it as a library:
 ```java
-ClaimLinker CLInstance = new ClaimLinker(elastic_search_threashold, similarityMeasures, stopwords_file, english_hash_FEL, ElasticSearch_host);  
+ClaimLinker CLInstance = new ClaimLinker(elastic_search_threashold, similarityMeasures, stopwords_file, english_hash_FEL, ElasticSearch_host);
+
+CLInstance.claimLink(text, num_of_returned_claims,similarity_threshold, associationtype)
 ```
 i.e. (csd.claimlinker.ClaimLinkerTest)
 ```java
