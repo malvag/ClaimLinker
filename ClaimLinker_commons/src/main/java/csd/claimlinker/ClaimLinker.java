@@ -44,10 +44,10 @@ public class ClaimLinker {
 		return document;
 	}
 
-	public Set<CLAnnotation> claimLink(String text, String context, int num_of_returned_claims, double similarity_threshold, Association_type associationtype) {
+	public Set<CLAnnotation> claimLink(String text, int num_of_returned_claims, double similarity_threshold, Association_type associationtype) {
 		this.claims = null;
 		System.out.println(ConsoleColor.ANSI_YELLOW + "Attempting to claimlink " + ConsoleColor.ANSI_RESET);
-		return associationtype.annotate(this, text, context, num_of_returned_claims, similarity_threshold);
+		return associationtype.annotate(this, text, num_of_returned_claims, similarity_threshold);
 	}
 
 

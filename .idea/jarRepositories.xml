@@ -7,11 +7,6 @@
       <option name="url" value="https://dev.malvag.org/maven2/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="FEL" />
-      <option name="name" value="FEL" />
-      <option name="url" value="file://$PROJECT_DIR$/ClaimLinker_commons/libs" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo.maven.apache.org/maven2" />
@@ -65,6 +60,11 @@
       <option name="id" value="FEL" />
       <option name="name" value="FEL" />
       <option name="url" value="C:\Users\malva\Unsupervised-detection-of-fact-checked-claims-in-web-documents\ClaimLinker_commons\lib" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="FEL" />
+      <option name="name" value="FEL" />
+      <option name="url" value="file://$PROJECT_DIR$/ClaimLinker_commons/libs" />
     </remote-repository>
   </component>
 </project>

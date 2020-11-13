@@ -290,7 +290,7 @@ public class AnalyzerDispatcher {
 			}
 		},
 		jcrd_comm_nchargram {
-			//    Num of common n-chargrams (e.g., 2-grams, 3-grams, 4-grams, 5-grams)
+			//    Num of common n-chargrams (e.g., 2_chargrams, 3_chargrams, 4_chargrams, 5_chargrams)
 			@Override
 			double analyze(CoreDocument claim, CoreDocument text) {
 				double Ngram2 = this.similarity(getNchargrams(2, claim), getNchargrams(2, text));

@@ -2,7 +2,7 @@
   <configuration default="false" name="ElasticInitializer" type="Application" factoryName="Application" singleton="true">
     <option name="MAIN_CLASS_NAME" value="csd.claimlinker.es.ElasticInitializer" />
     <module name="ElasticSearch_Tools" />
-    <option name="PROGRAM_PARAMETERS" value="-f &quot;data/claim_extraction_18_10_2019_annotated.csv&quot; -h &quot;192.168.2.112&quot;" />
+    <option name="PROGRAM_PARAMETERS" value="-f &quot;data/claim_extraction_18_10_2019_annotated.csv&quot; -h &quot;localhost&quot;" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

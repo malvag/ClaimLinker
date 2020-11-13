@@ -32,9 +32,9 @@ public class ClaimLinkerTest {
 				AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_nchargram,       //Common (jaccard) nchargrams
 				AnalyzerDispatcher.SimilarityMeasure.vec_cosine_sim             //Cosine similarity
 		};
-		ClaimLinker CLInstance = new ClaimLinker(20, similarityMeasures, "data/stopwords.txt", "data/english-20200420.hash", "192.168.2.112");
+		ClaimLinker CLInstance = new ClaimLinker(20, similarityMeasures, "data/stopwords.txt", "data/english-20200420.hash", "localhost");
 		System.out.println("Demo pipeline started!");
-		Set<CLAnnotation> results = CLInstance.claimLink(text, "", 5, 0.4, Association_type.all);
+		Set<CLAnnotation> results = CLInstance.claimLink(text, 5, 0.4, Association_type.all);
 		return results;
 	}
 

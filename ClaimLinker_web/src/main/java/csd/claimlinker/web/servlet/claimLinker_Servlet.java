@@ -93,7 +93,7 @@ public class claimLinker_Servlet extends HttpServlet {
 		String text = request.getParameter("text");
 		JsonObjectBuilder factory = Json.createObjectBuilder();
 		JSONObject JSON = new JSONObject();
-		ArrayList<CLAnnotation> clAnnotations = new ArrayList(claimLinker.claimLink(text, "", 5, 0.4, associationtype));
+		ArrayList<CLAnnotation> clAnnotations = new ArrayList(claimLinker.claimLink(text, 5, 0.4, associationtype));
 		clAnnotations.trimToSize();
 		JSON.put("clresults",clAnnotations);
 
@@ -109,20 +109,16 @@ public class claimLinker_Servlet extends HttpServlet {
 	public static JsonObject ClaimLinkfromURLHandler(HttpServletRequest request, Association_type associationtype) {
 		Instant start = Instant.now();
 		String param_url = request.getParameter("url");
-		String context = request.getParameter("context");
 		JsonObjectBuilder factory = Json.createObjectBuilder();
 		if (param_url == null) {
 			return null;
 		}
 		WebArticle webArticle;
-		if (context != null) {
-			webArticle = new WebArticle(param_url, context, WebArticle.WebArticleType.selection);
-			factory.add("selection", webArticle.getSelection());
-		} else {
-			webArticle = new WebArticle(param_url, null, WebArticle.WebArticleType.url);
-		}
+
+		webArticle = new WebArticle(param_url, null, WebArticle.WebArticleType.url);
+
 		factory.add("url", param_url).add("cleaned_text_from_url", webArticle.getDoc().text());
-		factory.add("clresults", (JsonObjectBuilder) claimLinker.claimLink(webArticle.getDoc().text(), context, 5, 0.2, associationtype));
+		factory.add("clresults", (JsonObjectBuilder) claimLinker.claimLink(webArticle.getDoc().text(), 5, 0.2, associationtype));
 		Instant finish = Instant.now();
 		long timeElapsed = Duration.between(start, finish).toMillis();
 		factory.add("timeElapsed", timeElapsed);
