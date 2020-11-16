@@ -17,7 +17,7 @@ import static java.util.Comparator.comparing;
 public class ClaimLinker {
 
 	public NLPlib nlp_instance;
-	public final static boolean debug = false;
+	public final static boolean debug = true;
 	public AnalyzerDispatcher analyzerDispatcher;
 	public ElasticWrapper elasticWrapper;
 

@@ -1,8 +1,10 @@
 package csd.claimlinker.web.servlet;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import csd.claimlinker.ClaimLinker;
 import csd.claimlinker.model.Association_type;
 import csd.claimlinker.model.CLAnnotation;
+import csd.claimlinker.model.Claim;
 import csd.claimlinker.model.WebArticle;
 import csd.claimlinker.nlp.AnalyzerDispatcher;
 import org.json.JSONObject;
@@ -17,7 +19,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.*;
 
 @WebServlet(name = "claimLinker_Servlet")
 public class claimLinker_Servlet extends HttpServlet {
@@ -51,7 +53,6 @@ public class claimLinker_Servlet extends HttpServlet {
 	@Override
 	public void destroy() {
 		super.destroy();
-		claimLinker.claims=null;
 		claimLinker = null;
 	}
 
@@ -64,21 +65,48 @@ public class claimLinker_Servlet extends HttpServlet {
 		JsonObjectBuilder flags = Json.createObjectBuilder();
 		factory.add("message", "API ClaimLinker").add("flags", flags);
 		JsonObject respose_json = factory.build();
-		if (request.getParameter("app").equals("demo")) {
-			respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Association_type.same_as);
+		if (request.getParameter("app") != null)
+			if (request.getParameter("app").equals("demo")) {
+				respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Association_type.same_as);
+			}
+		String assoc_type = request.getParameter("assoc_t");
+		if (request.getParameter("url") != null) {
+			if (assoc_type != null) {
+				switch (assoc_type) {
+					case "all":
+						respose_json = claimLinker_Servlet.ClaimLinkfromURLHandler(request, Association_type.all);
+						break;
+					case "author_of":
+						respose_json = claimLinker_Servlet.ClaimLinkfromURLHandler(request, Association_type.author_of);
+						break;
+					case "topic_of":
+						respose_json = claimLinker_Servlet.ClaimLinkfromURLHandler(request, Association_type.topic_of);
+						break;
+					case "same_as":
+						respose_json = claimLinker_Servlet.ClaimLinkfromURLHandler(request, Association_type.same_as);
+						break;
+					default:
+						response.setStatus(400);
+				}
+			}
 		}
-
-		if (request.getParameter("all") != null && request.getParameter("all").equals("true")) {
-			respose_json = claimLinker_Servlet.ClaimLinkfromURLHandler(request, Association_type.all);
-		}
-		if (request.getParameter("author_of") != null && request.getParameter("author_of").equals("true")) {
-			respose_json = claimLinker_Servlet.ClaimLinkfromURLHandler(request, Association_type.author_of);
-		}
-		if (request.getParameter("topic_of") != null && request.getParameter("topic_of").equals("true")) {
-			respose_json = claimLinker_Servlet.ClaimLinkfromURLHandler(request, Association_type.topic_of);
-		}
-		if (request.getParameter("same_as") != null && request.getParameter("same_as").equals("true")) {
-			respose_json = claimLinker_Servlet.ClaimLinkfromURLHandler(request, Association_type.same_as);
+		if (assoc_type != null) {
+			switch (assoc_type) {
+				case "all":
+					respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Association_type.all);
+					break;
+				case "author_of":
+					respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Association_type.author_of);
+					break;
+				case "topic_of":
+					respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Association_type.topic_of);
+					break;
+				case "same_as":
+					respose_json = claimLinker_Servlet.ClaimLinkHandler(request, Association_type.same_as);
+					break;
+				default:
+					response.setStatus(400);
+			}
 		}
 
 		PrintWriter out = response.getWriter();
@@ -92,12 +120,39 @@ public class claimLinker_Servlet extends HttpServlet {
 		Instant start = Instant.now();
 		String text = request.getParameter("text");
 		JsonObjectBuilder factory = Json.createObjectBuilder();
-		JSONObject JSON = new JSONObject();
-		ArrayList<CLAnnotation> clAnnotations = new ArrayList(claimLinker.claimLink(text, 5, associationtype));
+		ArrayList<CLAnnotation> clAnnotations = new ArrayList<CLAnnotation>(claimLinker.claimLink(text, 5, associationtype));
 		clAnnotations.trimToSize();
-		JSON.put("clresults",clAnnotations);
 
-		factory.add("_results", JSON.toString());
+		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+		for (CLAnnotation clAnnotation : clAnnotations) {
+			JsonObjectBuilder builder = Json.createObjectBuilder();
+			JsonObject obj = builder.build();
+			Map<String, Object> objectMap = clAnnotation.toObject();
+			builder.add("text", (String)objectMap.get("text"));
+			builder.add("tokenBeginPosition",(Integer) objectMap.get("tokenBeginPosition"));
+			builder.add("tokenEndPosition", (Integer) objectMap.get("tokenEndPosition"));
+			builder.add("sentencePosition", (Integer) objectMap.get("sentencePosition"));
+			builder.add("association_type", objectMap.get("association_type").toString());
+			JsonArrayBuilder arrayB = Json.createArrayBuilder();
+			for (Object claim : new ArrayList<>((Collection<?>)objectMap.get("linkedClaims"))) {
+				Claim linkedClaim = (Claim)claim;
+				JsonObject linkedClaim_obj = Json.createObjectBuilder()
+						.add("claimReview_claimReviewed", linkedClaim.getReviewedBody())
+						.add("_score", (Double) linkedClaim.getElasticScore())
+						.add("extra_title", (String) linkedClaim.getExtraTitle())
+						.add("rating_alternateName", (String) linkedClaim.getRatingName())
+						.add("creativeWork_author_name", (String) linkedClaim.getAuthorName())
+						.add("claimReview_url", (String) linkedClaim.getclaimReviewedURL())
+						.build();
+				arrayB.add(linkedClaim_obj);
+			}
+
+
+			builder.add("linkedClaims", arrayB.build()) ;
+			arrayBuilder.add(builder);
+
+		}
+		factory.add("_results", arrayBuilder);
 		Instant finish = Instant.now();
 		long timeElapsed = Duration.between(start, finish).toMillis();
 		factory.add("timeElapsed", timeElapsed);
@@ -116,9 +171,39 @@ public class claimLinker_Servlet extends HttpServlet {
 		WebArticle webArticle;
 
 		webArticle = new WebArticle(param_url, null, WebArticle.WebArticleType.url);
+		ArrayList<CLAnnotation> clAnnotations = new ArrayList<CLAnnotation>(claimLinker.claimLink(webArticle.getDoc().text(), 5, associationtype));
 
 		factory.add("url", param_url).add("cleaned_text_from_url", webArticle.getDoc().text());
-		factory.add("clresults", (JsonObjectBuilder) claimLinker.claimLink(webArticle.getDoc().text(), 5, associationtype));
+		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+		for (CLAnnotation clAnnotation : clAnnotations) {
+			JsonObjectBuilder builder = Json.createObjectBuilder();
+			JsonObject obj = builder.build();
+			Map<String, Object> objectMap = clAnnotation.toObject();
+			builder.add("text", (String)objectMap.get("text"));
+			builder.add("tokenBeginPosition",(Integer) objectMap.get("tokenBeginPosition"));
+			builder.add("tokenEndPosition", (Integer) objectMap.get("tokenEndPosition"));
+			builder.add("sentencePosition", (Integer) objectMap.get("sentencePosition"));
+			builder.add("association_type", objectMap.get("association_type").toString());
+			JsonArrayBuilder arrayB = Json.createArrayBuilder();
+			for (Object claim : new ArrayList<>((Collection<?>)objectMap.get("linkedClaims"))) {
+				Claim linkedClaim = (Claim)claim;
+				JsonObject linkedClaim_obj = Json.createObjectBuilder()
+						.add("claimReview_claimReviewed", linkedClaim.getReviewedBody())
+						.add("_score", (Double) linkedClaim.getElasticScore())
+						.add("extra_title", (String) linkedClaim.getExtraTitle())
+						.add("rating_alternateName", (String) linkedClaim.getRatingName())
+						.add("creativeWork_author_name", (String) linkedClaim.getAuthorName())
+						.add("claimReview_url", (String) linkedClaim.getclaimReviewedURL())
+						.build();
+				arrayB.add(linkedClaim_obj);
+			}
+
+
+			builder.add("linkedClaims", arrayB.build()) ;
+			arrayBuilder.add(builder);
+
+		}
+		factory.add("_results", arrayBuilder);
 		Instant finish = Instant.now();
 		long timeElapsed = Duration.between(start, finish).toMillis();
 		factory.add("timeElapsed", timeElapsed);

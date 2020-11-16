@@ -24,11 +24,14 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.err.println("Under construction");
+        response.setStatus(503);
+        response.flushBuffer();
         if (request.getParameter("url") == null) {
             response.setStatus(400);
             response.flushBuffer();
         }
-        JsonObject response_json = claimLinker_Servlet.ClaimLinkHandler(request, Association_type.topic_of);
+        JsonObject response_json = claimLinker_Servlet.ClaimLinkfromURLHandler(request, Association_type.same_as);
         PrintWriter out = response.getWriter();
         response.setContentType("text/html");
         assert response_json != null;
@@ -45,7 +48,6 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
                 "    <title>Hello, world!</title>\n" +
                 "  </head>\n" +
                 "  <body>\n" +
-                "<h2> Selection  : " + response_json.getString("selection") + " </h2>\n" +
                 "<h2> URL : " + response_json.getString("url") + " </h2>\n" +
                 "<h2> Request timeElapsed: " + response_json.getJsonNumber("timeElapsed") + "ms </h2>\n" +
                 "<table class=\"table\">\n" +
@@ -71,8 +73,8 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
                 "</html>";
 //        String results;
         StringBuilder results = new StringBuilder();
-        for (int i = 0; i < response_json.getJsonArray("results").size(); i++) {
-            JsonObject obj = response_json.getJsonArray("results").getJsonObject(i);
+        for (int i = 0; i < response_json.getJsonArray("_results").size(); i++) {
+            JsonObject obj = response_json.getJsonArray("_results").getJsonObject(i);
             results.append("      <tr>\n" + "        <th scope=\"row\">")
                     .append(i).append("</th>\n").append("        <td>")
                     .append(obj.getString("claimReview_claimReviewed"))
