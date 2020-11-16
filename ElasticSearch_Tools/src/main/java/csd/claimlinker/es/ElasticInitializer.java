@@ -50,8 +50,11 @@ public class ElasticInitializer {
 	}
 
 	public synchronized boolean exists(String index) throws IOException {
+		this.makeConnection();
 		GetIndexRequest request = new GetIndexRequest(index);
-		return restHighLevelClient.indices().exists(request, RequestOptions.DEFAULT);
+		boolean exists = restHighLevelClient.indices().exists(request, RequestOptions.DEFAULT);
+		this.closeConnection();
+		return exists;
 	}
 
 	public synchronized void makeConnection() {
@@ -62,8 +65,10 @@ public class ElasticInitializer {
 					RestClient.builder(
 							new HttpHost(HOST, PORT_ONE, "http"),
 							new HttpHost(HOST, PORT_TWO, "http")));
+			System.out.println("Connection established with elastic search.");
+		}else{
+			System.out.println("Already connected with elastic search...");
 		}
-		System.out.println("Connection established with elastic search.");
 
 	}
 
