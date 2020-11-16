@@ -46,7 +46,7 @@ public class CLAnnotation {
 		objectMap.put("tokenEndPosition",this.tokenEndPosition );
 		objectMap.put("sentencePosition",this.sentencePosition );
 		objectMap.put("association_type",this.associationtype);
-		objectMap.put("linkedClaims", this.linkedClaims); //Check again
+		objectMap.put("linkedClaims", this.linkedClaims);
 		return objectMap;
 	}
 	public String toJson() throws JsonProcessingException {

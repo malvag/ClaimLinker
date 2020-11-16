@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.JsonObject;
 import edu.stanford.nlp.pipeline.CoreDocument;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +26,10 @@ public class Claim implements Comparable<Claim> {
 		this.objectMap.put("claimReview_url", claim_obj.getAsJsonObject("_source").get("claimReview_url").getAsString());
 
 	}
+
+//	public Map<String, Object> getObjectMap() {
+//		return objectMap;
+//	}
 
 	public Claim(Map<String, Object> in) {
 		this.objectMap = in;
@@ -85,7 +88,7 @@ public class Claim implements Comparable<Claim> {
 	}
 
 	@Override
-	public int compareTo(@NotNull Claim o) {
+	public int compareTo(Claim o) {
 		if (this.getNLPScore() == null || o.getNLPScore() == null)
 			return Double.compare(this.getElasticScore(), o.getElasticScore());
 		return Double.compare(this.getNLPScore() + this.getElasticScore(), o.getNLPScore() + o.getElasticScore());

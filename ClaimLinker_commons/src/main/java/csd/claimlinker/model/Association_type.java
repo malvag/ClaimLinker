@@ -93,6 +93,10 @@ public enum Association_type {
 
 			return this.annotationSet;
 		}
+		@Override
+		public String toString() {
+			return "author_of";
+		}
 	}, topic_of {
 		// Consider all sentences (filter out those with small Elasticsearch retrieval score–we need to find a threshold)
 		// match those nouns as keywords in ES
@@ -150,6 +154,10 @@ public enum Association_type {
 			long timeElapsed = Duration.between(start, finish).toMillis();
 			System.out.println("[Topic_of] Time passed: " + (double) timeElapsed / 1000 + "s");
 			return this.annotationSet;
+		}
+		@Override
+		public String toString() {
+			return "topic_of";
 		}
 	}, same_as {
 		// Consider all sentences (filter out those with small Elasticsearch retrieval score–we need to find a threshold)
@@ -213,6 +221,10 @@ public enum Association_type {
 			this.annotationSet.forEach(System.out::println);
 			return this.annotationSet;
 		}
+		@Override
+		public String toString() {
+			return "same_as";
+		}
 	}, all {
 		@Override
 		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result) {
@@ -225,6 +237,11 @@ public enum Association_type {
 			long timeElapsed = Duration.between(start, finish).toMillis();
 			System.out.println("[All] Time passed: " + (double) timeElapsed / 1000 + "s");
 			return this.annotationSet;
+		}
+
+		@Override
+		public String toString() {
+			return "all";
 		}
 	};
 

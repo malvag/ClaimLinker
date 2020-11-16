@@ -34,20 +34,26 @@ public class ElasticWrapper {
 	}
 
 	public ArrayList<Claim> findCatalogItemWithoutApi(boolean use_SoftThreshold, String[] field, String value, int num_of_hits) {
+
+		//BUG when used as artifact for tomcat
+//		try {
+//			if(!this.elasticInitializer.exists("claim")){
+//				System.err.println("Index doesn't exist, exiting");
+//				System.exit(-1);
+//			}
+//		} catch (IOException e) {
+//			System.err.println("Error connecting to ElasticSearch");
+//			System.exit(-1);
+//		}
 		String url = SCHEME + "://" + HOST + ":" + PORT_ONE + "/_search";
-
-		String curl_begin = "curl -X GET \"192.168.2.112:9200/_search?pretty\" -H \"Content-Type: application/json\" -d";
-
 		String data = String.format("'{\"query\": { \"multi_match\" : {  \"query\":    \"%s\", \n      \"fields\": [",
 				value);
-
 		StringBuilder ss = new StringBuilder();
 		for (String s : field)
 			ss.append("\"").append(s).append("\", ");
 		ss.replace(ss.length() - 2, ss.length(), "");
 		ss.append("]}}}'");
 		data += ss.toString();
-		String curl = curl_begin + data;
 		ArrayList<Claim> claimArrayList = new ArrayList<>();
 		ArrayList<Claim> pillow_claimArrayList = new ArrayList<>();
 		CUrl xcurl = new CUrl(url).header("Content-Type : application/json").data(data);
