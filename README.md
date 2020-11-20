@@ -85,7 +85,7 @@ static Set<CLAnnotation> demo_pipeline(String text) throws IOException, ClassNot
 	};
 	ClaimLinker CLInstance = new ClaimLinker(20, similarityMeasures, "data/stopwords.txt", "data/english-20200420.hash", "192.168.2.112");
 	System.out.println("Demo pipeline started!");
-	Set<CLAnnotation> results = CLInstance.claimLink(text, "", 5, Association_type.all);
+	Set<CLAnnotation> results = CLInstance.claimLink(text, 5, Association_type.all);
 	return results;
 }
 ```
