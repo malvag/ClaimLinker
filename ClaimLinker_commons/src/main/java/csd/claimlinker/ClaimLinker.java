@@ -28,7 +28,6 @@ public class ClaimLinker {
 		this.nlp_instance = new NLPlib(stopwords_path, Hash_Path);
 		this.elasticWrapper = new ElasticWrapper(ES_threshold, ES_host, 9200, 9201);
 		this.analyzerDispatcher = new AnalyzerDispatcher(this.nlp_instance,similarityMeasures);
-
 		System.out.println("ClaimLinker's initialization finished...");
 		System.out.println("========================================");
 	}
@@ -36,7 +35,8 @@ public class ClaimLinker {
 
 	public Set<CLAnnotation> claimLink(String text, int num_of_returned_claims, Association_type associationtype) {
 		System.out.println(ConsoleColor.ANSI_YELLOW + "Attempting to claimlink " + ConsoleColor.ANSI_RESET);
-		return associationtype.annotate(this, text, num_of_returned_claims);
+		Set<CLAnnotation> resutls =  associationtype.annotate(this, text, num_of_returned_claims);
+		return resutls;
 	}
 
 

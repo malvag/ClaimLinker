@@ -15,10 +15,6 @@ public class WebArticle {
     private CoreDocument doc;
     private String url;
 
-    public boolean doesItHaveSelection() {
-        return hasSelection;
-    }
-
     public enum WebArticleType {
         selection, url
     }

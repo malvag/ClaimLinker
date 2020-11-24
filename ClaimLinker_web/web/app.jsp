@@ -53,10 +53,9 @@
                 // console.log(requestObj.responseText);
                 const obj = JSON.parse(requestObj.responseText);
                 console.log(obj)
-
-                const cl_results = JSON.parse(obj._results)
-                console.log(cl_results)
-                console.log(cl_results.clresults[0])
+                const cl_results = obj._results
+                // console.log(cl_results)
+                // console.log(cl_results[0])
                 /*
 
                 <ul class="list-group">
@@ -68,14 +67,15 @@
                 </ul>
                  */
                 document.getElementById("app").innerHTML= "";
-                cl_results.clresults.forEach(annotation =>{
-                    var html_results = "      <a class=\"list-group-item list-group-item-action active\" data-toggle=\"list\" href=\"#list-home\" role=\"tab\" aria-controls=\"home\">"+annotation.text+"</a>"
+                var counter = 0;
+                cl_results.forEach(annotation =>{
+                    var html_results = "      <a class=\"list-group-item list-group-item-action active\" data-toggle=\"list\" href=\"#list-home\" role=\"tab\" aria-controls=\"home\">[Annotation "+ (counter++)+"] "+annotation.text+"</a>"
                     html_results += "<ul class=\"list-group\">"
 
                     annotation.linkedClaims.forEach(linked_claim=> {
                         html_results += "<li class=\"list-group-item d-flex justify-content-between align-items-center\">"
-                        console.log(linked_claim.reviewedBody);
-                        html_results+=linked_claim.reviewedBody + "<span class=\"badge badge-primary badge-pill\">"+linked_claim.NLPScore+"</span>"
+                        console.log(linked_claim.claimReview_claimReviewed);
+                        html_results+=linked_claim.claimReview_claimReviewed + "<span class=\"badge badge-primary badge-pill\">"+linked_claim._score+"</span>"
                         html_results+= "</li>"
                     })
                     html_results += "</ul>"

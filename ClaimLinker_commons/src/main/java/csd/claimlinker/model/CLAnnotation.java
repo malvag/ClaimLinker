@@ -71,10 +71,6 @@ public class CLAnnotation {
 		return tokenBeginPosition;
 	}
 
-	public Association_type getAssociationtype() {
-		return associationtype;
-	}
-
 	public int getTokenBeginPosition() {
 		return tokenBeginPosition;
 	}

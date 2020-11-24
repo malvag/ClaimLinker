@@ -25,6 +25,7 @@ public enum Association_type {
 		// generate candidates and rank them with Sim Measures based on the whole text's similarities per sentence
 		@Override
 		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result) {
+
 			final int hits = 100;
 			System.out.println(ConsoleColor.ANSI_YELLOW + "[Author_of] Attempting to claimlink with association_type " + this + ConsoleColor.ANSI_RESET);
 			Instant start = Instant.now();
@@ -55,6 +56,7 @@ public enum Association_type {
 							if (skip.get())
 								continue;
 							CLAnnotation annotation = new CLAnnotation(mention.toString(), token.beginPosition(), token.endPosition(), sentencePosition, this);
+							this.annotationSet.removeIf(it -> it.getAssoc_t()==this && it.getText().equals(mention.toString()));
 							this.annotationSet.add(annotation);
 							entities.put(annotation, mention);
 						}
@@ -120,6 +122,7 @@ public enum Association_type {
 					String ne = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
 					if (ne.startsWith("NN")) {
 						CLAnnotation annotation = new CLAnnotation(token.lemma(), token.beginPosition(), token.endPosition(), sentencePosition, this);
+						this.annotationSet.removeIf(it -> it.getAssoc_t()==this && it.getText().equals(token.lemma()));
 						this.annotationSet.add(annotation);
 						NNouns_map.put(annotation, token);
 					}
@@ -177,6 +180,7 @@ public enum Association_type {
 			//Create a new CLAnnotation for every sentence
 			for (CoreMap sentence : sentences) {
 				CLAnnotation annotation = new CLAnnotation(sentence.toString(), -1, -1, sentencePosition, this);
+				this.annotationSet.removeIf(it -> it.getAssoc_t()==this && it.getText().equals(sentence.toString()));
 				this.annotationSet.add(annotation);
 				claims_map.put(annotation, sentence);
 				sentencePosition++;
@@ -245,16 +249,8 @@ public enum Association_type {
 		}
 	};
 
-	protected double threshold;
-
 	Association_type(){
 		this.annotationSet = new HashSet<>();
-		this.threshold = 20;
-	}
-
-	Association_type(double threshold) {
-		this();
-		this.threshold = threshold;
 	}
 
 	public Set<CLAnnotation> annotationSet;
