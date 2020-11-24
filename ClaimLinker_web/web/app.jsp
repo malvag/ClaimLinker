@@ -9,18 +9,16 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" type="text/css" href="../resource/css/bootstrap.min.css">
 
-    <title>Hello, world!</title>
+    <title>Claimlinker</title>
 </head>
 
 <body>
 <div class="container">
     <div class="jumbotron">
-        <h1 class="display-4">Hello, world!</h1>
-        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to
-            featured content or information.</p>
+        <h1 class="display-4">Claimlinker!</h1>
+        <p class="lead">Claim-Link using similarity methods via NLP criteria based on large already-fact-checked-claims data. </p>
         <hr class="my-4">
-        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-        <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+        <a class="btn btn-primary btn-lg" href="https://github.com/malvagos/ClaimLinker/" role="button">Learn more</a>
     </div>
     <div class="jumbotron">
         <div class="input-group">

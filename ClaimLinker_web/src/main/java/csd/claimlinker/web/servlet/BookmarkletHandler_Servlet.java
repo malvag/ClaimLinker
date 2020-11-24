@@ -24,9 +24,6 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.err.println("Under construction");
-        response.setStatus(503);
-        response.flushBuffer();
         if (request.getParameter("url") == null) {
             response.setStatus(400);
             response.flushBuffer();
@@ -35,7 +32,7 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         response.setContentType("text/html");
         assert response_json != null;
-        String front = "<!doctype html>\n" +
+        String header = "<!doctype html>\n" +
                 "<html lang=\"en\">\n" +
                 "  <head>\n" +
                 "    <!-- Required meta tags -->\n" +
@@ -43,49 +40,57 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
                 "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n" +
                 "\n" +
                 "    <!-- Bootstrap CSS -->\n" +
-                "    <link rel=\"stylesheet\" type=\"text/css\" href=\"resource/css/bootstrap.min.css\">\n" +
+                "   <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css\" integrity=\"sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2\" crossorigin=\"anonymous\">" +
                 "\n" +
                 "    <title>Hello, world!</title>\n" +
                 "  </head>\n" +
                 "  <body>\n" +
                 "<h2> URL : " + response_json.getString("url") + " </h2>\n" +
-                "<h2> Request timeElapsed: " + response_json.getJsonNumber("timeElapsed") + "ms </h2>\n" +
+                "<h2> Request timeElapsed: " + response_json.getJsonNumber("timeElapsed") + "ms </h2>\n" ;
+        String front = "<div class=\"jumbotron jumbotron-fluid\">\n" +
+                "  <div class=\"container\">\n" ;
+        String table=
                 "<table class=\"table\">\n" +
                 "    <thead>\n" +
                 "      <tr>\n" +
                 "        <th scope=\"col\">#</th>\n" +
                 "        <th scope=\"col\">Claim</th>\n" +
                 "        <th scope=\"col\">NLP_score</th>\n" +
-                "        <th scope=\"col\">Elastic_Score</th>\n" +
                 "      </tr>\n" +
                 "    </thead>\n" +
                 "    <tbody>\n";
 
         String end = "    </tbody>\n" +
                 "  </table>" + "\n    </div>\n" +
-                "\n" +
-                "    <!-- Optional JavaScript -->\n" +
-                "    <!-- jQuery first, then Popper.js, then Bootstrap JS -->\n" +
-                "    <script src=\"https://code.jquery.com/jquery-3.4.1.slim.min.js\" integrity=\"sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n\" crossorigin=\"anonymous\"></script>\n" +
-                "    <script src=\"https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js\" integrity=\"sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo\" crossorigin=\"anonymous\"></script>\n" +
-                "    <script src=\"resource/js/bootstrap.min.js\" ></script>\n" +
+                "  </div>\n" +
+                "</div>" +
+                "\n";
+        String footer = " <script src=\"https://code.jquery.com/jquery-3.5.1.slim.min.js\" integrity=\"sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj\" crossorigin=\"anonymous\"></script>\n" +
+                "<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx\" crossorigin=\"anonymous\"></script>" +
+
                 "  </body>\n" +
                 "</html>";
-//        String results;
+
         StringBuilder results = new StringBuilder();
         for (int i = 0; i < response_json.getJsonArray("_results").size(); i++) {
-            JsonObject obj = response_json.getJsonArray("_results").getJsonObject(i);
-            results.append("      <tr>\n" + "        <th scope=\"row\">")
-                    .append(i).append("</th>\n").append("        <td>")
-                    .append(obj.getString("claimReview_claimReviewed"))
-                    .append("</td>\n").append("        <td>")
-                    .append(obj.getJsonNumber("NLP_score"))
-                    .append("</td>\n").append("        <td>")
-                    .append(obj.getJsonNumber("ElasticScore"))
-                    .append("</td>\n")
-                    .append("      </tr>\n");
+//            JsonObject obj = response_json.getJsonArray("_results").getJsonObject(i).getJsonArray("linkedClaims").getJsonObject(0);
+            JsonObject annotation = response_json.getJsonArray("_results").getJsonObject(i);
+            results.append(front);
+            results.append("<p class=\"lead\">").append(annotation.getString("text")).append("</p>").append(table);
+            for (int k = 0; k < annotation.getJsonArray("linkedClaims").size(); k++) {
+                JsonObject claim = annotation.getJsonArray("linkedClaims").getJsonObject(k);
+                results.append("      <tr>\n" + "        <th scope=\"row\">")
+                        .append(k).append("</th>\n").append("        <td>")
+                        .append(claim.getString("claimReview_claimReviewed"))
+                        .append("</td>\n").append("        <td>")
+                        .append(claim.getJsonNumber("_score"))
+                        .append("</td>\n")
+                        .append("      </tr>\n");
+            }
+            results.append(end);
+
         }
-        out.println(front + results.toString() + end);
+        out.println(header + front + results.toString() + end + footer);
         response.setStatus(200);
     }
 }
