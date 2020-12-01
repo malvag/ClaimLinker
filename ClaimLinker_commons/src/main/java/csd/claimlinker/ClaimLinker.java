@@ -21,13 +21,13 @@ public class ClaimLinker {
 	public AnalyzerDispatcher analyzerDispatcher;
 	public ElasticWrapper elasticWrapper;
 
-	public ClaimLinker(double ES_threshold, AnalyzerDispatcher.SimilarityMeasure[] similarityMeasures, String stopwords_path, String Hash_Path, String ES_host) throws IOException, ClassNotFoundException {
+	public ClaimLinker(double ES_threshold, AnalyzerDispatcher.SimilarityMeasure[] similarityMeasures, String stopwords_path, String puncs_path, String Hash_Path, String ES_host) throws IOException, ClassNotFoundException {
 		System.out.println("========================================");
 		System.out.println("ClaimLinker initializing ... ");
 
-		this.nlp_instance = new NLPlib(stopwords_path, Hash_Path);
+		this.nlp_instance = new NLPlib(stopwords_path, puncs_path, Hash_Path);
 		this.elasticWrapper = new ElasticWrapper(ES_threshold, ES_host, 9200, 9201);
-		this.analyzerDispatcher = new AnalyzerDispatcher(this.nlp_instance,similarityMeasures);
+		this.analyzerDispatcher = new AnalyzerDispatcher(this.nlp_instance, similarityMeasures);
 		System.out.println("ClaimLinker's initialization finished...");
 		System.out.println("========================================");
 	}
@@ -35,7 +35,7 @@ public class ClaimLinker {
 
 	public Set<CLAnnotation> claimLink(String text, int num_of_returned_claims, Association_type associationtype) {
 		System.out.println(ConsoleColor.ANSI_YELLOW + "Attempting to claimlink " + ConsoleColor.ANSI_RESET);
-		Set<CLAnnotation> resutls =  associationtype.annotate(this, text, num_of_returned_claims);
+		Set<CLAnnotation> resutls = associationtype.annotate(this, text, num_of_returned_claims);
 		return resutls;
 	}
 

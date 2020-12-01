@@ -25,69 +25,82 @@ import java.util.stream.Collectors;
  */
 
 public class NLPlib {
-    private final StanfordCoreNLP master_pipeline;
-    private CoreDocument doc;
-    List<String> stopwords;
-    private final static boolean debug = false;
-    protected QuasiSuccinctEntityHash quasiSuccinctEntityHash;
+	private final StanfordCoreNLP master_pipeline;
+	private CoreDocument doc;
+	List<String> stopwords;
+	List<String> punctuations;
+	private final static boolean debug = false;
+	protected QuasiSuccinctEntityHash quasiSuccinctEntityHash;
 
-    public NLPlib( String stopwords_path, String Hash_Path) throws IOException, ClassNotFoundException {
-            System.out.println("NLPlib initializing ...");
-            this.quasiSuccinctEntityHash = (QuasiSuccinctEntityHash) BinIO.loadObject(Hash_Path);
-            Properties props = new Properties();
-            props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner"); // not enough memory
-            this.initStopword(stopwords_path);
-            master_pipeline = new StanfordCoreNLP(props);
-            System.out.println("NLPlib initialization finished ...");
-    }
+	public NLPlib(String stopwords_path, String puncs_path, String Hash_Path) throws IOException, ClassNotFoundException {
+		System.out.println("NLPlib initializing ...");
+		this.quasiSuccinctEntityHash = (QuasiSuccinctEntityHash) BinIO.loadObject(Hash_Path);
+		Properties props = new Properties();
+		props.setProperty("annotators", "tokenize,ssplit,pos,lemma,ner"); // not enough memory
+		this.initStopword(stopwords_path);
+		this.initPuncs(puncs_path);
+		master_pipeline = new StanfordCoreNLP(props);
+		System.out.println("NLPlib initialization finished ...");
+	}
 
-    public List<String> getLemmas(CoreDocument a) {
-        if (a == null) return null;
-        this.NLPlib_annotate(a);
-        return this.doc.tokens().stream()
-                .map(CoreLabel::lemma)
-                .collect(Collectors.toList());
-    }
+	public List<String> getLemmas(CoreDocument a) {
+		if (a == null) return null;
+		this.NLPlib_annotate(a);
+		return this.doc.tokens().stream()
+				.map(CoreLabel::lemma)
+				.collect(Collectors.toList());
+	}
 
-    public String getLemmas_toString(CoreDocument a) {
-        AtomicReference<String> cleaned = new AtomicReference<>("");
-        if (a == null) return "null";
-        this.getLemmas(a).forEach(elem -> {
+	public String getLemmas_toString(CoreDocument a) {
+		AtomicReference<String> cleaned = new AtomicReference<>("");
+		if (a == null) return "null";
+		this.getLemmas(a).forEach(elem -> {
 //            System.out.println(elem);
-            cleaned.updateAndGet(v -> v + elem + " ");
-        });
-        System.out.println(ConsoleColor.ANSI_CYAN + "[NLPlib] INFO got lemmas" + ConsoleColor.ANSI_RESET);
-        return cleaned.get();
-    }
+			cleaned.updateAndGet(v -> v + elem + " ");
+		});
+		System.out.println(ConsoleColor.ANSI_CYAN + "[NLPlib] INFO got lemmas" + ConsoleColor.ANSI_RESET);
+		return cleaned.get();
+	}
 
-    public String getStemmed(CoreDocument a) {
-        PorterStemmer ps = new PorterStemmer();
-        if (a == null) return "null";
-        String stemmed_str;
-        ArrayList<String> stemmed = new ArrayList<>();
-        a.tokens().forEach(token -> {
-            ps.setCurrent(token.originalText());
-            ps.stem();
-            synchronized (stemmed) {
-                stemmed.add(ps.getCurrent());
-            }
-        });
+	public String getStemmed(CoreDocument a) {
+		PorterStemmer ps = new PorterStemmer();
+		if (a == null) return "null";
+		String stemmed_str;
+		ArrayList<String> stemmed = new ArrayList<>();
+		a.tokens().forEach(token -> {
+			ps.setCurrent(token.originalText());
+			ps.stem();
+			synchronized (stemmed) {
+				stemmed.add(ps.getCurrent());
+			}
+		});
 
-        stemmed_str = String.join(" ", stemmed);
-        System.out.println(ConsoleColor.ANSI_CYAN + "[NLPlib] INFO stemmed" + ConsoleColor.ANSI_RESET);
-        return stemmed_str;
-    }
+		stemmed_str = String.join(" ", stemmed);
+		System.out.println(ConsoleColor.ANSI_CYAN + "[NLPlib] INFO stemmed" + ConsoleColor.ANSI_RESET);
+		return stemmed_str;
+	}
 
-    public String getWithoutStopwords(CoreDocument a) {
-        AtomicReference<String> cleaned = new AtomicReference<>("");
-        if (a != null) this.setDoc(a);
-        this.removeStopWords().forEach(elem -> {
+	public String getWithoutStopwords(CoreDocument a) {
+		AtomicReference<String> cleaned = new AtomicReference<>("");
+		if (a != null) this.setDoc(a);
+		this.removeStopWords().forEach(elem -> {
 //            System.out.println(elem);
-            cleaned.updateAndGet(v -> v + elem.originalText() + " ");
-        });
+			cleaned.updateAndGet(v -> v + elem.originalText() + " ");
+		});
 //        System.out.println(ConsoleColor.ANSI_CYAN + "[NLPlib] stopwords removed" + ConsoleColor.ANSI_RESET);
-        return cleaned.get();
-    }
+		return cleaned.get();
+	}
+
+	public String getWithoutPunctuations(CoreDocument a) {
+		AtomicReference<String> cleaned = new AtomicReference<>("");
+		if (a != null) this.setDoc(a);
+		this.removePunctuations().forEach(elem -> {
+//            System.out.println(elem);
+			cleaned.updateAndGet(v -> v + elem.originalText() + " ");
+		});
+//        System.out.println(ConsoleColor.ANSI_CYAN + "[NLPlib] stopwords removed" + ConsoleColor.ANSI_RESET);
+		return cleaned.get();
+	}
 //
 //    public void getWordnetExpansion(CoreDocument a) throws JWNLException {
 //        final net.didion.jwnl.dictionary.Dictionary dictionary = net.didion.jwnl.dictionary.Dictionary.getInstance();
@@ -118,101 +131,138 @@ public class NLPlib {
 //
 //    }
 
-    public CoreDocument getDoc() {
-        return doc;
-    }
+	public CoreDocument getDoc() {
+		return doc;
+	}
 
-    public CoreDocument NLPlib_annotate(String doc) {
-        CoreDocument a = new CoreDocument(doc);
-        return NLPlib_annotate(a);
-    }
-    public CoreDocument NLPlib_annotate(CoreDocument doc) {
-        this.setDoc(doc);
-        this.master_pipeline.annotate(doc);
-        return doc;
-    }
+	public CoreDocument NLPlib_annotate(String doc) {
+		CoreDocument a = new CoreDocument(doc);
+		return NLPlib_annotate(a);
+	}
 
-    public void setDoc(CoreDocument doc) {
-        this.doc = doc;
-    }
+	public CoreDocument NLPlib_annotate(CoreDocument doc) {
+		this.setDoc(doc);
+		this.master_pipeline.annotate(doc);
+		return doc;
+	}
 
-    public ArrayList<String> getAnnotationSentences(CoreDocument doc) {
-        if (debug) System.out.println("= = =");
-        if (debug) System.out.println("[NLPlib] Entities found");
-        if (debug) System.out.println("= = =");
-        boolean inEntity = false;
-        int counter = 0;
-        String currentEntity = "";
-        String currentEntityType = "";
-        ArrayList<String> tokens = new ArrayList<>();
-        Annotation document = new Annotation(doc.annotation());
-        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
-        for (Object sentence : sentences) {
-            if (debug) System.out.println("[NLPlib] Sentence #" + counter++);
-            for (CoreLabel token : ((CoreMap) sentence).get(CoreAnnotations.TokensAnnotation.class)) {
+	public void setDoc(CoreDocument doc) {
+		this.doc = doc;
+	}
 
-                String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
-                if (debug) System.out.println("[OT: " + token.originalText() + " ]");
-                if (!inEntity) {
-                    if (!"O".equals(ne)) {
-                        inEntity = true;
-                        currentEntity = "";
-                        currentEntityType = ne;
-                    }
-                }
-                if (inEntity) {
-                    if ("O".equals(ne)) {
-                        inEntity = false;
-                        tokens.add(currentEntity);
+	public ArrayList<String> getAnnotationSentences(CoreDocument doc) {
+		if (debug) System.out.println("= = =");
+		if (debug) System.out.println("[NLPlib] Entities found");
+		if (debug) System.out.println("= = =");
+		boolean inEntity = false;
+		int counter = 0;
+		String currentEntity = "";
+		String currentEntityType = "";
+		ArrayList<String> tokens = new ArrayList<>();
+		Annotation document = new Annotation(doc.annotation());
+		List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+		for (Object sentence : sentences) {
+			if (debug) System.out.println("[NLPlib] Sentence #" + counter++);
+			for (CoreLabel token : ((CoreMap) sentence).get(CoreAnnotations.TokensAnnotation.class)) {
+
+				String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
+				if (debug) System.out.println("[OT: " + token.originalText() + " ]");
+				if (!inEntity) {
+					if (!"O".equals(ne)) {
+						inEntity = true;
+						currentEntity = "";
+						currentEntityType = ne;
+					}
+				}
+				if (inEntity) {
+					if ("O".equals(ne)) {
+						inEntity = false;
+						tokens.add(currentEntity);
 //                        System.out.println("Extracted " + currentEntityType + " " + currentEntity.trim());
 
-                    } else {
-                        currentEntity += " " + token.originalText();
-                    }
+					} else {
+						currentEntity += " " + token.originalText();
+					}
 
-                }
+				}
 
-            }
-        }
+			}
+		}
 
-        return tokens;
-    }
+		return tokens;
+	}
 
 
-    public List<CoreLabel> removeStopWords() {
-        int counter = 0;
-        Annotation document = new Annotation(doc.annotation());
-        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
-        List<CoreLabel> without_stopwords = new ArrayList<>();
-        for (Object sentence : sentences) {
-            if (debug) System.out.println("[NLPlib] Sentence #" + counter++);
-            for (CoreLabel token : ((CoreMap) sentence).get(CoreAnnotations.TokensAnnotation.class)) {
-                if (debug) {
-                    System.out.printf("[NLPlib] Token : %15s - %15s\n", token, token.originalText());
-                }
-                if (!this.stopwords.contains(token.originalText()))
-                    without_stopwords.add(token);
-                else if (debug)
-                    System.out.println(" <-");
-                if (debug) System.out.print("\n");
-            }
-        }
-        if (debug) System.out.println("[NLPlib] --------  ");
-        return without_stopwords;
-    }
+	public List<CoreLabel> removeStopWords() {
+		int counter = 0;
+		Annotation document = new Annotation(doc.annotation());
+		List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+		List<CoreLabel> without_stopwords = new ArrayList<>();
+		for (Object sentence : sentences) {
+			if (debug) System.out.println("[NLPlib] Sentence #" + counter++);
+			for (CoreLabel token : ((CoreMap) sentence).get(CoreAnnotations.TokensAnnotation.class)) {
+				if (debug) {
+					System.out.printf("[NLPlib] Token : %15s - %15s\n", token, token.originalText());
+				}
+				if (!this.stopwords.contains(token.originalText()))
+					without_stopwords.add(token);
+				else if (debug)
+					System.out.println(" <-");
+				if (debug) System.out.print("\n");
+			}
+		}
+		if (debug) System.out.println("[NLPlib] --------  ");
+		return without_stopwords;
+	}
 
-    private void initStopword(String file_path) {
-        this.stopwords = new ArrayList<>();
-        try (BufferedReader in = new BufferedReader(new FileReader(file_path))) {
-            String input;
-            while ((input = in.readLine()) != null) {
-                this.stopwords.add(input);
-            }
-            System.out.println("Stopwords initialization finished!");
-        } catch (IOException e) {
-            System.err.println("Stopwords file error!");
-            System.exit(1);
-        }
-    }
+	public List<CoreLabel> removePunctuations() {
+		int counter = 0;
+		Annotation document = new Annotation(doc.annotation());
+		List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+		List<CoreLabel> without_punctuations = new ArrayList<>();
+		for (Object sentence : sentences) {
+			if (debug) System.out.println("[NLPlib] Sentence #" + counter++);
+			for (CoreLabel token : ((CoreMap) sentence).get(CoreAnnotations.TokensAnnotation.class)) {
+				if (debug) {
+					System.out.printf("[NLPlib] Token : %15s - %15s\n", token, token.originalText());
+				}
+				if (!this.punctuations.contains(token.originalText()))
+					without_punctuations.add(token);
+				else if (debug)
+					System.out.println(" <-");
+				if (debug) System.out.print("\n");
+			}
+		}
+		if (debug) System.out.println("[NLPlib] --------  ");
+		return without_punctuations;
+	}
+
+	private void initStopword(String file_path) {
+		this.stopwords = new ArrayList<>();
+		try (BufferedReader in = new BufferedReader(new FileReader(file_path))) {
+			String input;
+			while ((input = in.readLine()) != null) {
+				this.stopwords.add(input);
+			}
+			System.out.println("Stopwords initialization finished!");
+		} catch (IOException e) {
+			System.err.println("Stopwords file error!");
+			System.exit(1);
+		}
+	}
+
+	private void initPuncs(String file_path) {
+		this.punctuations = new ArrayList<>();
+		try (BufferedReader in = new BufferedReader(new FileReader(file_path))) {
+			String input;
+			while ((input = in.readLine()) != null) {
+				this.punctuations.add(input);
+			}
+			System.out.println("Punctuations initialization finished!");
+		} catch (IOException e) {
+			System.err.println("Punctuations file error!");
+			System.exit(1);
+		}
+	}
 
 }

@@ -39,16 +39,17 @@ public class CLAnnotation {
 		return Objects.hash(text);
 	}
 
-	public Map<String, Object> toObject(){
-		Map<String,Object> objectMap = new HashMap<>();
+	public Map<String, Object> toObject() {
+		Map<String, Object> objectMap = new HashMap<>();
 		objectMap.put("text", this.text);
-		objectMap.put("tokenBeginPosition",this.tokenBeginPosition );
-		objectMap.put("tokenEndPosition",this.tokenEndPosition );
-		objectMap.put("sentencePosition",this.sentencePosition );
-		objectMap.put("association_type",this.associationtype);
+		objectMap.put("tokenBeginPosition", this.tokenBeginPosition);
+		objectMap.put("tokenEndPosition", this.tokenEndPosition);
+		objectMap.put("sentencePosition", this.sentencePosition);
+		objectMap.put("association_type", this.associationtype);
 		objectMap.put("linkedClaims", this.linkedClaims);
 		return objectMap;
 	}
+
 	public String toJson() throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -67,6 +68,7 @@ public class CLAnnotation {
 	public Association_type getAssoc_t() {
 		return associationtype;
 	}
+
 	public int getPosition() {
 		return tokenBeginPosition;
 	}
@@ -78,9 +80,11 @@ public class CLAnnotation {
 	public List<Claim> getLinkedClaims() {
 		return linkedClaims;
 	}
+
 	public String getText() {
 		return text;
 	}
+
 	public int getSentencePosition() {
 		return sentencePosition;
 	}
@@ -88,18 +92,23 @@ public class CLAnnotation {
 	public void setAssoc_t(Association_type associationtype) {
 		this.associationtype = associationtype;
 	}
+
 	public void setLinkedClaims(List<Claim> linkedClaims) {
 		this.linkedClaims = linkedClaims;
 	}
-	public void addLinkedClaim(Claim claim){
+
+	public void addLinkedClaim(Claim claim) {
 		this.linkedClaims.add(claim);
 	}
+
 	public void setPosition(int position) {
 		this.tokenBeginPosition = position;
 	}
+
 	public void setText(String text) {
 		this.text = text;
 	}
+
 	public void setSentencePosition(int sentencePosition) {
 		this.sentencePosition = sentencePosition;
 	}

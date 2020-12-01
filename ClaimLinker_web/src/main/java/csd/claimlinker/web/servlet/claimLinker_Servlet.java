@@ -42,6 +42,7 @@ public class claimLinker_Servlet extends HttpServlet {
 
 			claimLinker = new ClaimLinker(20, similarityMeasures,
 					getServletContext().getResource("/WEB-INF/data/stopwords.txt").getPath(),
+					getServletContext().getResource("/WEB-INF/data/puncs.txt").getPath(),
 					getServletContext().getResource("/WEB-INF/data/english-20200420.hash").getPath(),
 					"localhost");
 			System.out.println(getServletName() + " initialization finished! ");

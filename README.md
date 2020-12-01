@@ -38,12 +38,14 @@ cd ..
 mvn compile package #to compile and package into jar the claimlinker
 ```
  
-3. Get the claim data from a csv, the hash file for **FEL** library and the stopwords file:
+3. Get the claim data from a csv, the hash file for **FEL** library the stopwords file and the punctuations file:
 i.e.
 	 - data/ 
 		 - **claim_extraction_18_10_2019_annotated.csv**
 		 - **english-20200420.hash**
 		 -  **stopwords.txt**
+		 -  **puncs.txt**
+
 		 
 #### ElasticSearch setup
 
@@ -62,7 +64,7 @@ java -cp .:ClaimLinker_commons/target/ClaimLinker_commons-1.0-jar-with-dependenc
 ```
 Using it as a library:
 ```java
-ClaimLinker CLInstance = new ClaimLinker(elastic_search_threashold, similarityMeasures, stopwords_file, english_hash_FEL, ElasticSearch_host);
+ClaimLinker CLInstance = new ClaimLinker(elastic_search_threashold, similarityMeasures, stopwords_file, punctuations_file english_hash_FEL, ElasticSearch_host);
 
 CLInstance.claimLink(text, num_of_returned_claims, associationtype)
 ```
@@ -83,7 +85,7 @@ static Set<CLAnnotation> demo_pipeline(String text) throws IOException, ClassNot
 		AnalyzerDispatcher.SimilarityMeasure.jcrd_comm_nchargram,       //Common (jaccard) nchargrams
 		AnalyzerDispatcher.SimilarityMeasure.vec_cosine_sim             //Cosine similarity
 	};
-	ClaimLinker CLInstance = new ClaimLinker(20, similarityMeasures, "data/stopwords.txt", "data/english-20200420.hash", "192.168.2.112");
+	ClaimLinker CLInstance = new ClaimLinker(20, similarityMeasures, "data/stopwords.txt", "data/puncs.txt", "data/english-20200420.hash", "192.168.2.112");
 	System.out.println("Demo pipeline started!");
 	Set<CLAnnotation> results = CLInstance.claimLink(text, 5, Association_type.all);
 	return results;

@@ -42,11 +42,10 @@ public class AnalyzerDispatcher {
 	public double analyze(CoreDocument text, CoreDocument claim) {
 		System.out.print((ClaimLinker.debug) ? claim.text() + "\nvs\n" + text.text() + "\n" : "");
 		ArrayList<Pair<Double, CoreDocument>> arr = new ArrayList<>();
+
 		double sum = 0d;
-		CoreDocument doced_sentence = new CoreDocument(text.text());
-		AnalyzerDispatcher.nlp_instance.NLPlib_annotate(doced_sentence);
 		for (SimilarityMeasure similarityMeasure : this.similarityMeasures) {
-			double result = similarityMeasure.analyze(claim, doced_sentence);
+			double result = similarityMeasure.analyze(claim, text);
 			sum += (result >= 0) ? result : 0;
 		}
 		sum /= similarityMeasures.size();
@@ -337,7 +336,7 @@ public class AnalyzerDispatcher {
 
 		private NLPlib nlp_instance;
 		private static final boolean debug = ClaimLinker.debug;
-		private final static boolean verbose = false;
+		private final static boolean verbose = true;
 
 		SimilarityMeasure() {
 			this.nlp_instance = AnalyzerDispatcher.nlp_instance;

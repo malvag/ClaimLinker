@@ -56,19 +56,19 @@ public enum Association_type {
 							if (skip.get())
 								continue;
 							CLAnnotation annotation = new CLAnnotation(mention.toString(), token.beginPosition(), token.endPosition(), sentencePosition, this);
-							this.annotationSet.removeIf(it -> it.getAssoc_t()==this && it.getText().equals(mention.toString()));
+							this.annotationSet.removeIf(it -> it.getAssoc_t() == this && it.getText().equals(mention.toString()));
 							this.annotationSet.add(annotation);
 							entities.put(annotation, mention);
 						}
 					}
 				}
 			}
-			
+
 			entities.forEach((annotation, mention) -> {
 				System.out.printf("[Author_of] Person entities : %15s  \n", mention.toString());
 				CLAnnotation tmp = annotationSet.stream().filter(item -> item.equals(annotation)).findFirst().get();
-				ArrayList<Claim> results = claimLinker.elasticWrapper.findCatalogItemWithoutApi(true,new String[]{"creativeWork_author_name"}, URLEncoder.encode(mention.toString(), StandardCharsets.UTF_8), hits);
-				if(results != null)
+				ArrayList<Claim> results = claimLinker.elasticWrapper.findCatalogItemWithoutApi(true, new String[]{"creativeWork_author_name"}, URLEncoder.encode(mention.toString(), StandardCharsets.UTF_8), hits);
+				if (results != null)
 					tmp.getLinkedClaims().addAll(results);
 			});
 
@@ -95,6 +95,7 @@ public enum Association_type {
 
 			return this.annotationSet;
 		}
+
 		@Override
 		public String toString() {
 			return "author_of";
@@ -122,7 +123,7 @@ public enum Association_type {
 					String ne = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
 					if (ne.startsWith("NN")) {
 						CLAnnotation annotation = new CLAnnotation(token.lemma(), token.beginPosition(), token.endPosition(), sentencePosition, this);
-						this.annotationSet.removeIf(it -> it.getAssoc_t()==this && it.getText().equals(token.lemma()));
+						this.annotationSet.removeIf(it -> it.getAssoc_t() == this && it.getText().equals(token.lemma()));
 						this.annotationSet.add(annotation);
 						NNouns_map.put(annotation, token);
 					}
@@ -133,8 +134,8 @@ public enum Association_type {
 			NNouns_map.forEach((annotation, noun) -> {
 				System.out.printf("[Topic_of]  : %15s  \n", noun.toString());
 				CLAnnotation tmp = annotationSet.stream().filter(item -> item.equals(annotation)).findFirst().get();
-				ArrayList<Claim> results = claimLinker.elasticWrapper.findCatalogItemWithoutApi(true,new String[]{"claimReview_claimReviewed","extra_title"}, URLEncoder.encode(noun.lemma(), StandardCharsets.UTF_8), hits);
-				if(results != null)
+				ArrayList<Claim> results = claimLinker.elasticWrapper.findCatalogItemWithoutApi(true, new String[]{"claimReview_claimReviewed", "extra_title"}, URLEncoder.encode(noun.lemma(), StandardCharsets.UTF_8), hits);
+				if (results != null)
 					tmp.getLinkedClaims().addAll(results);
 			});
 
@@ -158,6 +159,7 @@ public enum Association_type {
 			System.out.println("[Topic_of] Time passed: " + (double) timeElapsed / 1000 + "s");
 			return this.annotationSet;
 		}
+
 		@Override
 		public String toString() {
 			return "topic_of";
@@ -180,7 +182,7 @@ public enum Association_type {
 			//Create a new CLAnnotation for every sentence
 			for (CoreMap sentence : sentences) {
 				CLAnnotation annotation = new CLAnnotation(sentence.toString(), -1, -1, sentencePosition, this);
-				this.annotationSet.removeIf(it -> it.getAssoc_t()==this && it.getText().equals(sentence.toString()));
+				this.annotationSet.removeIf(it -> it.getAssoc_t() == this && it.getText().equals(sentence.toString()));
 				this.annotationSet.add(annotation);
 				claims_map.put(annotation, sentence);
 				sentencePosition++;
@@ -190,20 +192,22 @@ public enum Association_type {
 					System.out.printf("[Same_as]  : %15s  \n", sentence.toString());
 					CLAnnotation tmp = annotationSet.stream().filter(item -> item.equals(annotation)).findFirst().get();
 					CoreDocument doc = claimLinker.nlp_instance.NLPlib_annotate(sentence.toString());
-					ArrayList<Claim> results = claimLinker.elasticWrapper.findCatalogItemWithoutApi(false,new String[]{"claimReview_claimReviewed","extra_title"}, URLEncoder.encode(
+					ArrayList<Claim> results = claimLinker.elasticWrapper.findCatalogItemWithoutApi(false, new String[]{"claimReview_claimReviewed", "extra_title"}, URLEncoder.encode(
 							claimLinker.nlp_instance.getWithoutStopwords(doc), StandardCharsets.UTF_8), hits);
-					if(results != null)
+					if (results != null)
 						tmp.getLinkedClaims().addAll(results);
 				}
 			});
 			System.out.println("[Same_as] Processing candidate claims");
-			this.annotationSet.removeIf((CLAnnotation a) -> a.getLinkedClaims().size()==0);
+			this.annotationSet.removeIf((CLAnnotation a) -> a.getLinkedClaims().size() == 0);
 			this.annotationSet.forEach(annotation -> {
 
 				PriorityQueue<Claim> tmp = new PriorityQueue<>();
-				CoreDocument CD_sentence = claimLinker.nlp_instance.NLPlib_annotate(annotation.getText());
+				String sentence_punc_cleaned = claimLinker.nlp_instance.getWithoutPunctuations(claimLinker.nlp_instance.NLPlib_annotate(new CoreDocument(annotation.getText())));
+				CoreDocument CD_sentence = claimLinker.nlp_instance.NLPlib_annotate(sentence_punc_cleaned);
 				for (Claim claim : annotation.getLinkedClaims()) {
-					CoreDocument CD_c = claimLinker.nlp_instance.NLPlib_annotate(claim.getReviewedBody());
+					String claim_punc_cleaned = claimLinker.nlp_instance.getWithoutPunctuations(claimLinker.nlp_instance.NLPlib_annotate(new CoreDocument(claim.getReviewedBody())));
+					CoreDocument CD_c = claimLinker.nlp_instance.NLPlib_annotate(claim_punc_cleaned);
 					claim.setNLPScore(claimLinker.analyzerDispatcher.analyze(CD_c, CD_sentence));// for the specific sentence
 					tmp.add(claim);
 				}
@@ -225,6 +229,7 @@ public enum Association_type {
 			this.annotationSet.forEach(System.out::println);
 			return this.annotationSet;
 		}
+
 		@Override
 		public String toString() {
 			return "same_as";
@@ -249,7 +254,7 @@ public enum Association_type {
 		}
 	};
 
-	Association_type(){
+	Association_type() {
 		this.annotationSet = new HashSet<>();
 	}
 
