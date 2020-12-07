@@ -19,8 +19,13 @@
         <p class="lead">Claim-Link using similarity methods via NLP criteria based on large already-fact-checked-claims data. </p>
         <hr class="my-4">
         <a class="btn btn-primary btn-lg" href="https://github.com/malvagos/ClaimLinker/" role="button">Learn more</a>
+
     </div>
     <div class="jumbotron">
+        <div class="alert alert-info" role="alert">
+            You can use add the bookmarklet by saving the link as a bookmark.
+            <a href="javascript:(function()%20{window.location='http://localhost:8080/claimlinker/viaBookmarklet?url='+escape(window.location.toString()) + '&text='+(window.getSelection())})()">Bookmarklet</a>
+        </div>
         <div class="input-group">
             <textarea class="form-control" id="text" aria-label="With textarea"></textarea>
         </div>

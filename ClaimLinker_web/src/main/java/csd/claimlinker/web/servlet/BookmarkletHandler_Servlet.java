@@ -24,11 +24,11 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (request.getParameter("url") == null) {
-            response.setStatus(400);
-            response.flushBuffer();
-        }
-        JsonObject response_json = claimLinker_Servlet.ClaimLinkfromURLHandler(request, Association_type.same_as);
+        JsonObject response_json;
+        if (request.getParameter("text") == null)
+            response_json = claimLinker_Servlet.ClaimLinkfromURLHandler(request, Association_type.same_as);
+        else
+            response_json = claimLinker_Servlet.ClaimLinkHandler(request, Association_type.same_as);
         PrintWriter out = response.getWriter();
         response.setContentType("text/html");
         assert response_json != null;
@@ -45,7 +45,7 @@ public class BookmarkletHandler_Servlet extends HttpServlet {
                 "    <title>Hello, world!</title>\n" +
                 "  </head>\n" +
                 "  <body>\n" +
-                "<h2> URL : " + response_json.getString("url") + " </h2>\n" +
+                "<h2> URL : " + request.getParameter("url") + " </h2>\n" +
                 "<h2> Request timeElapsed: " + response_json.getJsonNumber("timeElapsed") + "ms </h2>\n" ;
         String front = "<div class=\"jumbotron jumbotron-fluid\">\n" +
                 "  <div class=\"container\">\n" ;
