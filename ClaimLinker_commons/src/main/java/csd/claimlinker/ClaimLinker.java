@@ -32,11 +32,14 @@ public class ClaimLinker {
 		System.out.println("========================================");
 	}
 
+	public Set<CLAnnotation> claimLink(String text, int num_of_returned_claims, Association_type associationtype, Boolean clearPrevAnnotations) {
+		System.out.println(ConsoleColor.ANSI_YELLOW + "Attempting to claimlink " + ConsoleColor.ANSI_RESET);
+		return associationtype.annotate(this, text, num_of_returned_claims, clearPrevAnnotations);
+	}
 
 	public Set<CLAnnotation> claimLink(String text, int num_of_returned_claims, Association_type associationtype) {
 		System.out.println(ConsoleColor.ANSI_YELLOW + "Attempting to claimlink " + ConsoleColor.ANSI_RESET);
-		Set<CLAnnotation> resutls = associationtype.annotate(this, text, num_of_returned_claims);
-		return resutls;
+		return associationtype.annotate(this, text, num_of_returned_claims, false);
 	}
 
 

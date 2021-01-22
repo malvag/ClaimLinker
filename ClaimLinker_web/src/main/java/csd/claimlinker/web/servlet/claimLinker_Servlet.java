@@ -172,7 +172,7 @@ public class claimLinker_Servlet extends HttpServlet {
 		WebArticle webArticle;
 
 		webArticle = new WebArticle(param_url, null, WebArticle.WebArticleType.url);
-		ArrayList<CLAnnotation> clAnnotations = new ArrayList<CLAnnotation>(claimLinker.claimLink(webArticle.getDoc().text(), 5, associationtype));
+		ArrayList<CLAnnotation> clAnnotations = new ArrayList<CLAnnotation>(claimLinker.claimLink(webArticle.getDoc().text(), 5, associationtype, true));
 
 		factory.add("url", param_url).add("cleaned_text_from_url", webArticle.getDoc().text());
 		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();

@@ -24,8 +24,9 @@ public enum Association_type {
 		// match the persons with the claims_author in ES
 		// generate candidates and rank them with Sim Measures based on the whole text's similarities per sentence
 		@Override
-		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result) {
-
+		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result, boolean clearAnnotations) {
+			if(clearAnnotations)
+				this.annotationSet = new HashSet<>();
 			final int hits = 100;
 			System.out.println(ConsoleColor.ANSI_YELLOW + "[Author_of] Attempting to claimlink with association_type " + this + ConsoleColor.ANSI_RESET);
 			Instant start = Instant.now();
@@ -106,7 +107,9 @@ public enum Association_type {
 		// generate candidates and rank them with Sim Measures
 		// Given a sentence, we can submit a keyword query to an Elasticsearch index and get a ranked list of candidate claims
 		@Override
-		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result) {
+		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result, boolean clearAnnotations) {
+			if(clearAnnotations)
+				this.annotationSet = new HashSet<>();
 			System.out.println(ConsoleColor.ANSI_YELLOW + "Attempting to claimlink with association_type " + this + ConsoleColor.ANSI_RESET);
 			Instant start = Instant.now();
 			final int hits = 30;
@@ -170,7 +173,10 @@ public enum Association_type {
 		// generate candidates and rank them with Sim Measures
 		// Given a sentence, we can submit a keyword query to an Elasticsearch index and get a ranked list of candidate claims
 		@Override
-		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result) {
+		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result, boolean clearAnnotations) {
+			if(clearAnnotations)
+				this.annotationSet = new HashSet<>();
+
 			System.out.println(ConsoleColor.ANSI_YELLOW + "Attempting to claimlink with association_type " + this + ConsoleColor.ANSI_RESET);
 			Instant start = Instant.now();
 			final int hits = 30;
@@ -236,11 +242,11 @@ public enum Association_type {
 		}
 	}, all {
 		@Override
-		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result) {
+		public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result,boolean clearAnnotations) {
 			Instant start = Instant.now();
-			this.annotationSet.addAll(Association_type.author_of.annotate(claimLinker, text, num_of_result));
-			this.annotationSet.addAll(Association_type.topic_of.annotate(claimLinker, text, num_of_result));
-			this.annotationSet.addAll(Association_type.same_as.annotate(claimLinker, text, num_of_result));
+			this.annotationSet.addAll(Association_type.author_of.annotate(claimLinker, text, num_of_result,clearAnnotations));
+			this.annotationSet.addAll(Association_type.topic_of.annotate(claimLinker, text, num_of_result,clearAnnotations));
+			this.annotationSet.addAll(Association_type.same_as.annotate(claimLinker, text, num_of_result,clearAnnotations));
 			System.out.println("----");
 			Instant finish = Instant.now();
 			long timeElapsed = Duration.between(start, finish).toMillis();
@@ -260,5 +266,5 @@ public enum Association_type {
 
 	public Set<CLAnnotation> annotationSet;
 
-	abstract public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result);
+	abstract public Set<CLAnnotation> annotate(ClaimLinker claimLinker, String text, int num_of_result, boolean clearAnnotations);
 }
