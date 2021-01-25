@@ -66,7 +66,7 @@ Using it as a library:
 ```java
 ClaimLinker CLInstance = new ClaimLinker(elastic_search_threashold, similarityMeasures, stopwords_file, punctuations_file english_hash_FEL, ElasticSearch_host);
 
-CLInstance.claimLink(text, num_of_returned_claims, associationtype)
+CLInstance.claimLink(text, num_of_returned_claims, associationtype, cleanPrevAnnotations)
 ```
 i.e. (csd.claimlinker.ClaimLinkerTest)
 ```java
@@ -87,7 +87,7 @@ static Set<CLAnnotation> demo_pipeline(String text) throws IOException, ClassNot
 	};
 	ClaimLinker CLInstance = new ClaimLinker(20, similarityMeasures, "data/stopwords.txt", "data/puncs.txt", "data/english-20200420.hash", "192.168.2.112");
 	System.out.println("Demo pipeline started!");
-	Set<CLAnnotation> results = CLInstance.claimLink(text, 5, Association_type.all);
+	Set<CLAnnotation> results = CLInstance.claimLink(text, 5, Association_type.all, true);
 	return results;
 }
 ```
