@@ -26,13 +26,9 @@ public class OpenCSVWrapper {
         ArrayList<String> fields = new ArrayList<>();
         CSVReader csvReader = new CSVReader(reader);
         int counter = 0;
-        String[] line = new String[0];
+        String[] line = csvReader.readNext();
         while (line != null) {
-            try {
-                line = csvReader.readNext();
-            }catch(IOException e){
-                break;
-            }
+            
             if(OpenCSVWrapper.debug)
                 if(counter>=OpenCSVWrapper.MAX)
                     break;
@@ -54,6 +50,11 @@ public class OpenCSVWrapper {
                 list.add(claim);
             }
             counter++;
+            try {
+                line = csvReader.readNext();
+            }catch(IOException e){
+                break;
+            }
         }
         reader.close();
         csvReader.close();
