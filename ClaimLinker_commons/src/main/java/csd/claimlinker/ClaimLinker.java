@@ -5,14 +5,11 @@ import csd.claimlinker.nlp.NLPlib;
 import csd.claimlinker.es.misc.ConsoleColor;
 import csd.claimlinker.model.Association_type;
 import csd.claimlinker.model.CLAnnotation;
-import csd.claimlinker.model.Claim;
 import csd.claimlinker.nlp.AnalyzerDispatcher;
-import edu.stanford.nlp.pipeline.CoreDocument;
 
 import java.io.IOException;
 import java.util.*;
 
-import static java.util.Comparator.comparing;
 
 public class ClaimLinker {
 
@@ -32,17 +29,12 @@ public class ClaimLinker {
 		System.out.println("========================================");
 	}
 
-	public Set<CLAnnotation> claimLink(String text, int num_of_returned_claims, Association_type associationtype, Boolean clearPrevAnnotations) {
-		System.out.println(ConsoleColor.ANSI_YELLOW + "Attempting to claimlink " + ConsoleColor.ANSI_RESET);
-		return associationtype.annotate(this, text, num_of_returned_claims, clearPrevAnnotations);
-	}
 
 	public Set<CLAnnotation> claimLink(String text, int num_of_returned_claims, Association_type associationtype) {
 		System.out.println(ConsoleColor.ANSI_YELLOW + "Attempting to claimlink " + ConsoleColor.ANSI_RESET);
-		return associationtype.annotate(this, text, num_of_returned_claims, false);
+		Set<CLAnnotation> resutls = associationtype.annotate(this, text, num_of_returned_claims);
+		return resutls;
 	}
 
 
 }
-
-
