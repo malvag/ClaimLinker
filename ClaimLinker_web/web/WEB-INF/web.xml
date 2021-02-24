@@ -20,7 +20,7 @@
     </servlet>
     <servlet>
         <servlet-name>claimLinker_app</servlet-name>
-        <jsp-file>/app.jsp</jsp-file>
+        <jsp-file>/ClaimLinker.jsp</jsp-file>
     </servlet>
     <servlet-mapping>
         <servlet-name>claimLinker</servlet-name>
