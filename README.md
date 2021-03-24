@@ -98,9 +98,11 @@ static Set<CLAnnotation> demo_pipeline(String text) throws IOException, ClassNot
 Using it as a Web Service returning results in JSON:
 ```
 Example request for text "You know, interest on debt will soon exceed security spending.":
+
 http://<claimlinker-url>/claimlinker?app=service&text=You%20know,%20interest%20on%20debt%20will%20soon%20exceed%20security%20spending.
 
 Example of results in JSON: 
+
 {"_results":[{
    "text":"You know, interest on debt will soon exceed security spending.",
    "sentencePosition":0,
