@@ -5,7 +5,9 @@ The system is based on a scalable, fully unsupervised and modular approach that 
 
 More information is available at the following paper: 
 ```
-Maliaroudakis E., Boland K., Dietze S., Todorov K., Tzitzikas Y. and Fafalios P., "ClaimLinker: Linking Text to a Knowledge Graph of Fact-checked Claims". In _Companion Proceedings of the Web Conference_, 2021.
+Maliaroudakis E., Boland K., Dietze S., Todorov K., Tzitzikas Y. and Fafalios P., 
+"ClaimLinker: Linking Text to a Knowledge Graph of Fact-checked Claims", 
+In Companion Proceedings of the Web Conference, 2021 (to appear).
 ```
 A sub-module system has been implemented, divided respectively by the following modules: 
 #### Claimlinker_commons (main library for claim linking)
