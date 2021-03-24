@@ -95,3 +95,50 @@ static Set<CLAnnotation> demo_pipeline(String text) throws IOException, ClassNot
 	return results;
 }
 ```
+Using it as a Web Service returning results in JSON:
+```
+Example request for text "You know, interest on debt will soon exceed security spending.":
+http://<claimlinker-url>/claimlinker?app=service&text=You%20know,%20interest%20on%20debt%20will%20soon%20exceed%20security%20spending.
+
+Example of results in JSON: 
+{"_results":[{
+   "text":"You know, interest on debt will soon exceed security spending.",
+   "sentencePosition":0,
+   "association_type":"same_as",
+   "linkedClaims":[
+       { "claimReview_claimReviewed":"'Within a few years, we will be spending more on interest payments than on national security.'",
+	 "_score":39.261948,
+	 "extra_title":"Mitch Daniels says interest on debt will soon exceed security spending",
+	 "rating_alternateName":"false",
+	 "creativeWork_author_name":"Mitch Daniels",
+	 "claimReview_url":"http://www.politifact.com/truth-o-meter/statements/2011/feb/17/mitch-daniels/mitch-daniels-says-interest-debt-will-soon-exceed-/",
+	 "claim_uri":"http://data.gesis.org/claimskg/creative_work/16076cfe-34c2-542b-9ffa-41a4c8677ced"},
+       { "claimReview_claimReviewed":"'In just 17 years, spending for Social Security, federal health care and interest on the debt will exceed ALL tax revenue!'",
+         "_score":28.52819,
+	 "extra_title":"Brat says entitlement and debt payments will consume all taxes in 2032",
+	 "rating_alternateName":"mostly true",
+	 "creativeWork_author_name":"Dave Brat",
+	 "claimReview_url":"http://www.politifact.com/virginia/statements/2015/jun/16/dave-brat/brat-says-entitlement-and-debt-payments-will-consu/",
+	 "claim_uri":"http://data.gesis.org/claimskg/creative_work/928f16c7-1ae8-53bb-a6d2-8aa6a59dbd45"},
+       { "claimReview_claimReviewed":"'By 2022, just the interest payment on our debt will be greater than the defense of our country.'",
+         "_score":28.45221,
+         "extra_title":"Will interest on the debt exceed defense spending by 2022?",
+         "rating_alternateName":"mostly true",
+         "creativeWork_author_name":"Joe Manchin",
+         "claimReview_url":"http://www.politifact.com/truth-o-meter/statements/2018/may/10/joe-manchin/will-interest-debt-exceed-defense-spending-2022/",
+         "claim_uri":"http://data.gesis.org/claimskg/creative_work/3579711f-d846-57ba-998a-6c0983c2c2cb"},
+       { "claimReview_claimReviewed":"'The debt will soon eclipse our entire economy.'",
+         "_score":18.63715,
+	 "extra_title":"Paul Ryan, in State of the Union response, says U.S. debt will soon eclipse GDP",
+	 "rating_alternateName":"true",
+	 "creativeWork_author_name":"Paul Ryan",
+	 "claimReview_url":"http://www.politifact.com/truth-o-meter/statements/2011/jan/26/paul-ryan/paul-ryan-state-union-response-says-us-debt-will-s/",
+	 "claim_uri":"http://data.gesis.org/claimskg/creative_work/7951dee8-b793-512c-bd13-074f648a052a"},
+       { "claimReview_claimReviewed":"'Our spending has caught up with us, and our debt soon will eclipse the entire size of our national economy.'",
+         "_score":17.90907,
+	 "extra_title":"House Speaker John Boehner has the right count on the magnitude of the federal debt",
+	 "rating_alternateName":"true",
+	 "creativeWork_author_name":"John Boehner",
+	 "claimReview_url":"http://www.politifact.com/ohio/statements/2011/jan/10/john-boehner/house-speaker-john-boehner-has-right-count-magnitu/",
+	 "claim_uri":"http://data.gesis.org/claimskg/creative_work/4c906dfc-c6af-5d38-aec4-0808edb2dcb9"}]}],"timeElapsed":1117}
+```
