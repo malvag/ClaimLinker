@@ -3,7 +3,7 @@
 ClaimLinker is a Web service and API that links arbitrary text to fact-checked claims, offering a novel kind of semantic annotation of unstructured content.
 The system is based on a scalable, fully unsupervised and modular approach that does not require training or tuning and which can serve high quality results at real time.
 
-A sub-module system has been implemented, divided respectively by
+A sub-module system has been implemented, divided respectively by the following modules: 
 #### Claimlinker_commons (main library for claim linking)
  - ClaimLinker
  - Core NLP API
