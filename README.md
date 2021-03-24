@@ -1,26 +1,24 @@
 
 # ClaimLinker  
-ClaimLinker implements a tool-set used to generate candidate claims using [ElasticSearch](https://github.com/elastic/elasticsearch), compare them using [StanfordNLP](https://github.com/stanfordnlp/CoreNLP) and link them based on the results.
+ClaimLinker is a Web service and API that links arbitrary text to fact-checked claims, offering a novel kind of semantic annotation of unstructured content.
+The system is based on a scalable, fully unsupervised and modular approach that does not require training or tuning and which can serve high quality results at real time.
 
 A sub-module system has been implemented, divided respectively by
-#### Claimlinker_commons
- - Claimlinker
+#### Claimlinker_commons (main library for claim linking)
+ - ClaimLinker
  - Core NLP API
  - Association Type
  - Similarity Measures
  - Test class
-#### Claimlinker_web
- - Web Servlet that returns CLAnnotations in JSON 
- - Web Servlet for Bookmarklet that returns CLAnnotations in simple HTML 
- - JSP for demonstration purposes
-#### ElasticSearch_Tools
+#### Claimlinker_web (web services)
+ - Web Servlet that returns annotations in JSON 
+ - Web Servlet for Bookmarklet that allows a user to select a piece of text in a web page and check if there are fact-checked claims linked to the selected text.
+ - JSP offering a form where the user can give sometext and check if there are fact-checked claims linked to that text.
+#### ElasticSearch_Tools (indexing of claims and search service provision)
  - Initializer for an ElasticSearch server
  - Wrapper API for an ElasticSearch server
  - OpenCSV wrapper class
 
-## The idea
-We study the problem of claim linking, i.e., linking a piece of text to claims in a reference knowledge base of fact-checked claims. We define the problem, categorize the different types of associations between a piece of text and a claim, and provide a set of baseline claim linking methods that make use of a large set of similarity features. Our focus is on unsupervised methods that do not require training data and thus can be applied in different contexts and types of claims, e.g., politics-related, hoaxes, etc  
- 
 ## Getting Started 
 
 ### Installation
@@ -41,8 +39,8 @@ mvn compile package #to compile and package into jar the claimlinker
 3. Get the claim data from a csv, the hash file for **FEL** library the stopwords file and the punctuations file:
 i.e.
 	 - data/ 
-		 - **claim_extraction_18_10_2019_annotated.csv**
-		 - **english-20200420.hash**
+		 - **claim_extraction_18_10_2019_annotated.csv** (a dataset of fact-checked claims)
+		 - **english-20200420.hash** (used by FEL)
 		 -  **stopwords.txt**
 		 -  **puncs.txt**
 
@@ -60,7 +58,7 @@ java ElasticInitializer -f "data.csv" -h "elasticsearch_host"
 
 Running the ClaimlinkerTest class:
 ```bash
-java -cp .:ClaimLinker_commons/target/ClaimLinker_commons-1.0-jar-with-dependencies.jar:ClaimLinker_web/target/ClaimLinker_web-1.0.jar:ElasticSearch_Tools/target/ElasticSearch_Tools-1.0.jar: csd.thesis.ClaimLinkerTest
+java -cp .:ClaimLinker_commons/target/ClaimLinker_commons-1.0-jar-with-dependencies.jar:ClaimLinker_web/target/ClaimLinker_web-1.0.jar:ElasticSearch_Tools/target/ElasticSearch_Tools-1.0.jar: csd.claimlinker.ClaimLinkerTest
 ```
 Using it as a library:
 ```java
