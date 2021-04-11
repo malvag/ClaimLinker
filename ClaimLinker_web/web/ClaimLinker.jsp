@@ -27,7 +27,7 @@
                 </div>
                 <div class="alert alert-info" role="alert" style="margin-top: 20px">
                     You can also use the ClaimLinker service as you browse the Web through the following bookmarklet:
-                    <a href="javascript:window.open('http://139.91.183.92/claimlinker/viaBookmarklet?url='+encodeURI(window.location.toString())+'&text='+(window.getSelection()))"><b>ClaimLinker!</b></a>
+                    <a href="javascript:window.open('http://139.91.183.92/claimlinker/viaBookmarklet?url='+encodeURI(window.location.toString())+'&text='+(encodeURIComponent(window.getSelection())))"><b>ClaimLinker!</b></a>
                     <br />
                     How to use it:
                     <ol>
@@ -66,9 +66,9 @@
                         document.getElementById("app").innerHTML = '<center><img src="loading.gif" width="80px" id="loadingImg" style="display:none"/></center>';
                         document.getElementById("loadingImg").style.display = "block";
 
-                        select = select.replace("[", "(").replace("]", ")");
+                        //select = select.replace("[", "(").replace("]", ")");
 
-                        requestObj.open("GET", "../claimlinker?app=demo&text=" + select);
+                        requestObj.open("GET", "../claimlinker?app=demo&text=" + encodeURIComponent(select));
                         requestObj.onreadystatechange = function () {
                             if (requestObj.readyState === 4 && requestObj.status === 200) {
                                 // console.log(requestObj.responseText);
@@ -95,8 +95,7 @@
 
                                     annotation.linkedClaims.forEach(linked_claim => {
                                         html_results += "<li class=\"list-group-item d-flex align-items-center\">"; //justify-content-between 
-                                        var queryLink = "https://data.gesis.org/claimskg/sparql?query=SELECT+*+WHERE+%7B+%7B+%3Fsubject+%3Fpredicate+%3Fobject+FILTER%28%3Fsubject+%3D+%3C" + linked_claim.claim_uri + "%3E%29+%7D+UNION+%7B+%3Fsubject+%3Fpredicate+%3Fobject+FILTER%28%3Fobject+%3D+%3C" + linked_claim.claim_uri + "%3E%29+%7D+%7D+";
-                                        html_results += "<a href='" + linked_claim.claimReview_url + "' target='_blank'>" + linked_claim.claimReview_claimReviewed.replace('""', '"') + "</a><span class=\"badge badge-primary badge-pill\" style=\"margin-left: 15px; \">" + linked_claim.rating_alternateName + "</span><span class=\"badge badge-warning badge-pill\" style=\"margin-left: 5px; \"><a href='" + queryLink + "' target='_blank' style=''>ClaimsKG</a>";
+                                        html_results += "<a href='" + linked_claim.claimReview_url + "' target='_blank'>" + linked_claim.claimReview_claimReviewed.replace('""', '"') + "</a><span class=\"badge badge-primary badge-pill\" style=\"margin-left: 15px; \">" + linked_claim.rating_alternateName + "</span><span class=\"badge badge-warning badge-pill\" style=\"margin-left: 5px; \"><a href='" + linked_claim.claim_uri + "' target='_blank' style=''>ClaimsKG</a>";
                                         html_results += "</li>"
                                     })
                                     html_results += "</ul>"
